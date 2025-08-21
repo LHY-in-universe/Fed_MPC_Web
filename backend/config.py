@@ -18,14 +18,21 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
     
     # 数据库配置 (MySQL)
-    # TODO: 暂时注释掉，稍后添加
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-    #     'mysql+pymysql://username:password@localhost/fed_mpc_web'
-    # SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # SQLALCHEMY_ENGINE_OPTIONS = {
-    #     'pool_recycle': 300,
-    #     'pool_pre_ping': True
-    # }
+    DB_HOST = os.environ.get('DB_HOST', 'localhost')
+    DB_PORT = int(os.environ.get('DB_PORT', 3306))
+    DB_USER = os.environ.get('DB_USER', 'fed_user')
+    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'fed_password')
+    DB_NAME = os.environ.get('DB_NAME', 'fed_mpc_platform')
+    
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_recycle': 3600,
+        'pool_pre_ping': True,
+        'pool_size': 10,
+        'max_overflow': 20
+    }
     
     # 业务配置
     SUPPORTED_BUSINESS_TYPES = ['ai', 'blockchain']

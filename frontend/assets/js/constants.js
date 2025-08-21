@@ -83,8 +83,8 @@ const FedConstants = {
             description: '深度学习模型训练、自然语言处理、计算机视觉等AI应用的联邦学习',
             icon: 'lightbulb',
             color: {
-                primary: '#4b5563',
-                secondary: '#6b7280',
+                primary: '#6b7280',
+                secondary: '#9ca3af',
                 gradient: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)'
             },
             models: [
@@ -99,9 +99,9 @@ const FedConstants = {
             description: '基于区块链的金融数据分析、风险评估、智能合约等应用的安全联邦学习',
             icon: 'currency-dollar',
             color: {
-                primary: '#4facfe',
-                secondary: '#00f2fe',
-                gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+                primary: '#374151',
+                secondary: '#4b5563',
+                gradient: 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)'
             },
             models: [
                 { name: 'FinNet-Risk', type: 'Risk Assessment' },

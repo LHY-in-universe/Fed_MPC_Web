@@ -1,0 +1,26 @@
+# Flask核心依赖
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-CORS==4.0.0
+
+# 数据库依赖
+PyMySQL==1.1.0
+SQLAlchemy==2.0.23
+
+# 安全相关
+Werkzeug==2.3.7
+PyJWT==2.8.0
+bcrypt==4.0.1
+
+# 工具库
+python-dotenv==1.0.0
+marshmallow==3.20.1
+click==8.1.7
+
+# 开发工具（可选）
+Flask-Migrate==4.0.5
+python-json-logger==2.0.7
+
+# 生产环境依赖（可选）
+gunicorn==21.2.0
+gevent==23.9.1

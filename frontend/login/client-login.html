@@ -7,10 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .ai-gradient {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+            color: #1f2937;
         }
         .blockchain-gradient {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #f3f4f6 0%, #d1d5db 100%);
+            color: #1f2937;
+        }
+        .back-btn {
+            color: #4b5563;
+        }
+        .back-btn:hover {
+            color: #374151;
         }
     </style>
 </head>
@@ -18,7 +26,7 @@
     <div id="app" class="min-h-screen flex items-center justify-center">
         <div class="max-w-md mx-auto px-4">
             <!-- Back Button -->
-            <button onclick="goBack()" class="absolute top-8 left-8 text-white hover:text-white/80 flex items-center gap-2">
+            <button onclick="goBack()" class="absolute top-8 left-8 back-btn flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>

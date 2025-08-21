@@ -12,15 +12,15 @@
     --light: #f9fafb;
     --lighter: #ffffff;
     
-    /* AI业务主题色 - 调整为灰色调 */
-    --ai-primary: #4b5563;
-    --ai-secondary: #6b7280;
+    /* AI业务主题色 - 中性灰调 */
+    --ai-primary: #6b7280;
+    --ai-secondary: #9ca3af;
     --ai-gradient: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
     
-    /* 区块链业务主题色 - 调整为灰色调 */
+    /* 区块链业务主题色 - 深灰调 */
     --blockchain-primary: #374151;
     --blockchain-secondary: #4b5563;
-    --blockchain-gradient: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    --blockchain-gradient: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
     
     /* 通用色彩 */
     --slate-50: #f9fafb;

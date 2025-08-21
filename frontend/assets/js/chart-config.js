@@ -88,9 +88,9 @@ const ChartConfig = {
      */
     themes: {
         ai: {
-            primary: '#4b5563',
-            secondary: '#6b7280',
-            gradient: ['#4b5563', '#6b7280', '#9ca3af', '#374151'],
+            primary: '#6b7280',
+            secondary: '#9ca3af',
+            gradient: ['#6b7280', '#9ca3af', '#d1d5db', '#4b5563'],
             success: '#059669',
             warning: '#d97706',
             error: '#dc2626',
