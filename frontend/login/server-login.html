@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总服务器登录 - 联邦学习平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .ai-gradient {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .blockchain-gradient {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="app" class="min-h-screen flex items-center justify-center">
+        <div class="max-w-md mx-auto px-4">
+            <!-- Back Button -->
+            <button onclick="goBack()" class="absolute top-8 left-8 text-white hover:text-white/80 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                返回
+            </button>
+
+            <!-- Login Card -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-purple-50 mx-auto mb-4 rounded-xl flex items-center justify-center">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">总服务器登录</h2>
+                    <p id="businessTypeText" class="text-slate-600"></p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-6">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="adminId">
+                            管理员ID *
+                        </label>
+                        <input 
+                            class="appearance-none border border-slate-300 rounded-lg w-full py-3 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                            id="adminId" 
+                            type="text" 
+                            placeholder="请输入管理员ID"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="password">
+                            管理员密码 *
+                        </label>
+                        <input 
+                            class="appearance-none border border-slate-300 rounded-lg w-full py-3 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                            id="password" 
+                            type="password" 
+                            placeholder="请输入管理员密码"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="serverAddress">
+                            服务器地址 *
+                        </label>
+                        <input 
+                            class="appearance-none border border-slate-300 rounded-lg w-full py-3 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                            id="serverAddress" 
+                            type="url" 
+                            placeholder="http://your-server-address.com"
+                            required
+                        >
+                        <p class="text-xs text-slate-500 mt-1">请输入总服务器地址</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="securityKey">
+                            安全密钥
+                        </label>
+                        <input 
+                            class="appearance-none border border-slate-300 rounded-lg w-full py-3 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                            id="securityKey" 
+                            type="password" 
+                            placeholder="可选：用于高级安全验证"
+                        >
+                        <p class="text-xs text-slate-500 mt-1">仅在启用双因素认证时需要</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox h-4 w-4 text-purple-600" id="rememberMe">
+                            <span class="ml-2 text-slate-600 text-sm">记住登录状态</span>
+                        </label>
+                    </div>
+
+                    <div class="mb-6">
+                        <button 
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                            type="submit"
+                        >
+                            登录管理平台
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="#" class="text-purple-600 hover:text-purple-800 text-sm">忘记密码？</a>
+                        <span class="text-slate-400 mx-2">|</span>
+                        <a href="#" class="text-purple-600 hover:text-purple-800 text-sm">联系系统管理员</a>
+                    </div>
+                </form>
+
+                <!-- Demo Login -->
+                <div class="mt-8 pt-6 border-t border-slate-200">
+                    <p class="text-center text-slate-600 text-sm mb-4">演示管理员账号</p>
+                    <button 
+                        onclick="demoLogin()" 
+                        class="w-full text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 px-3 rounded transition-colors"
+                    >
+                        管理员演示登录
+                    </button>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <div>
+                            <h4 class="text-sm font-semibold text-yellow-800">安全提醒</h4>
+                            <p class="text-xs text-yellow-700 mt-1">总服务器具有全平台管理权限，请确保在安全环境下登录。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/auth.js"></script>
+    <script src="../shared/router.js"></script>
+    <script>
+        // Get business type from URL or localStorage
+        function getBusinessType() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeFromUrl = urlParams.get('business');
+            const typeFromStorage = localStorage.getItem('businessType');
+            return typeFromUrl || typeFromStorage || 'ai';
+        }
+
+        // Initialize page based on business type
+        function initializePage() {
+            const businessType = getBusinessType();
+            const app = document.getElementById('app');
+            const businessTypeText = document.getElementById('businessTypeText');
+
+            if (businessType === 'ai') {
+                app.className = 'ai-gradient min-h-screen flex items-center justify-center';
+                businessTypeText.textContent = 'AI大模型业务平台管理';
+            } else if (businessType === 'blockchain') {
+                app.className = 'blockchain-gradient min-h-screen flex items-center justify-center';
+                businessTypeText.textContent = '金融区块链业务平台管理';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const adminId = document.getElementById('adminId').value;
+            const password = document.getElementById('password').value;
+            const serverAddress = document.getElementById('serverAddress').value;
+            const securityKey = document.getElementById('securityKey').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const businessType = getBusinessType();
+
+            // 创建管理员用户数据对象
+            const userData = {
+                adminId: adminId,
+                serverAddress: serverAddress,
+                businessType: businessType,
+                userType: 'server',
+                securityKey: securityKey ? '***' : null // Don't store actual key
+            };
+
+            // 使用认证系统登录
+            window.authSystem.login(userData);
+            window.authSystem.setRememberLogin(rememberMe, 'server');
+        }
+
+        function demoLogin() {
+            const businessType = getBusinessType();
+            
+            const userData = {
+                adminId: 'demo-admin',
+                serverAddress: 'http://demo-server.federated-learning.com',
+                businessType: businessType,
+                userType: 'server',
+                isDemo: true
+            };
+
+            window.authSystem.login(userData);
+        }
+
+        function goBack() {
+            const businessType = getBusinessType();
+            window.location.href = `./business-type.html?type=${businessType}`;
+        }
+
+        // Initialize page on load
+        window.onload = initializePage;
+    </script>
+</body>
+</html>

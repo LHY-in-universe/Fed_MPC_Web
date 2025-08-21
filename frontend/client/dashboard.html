@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户端仪表盘 - 联邦学习平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 24rem;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 22rem;
+            }
+        }
+        .ai-theme {
+            --primary-color: #f093fb;
+            --primary-dark: #f5576c;
+        }
+        .blockchain-theme {
+            --primary-color: #4facfe;
+            --primary-dark: #00f2fe;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div id="app" class="min-h-screen">
+        
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-3">
+                        <div id="logoIcon" class="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
+                            <div class="w-4 h-4 border-2 border-white transform rotate-45"></div>
+                        </div>
+                        <div>
+                            <span id="platformTitle" class="font-bold text-xl text-slate-800">联邦学习平台</span>
+                            <div id="businessBadge" class="text-xs text-slate-500"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- User Menu -->
+                        <div class="relative">
+                            <div class="h-9 w-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-semibold cursor-pointer" onclick="toggleUserMenu()">
+                                <span id="userInitial">U</span>
+                            </div>
+                            <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                                <div class="px-4 py-2 border-b border-slate-200">
+                                    <p class="text-sm font-medium text-slate-800" id="userName">用户名</p>
+                                    <p class="text-xs text-slate-500" id="userAddress">客户端地址</p>
+                                </div>
+                                <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">退出登录</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="page-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+            <!-- Content will be rendered here -->
+        </main>
+    </div>
+
+    <!-- Create Project Modal -->
+    <div id="create-project-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6" id="modal-content-create">
+        </div>
+    </div>
+
+    <!-- Join Training Modal -->
+    <div id="join-training-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6" id="modal-content-join">
+        </div>
+    </div>
+
+<script>
+    // Global state
+    const appState = {
+        currentPage: 'dashboard',
+        currentProjectId: null,
+        userData: null,
+        businessType: null,
+        projects: [],
+        projectDetails: {}
+    };
+
+    let chartInstance = null;
+    let simulationInterval = null;
+
+    // Initialize app
+    function initializeApp() {
+        // Get user data
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (!userData) {
+            window.location.href = '../index.html';
+            return;
+        }
+
+        appState.userData = userData;
+        appState.businessType = userData.businessType;
+
+        // Update UI based on business type and user data
+        updateHeaderUI();
+        initializeProjects();
+        renderApp();
+    }
+
+    function updateHeaderUI() {
+        const { userData, businessType } = appState;
+        
+        // Update logo and title based on business type
+        const logoIcon = document.getElementById('logoIcon');
+        const platformTitle = document.getElementById('platformTitle');
+        const businessBadge = document.getElementById('businessBadge');
+        const userInitial = document.getElementById('userInitial');
+        const userName = document.getElementById('userName');
+        const userAddress = document.getElementById('userAddress');
+
+        if (businessType === 'ai') {
+            logoIcon.className = 'w-8 h-8 rounded-lg flex items-center justify-center ai-theme';
+            logoIcon.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+            businessBadge.textContent = 'AI大模型业务';
+        } else if (businessType === 'blockchain') {
+            logoIcon.className = 'w-8 h-8 rounded-lg flex items-center justify-center blockchain-theme';
+            logoIcon.style.background = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)';
+            businessBadge.textContent = '金融区块链业务';
+        }
+
+        // Update user info
+        userInitial.textContent = userData.username.charAt(0).toUpperCase();
+        userName.textContent = userData.username;
+        userAddress.textContent = userData.clientAddress;
+
+    }
+
+
+    function toggleUserMenu() {
+        const userMenu = document.getElementById('userMenu');
+        userMenu.classList.toggle('hidden');
+    }
+
+    function logout() {
+        localStorage.removeItem('userData');
+        localStorage.removeItem('clientProjects');
+        window.location.href = '../index.html';
+    }
+
+    function initializeProjects() {
+        // Load projects from localStorage or create default ones
+        const savedProjects = localStorage.getItem('clientProjects');
+        
+        if (savedProjects) {
+            appState.projects = JSON.parse(savedProjects);
+        } else {
+            // Default projects based on business type
+            if (appState.businessType === 'ai') {
+                appState.projects = [
+                    { 
+                        id: 1, 
+                        name: 'CNC机床主轴故障预测', 
+                        status: 'running', 
+                        type: 'local',
+                        trainingMode: 'normal',
+                        nodesOnline: 1, 
+                        nodesTotal: 1, 
+                        accuracy: 89.5, 
+                        description: '基于深度学习的CNC机床主轴故障预测模型训练' 
+                    },
+                    { 
+                        id: 2, 
+                        name: '视觉缺陷检测联合训练', 
+                        status: 'waiting_approval', 
+                        type: 'federated',
+                        trainingMode: 'mpc',
+                        nodesOnline: 0, 
+                        nodesTotal: 5, 
+                        accuracy: 0, 
+                        description: '多工厂联合训练的产品缺陷检测模型（等待总服务器审批）' 
+                    }
+                ];
+            } else {
+                appState.projects = [
+                    { 
+                        id: 1, 
+                        name: '信用风险评估模型', 
+                        status: 'running', 
+                        type: 'local',
+                        trainingMode: 'mpc',
+                        nodesOnline: 1, 
+                        nodesTotal: 1, 
+                        accuracy: 92.3, 
+                        description: '基于区块链的信用风险评估联邦学习模型' 
+                    },
+                    { 
+                        id: 2, 
+                        name: '反洗钱检测联合训练', 
+                        status: 'waiting_approval', 
+                        type: 'federated',
+                        trainingMode: 'mpc',
+                        nodesOnline: 0, 
+                        nodesTotal: 3, 
+                        accuracy: 0, 
+                        description: '多银行联合反洗钱检测模型（等待总服务器审批）' 
+                    }
+                ];
+            }
+            saveProjects();
+        }
+    }
+
+    function saveProjects() {
+        localStorage.setItem('clientProjects', JSON.stringify(appState.projects));
+    }
+
+    function renderDashboard() {
+        const content = `
+            <section>
+                <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-slate-900">我的项目</h1>
+                        <p class="mt-2 text-slate-600">
+                            管理您的联邦学习项目。每个项目在创建时选择训练模式，开始训练后无法更改。
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="openJoinTrainingModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
+                            <span>🤝</span> 申请联合训练
+                        </button>
+                        <button onclick="openCreateProjectModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
+                            <span>+</span> 创建本地项目
+                        </button>
+                    </div>
+                </div>
+                <div id="project-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${appState.projects.map(p => renderProjectCard(p)).join('')}
+                </div>
+            </section>
+        `;
+        document.getElementById('page-content').innerHTML = content;
+    }
+
+    function renderProjectCard(project) {
+        const statusInfo = {
+            running: { text: '运行中', dot: 'bg-green-500', bg: 'border-green-200' },
+            completed: { text: '已完成', dot: 'bg-blue-500', bg: 'border-blue-200' },
+            paused: { text: '已暂停', dot: 'bg-orange-400', bg: 'border-orange-200' },
+            waiting_approval: { text: '等待审批', dot: 'bg-yellow-400', bg: 'border-yellow-200' }
+        };
+        const currentStatus = statusInfo[project.status] || statusInfo.paused;
+        
+        const typeInfo = {
+            local: { text: '本地项目', icon: '🏠', bg: 'bg-slate-100' },
+            federated: { text: '联合训练', icon: '🤝', bg: 'bg-blue-100' }
+        };
+        const projectType = typeInfo[project.type] || typeInfo.local;
+        
+        return `
+            <div class="bg-white rounded-lg shadow-md p-6 border ${currentStatus.bg} hover:border-blue-500 hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer" onclick="navigateToProject(${project.id})">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center text-sm text-slate-500">
+                            <span class="w-2.5 h-2.5 rounded-full mr-2 ${currentStatus.dot}"></span>
+                            <span>${currentStatus.text}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center text-xs ${projectType.bg} px-2 py-1 rounded-full">
+                                <span class="mr-1">${projectType.icon}</span>
+                                <span>${projectType.text}</span>
+                            </div>
+                            <div class="flex items-center text-xs ${project.trainingMode === 'mpc' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'} px-2 py-1 rounded-full">
+                                <span class="mr-1">${project.trainingMode === 'mpc' ? '🔒' : '👁'}</span>
+                                <span>${project.trainingMode === 'mpc' ? 'MPC' : '普通'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">${project.name}</h2>
+                    <p class="text-slate-600 text-sm mb-4 h-16 overflow-hidden">${project.description}</p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center text-slate-500">
+                            <span class="w-4 h-4 mr-2">💻</span>
+                            节点: <span class="font-semibold ml-1 text-slate-700">${project.nodesOnline}/${project.nodesTotal} 在线</span>
+                        </div>
+                        <div class="flex items-center text-slate-500">
+                            <span class="w-4 h-4 mr-2">🎯</span>
+                            模型准确率: <span class="font-semibold ml-1 text-slate-700">${project.accuracy}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-right">
+                    <span class="text-blue-600 hover:text-blue-800 font-semibold">查看详情 →</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // Continue with project details and other functions...
+    // [The rest of the JavaScript code will be continued in the next part due to length limits]
+
+    function renderApp() {
+        if (appState.currentPage === 'dashboard') {
+            renderDashboard();
+        } else if (appState.currentPage === 'projectDetails') {
+            renderProjectDetails();
+        }
+    }
+
+    function navigateToProject(projectId) {
+        const project = appState.projects.find(p => p.id === projectId);
+        if (!project) return;
+        
+        stopSimulation();
+
+        appState.currentProjectId = projectId;
+        appState.projectDetails = {
+            ...project,
+            currentRound: project.status === 'running' ? 45 : 0,
+            totalRounds: 100,
+            loss: project.status === 'running' ? 0.089 : 0.0,
+            history: {
+                labels: Array.from({length: project.status === 'running' ? 45 : 10}, (_, i) => i + 1),
+                accuracy: Array.from({length: project.status === 'running' ? 45 : 10}, (_, i) => 0.6 + (project.accuracy / 100 - 0.6) * Math.sqrt(i/(project.status === 'running' ? 44 : 9)))
+            },
+            nodes: project.type === 'federated' ? [
+                { id: 1, name: appState.userData.username, status: '在线/训练中', heartbeat: '3秒前', dataSize: '2.1 GB'},
+                { id: 2, name: '北京总部', status: '在线/训练中', heartbeat: '5秒前', dataSize: '3.5 GB'},
+                { id: 3, name: '上海分部', status: '在线/等待', heartbeat: '8秒前', dataSize: '2.8 GB'},
+            ] : [
+                { id: 1, name: appState.userData.username, status: '在线/训练中', heartbeat: '1秒前', dataSize: '2.1 GB'}
+            ]
+        };
+        appState.currentPage = 'projectDetails';
+        renderApp();
+    }
+
+    function loadGlobalTrainingLogs(project) {
+        const logsContent = document.getElementById('training-logs-content');
+        
+        // 模拟从总服务器获取的全局训练记录
+        const globalLogs = [
+            {
+                round: 45,
+                timestamp: '2024-01-20 15:30:25',
+                participants: ['客户端A', '客户端B', '客户端C'],
+                globalAccuracy: project.accuracy || 89.5,
+                globalLoss: project.trainingMode === 'normal' ? 0.089 : '***',
+                aggregationMethod: project.trainingMode === 'mpc' ? 'MPC安全聚合' : '联邦平均',
+                status: 'completed'
+            },
+            {
+                round: 44,
+                timestamp: '2024-01-20 15:28:12',
+                participants: ['客户端A', '客户端B', '客户端C'],
+                globalAccuracy: (project.accuracy || 89.5) - 0.3,
+                globalLoss: project.trainingMode === 'normal' ? 0.092 : '***',
+                aggregationMethod: project.trainingMode === 'mpc' ? 'MPC安全聚合' : '联邦平均',
+                status: 'completed'
+            },
+            {
+                round: 43,
+                timestamp: '2024-01-20 15:25:45',
+                participants: ['客户端A', '客户端B'],
+                globalAccuracy: (project.accuracy || 89.5) - 0.6,
+                globalLoss: project.trainingMode === 'normal' ? 0.095 : '***',
+                aggregationMethod: project.trainingMode === 'mpc' ? 'MPC安全聚合' : '联邦平均',
+                status: 'completed'
+            }
+        ];
+        
+        const logsHtml = globalLogs.map(log => `
+            <div class="bg-white border border-slate-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg font-bold text-slate-900">Round ${log.round}</span>
+                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                            ${log.status === 'completed' ? '✓ 已完成' : '⏳ 进行中'}
+                        </span>
+                    </div>
+                    <span class="text-sm text-slate-500">${log.timestamp}</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                    <div>
+                        <span class="text-xs font-medium text-slate-600">参与节点</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${log.participants.map(p => `
+                                <span class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded">${p}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs font-medium text-slate-600">聚合方法</span>
+                        <div class="text-sm text-slate-800 mt-1">${log.aggregationMethod}</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="bg-slate-50 rounded p-3">
+                        <div class="text-xs font-medium text-slate-600 mb-1">全局准确率</div>
+                        <div class="text-lg font-bold ${project.trainingMode === 'mpc' ? 'text-purple-600' : 'text-green-600'}">
+                            ${typeof log.globalAccuracy === 'number' ? log.globalAccuracy.toFixed(2) + '%' : log.globalAccuracy}
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 rounded p-3">
+                        <div class="text-xs font-medium text-slate-600 mb-1">全局损失</div>
+                        <div class="text-lg font-bold ${project.trainingMode === 'mpc' ? 'text-purple-600' : 'text-orange-600'}">
+                            ${log.globalLoss}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        logsContent.innerHTML = logsHtml;
+    }
+
+    function renderProjectDetails() {
+        const project = appState.projectDetails;
+        const isMPCMode = project.trainingMode === 'mpc';
+        
+        const content = `
+            <section>
+                <button onclick="navigateToDashboard()" class="text-blue-600 hover:text-blue-800 font-semibold mb-6 flex items-center gap-2">
+                    <span>←</span> 返回项目列表
+                </button>
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
+                    <div>
+                        <h1 class="text-3xl font-bold text-slate-900">${project.name}</h1>
+                        <div class="flex items-center gap-4 mt-2">
+                            <span class="text-sm text-slate-600">训练模式: <span class="font-semibold ${isMPCMode ? 'text-purple-600' : 'text-green-600'}">${isMPCMode ? 'MPC隐私保护' : '普通透明'}</span></span>
+                            <span class="text-sm text-slate-600">项目类型: <span class="font-semibold">${project.type === 'federated' ? '联合训练' : '本地项目'}</span></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        ${project.status === 'paused' || project.status === 'created' ? `
+                            <button id="toggle-training-btn" class="font-bold py-2 px-4 rounded-lg flex items-center gap-2"></button>
+                        `: ''}
+                        <button class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+                           <span>📥</span> 下载模型
+                        </button>
+                        ${project.status === 'running' || project.status === 'completed' ? `
+                            <button onclick="viewGlobalTrainingLogs()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+                                <span>📊</span> 查看全局训练记录
+                            </button>
+                        `: ''}
+                    </div>
+                </div>
+
+                ${project.status === 'waiting_approval' ? `
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 text-yellow-600 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <div>
+                            <h3 class="text-lg font-semibold text-yellow-800">等待总服务器审批</h3>
+                            <p class="text-yellow-700 mt-1">您的联合训练申请已提交，正在等待总服务器和其他参与方的审批。审批通过后将自动开始训练。</p>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
+                <div class="bg-white rounded-lg shadow-md border border-slate-200 p-6 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800">实时性能监控</h2>
+                    <p class="mt-1 text-slate-600 mb-6">
+                        ${isMPCMode ? 
+                            '在MPC模式下，部分敏感训练信息被加密保护。您只能看到必要的性能指标。' : 
+                            '下方展示了联邦学习任务的核心性能指标。您可以实时观察模型的准确率、损失值以及训练进程。'
+                        }
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h3 class="text-slate-500">模型准确率</h3>
+                            <p id="kpi-accuracy" class="text-3xl font-bold text-blue-600 mt-1">${project.accuracy.toFixed(1)}%</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h3 class="text-slate-500">当前训练轮次</h3>
+                            <p id="kpi-round" class="text-3xl font-bold text-slate-800 mt-1">${project.currentRound} / ${project.totalRounds}</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h3 class="text-slate-500">${isMPCMode ? '加密损失值' : '模型损失'}</h3>
+                            <p id="kpi-loss" class="text-3xl font-bold text-slate-800 mt-1">${isMPCMode ? '***' : project.loss.toFixed(3)}</p>
+                        </div>
+                    </div>
+                    ${project.status === 'running' ? `
+                    <div class="chart-container">
+                        <canvas id="performance-chart"></canvas>
+                    </div>
+                    ` : '<div class="text-center py-8 text-slate-500">训练未开始，暂无数据图表</div>'}
+                </div>
+            
+                <div class="bg-white rounded-lg shadow-md border border-slate-200 p-6">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-3">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">参与节点</h2>
+                            <p class="mt-1 text-slate-600">
+                                ${isMPCMode ? '在MPC模式下，节点间通信经过加密处理，保护数据隐私。' : '监控所有参与训练的节点状态和连接情况。'}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">节点名称</th>
+                                    <th class="py-3 px-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">状态</th>
+                                    <th class="py-3 px-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">上次心跳</th>
+                                    <th class="py-3 px-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">${isMPCMode ? '数据状态' : '本地数据量'}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nodes-table-body" class="divide-y divide-slate-200">
+                               ${project.nodes.map(node => renderNodeRow(node, isMPCMode)).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        `;
+        document.getElementById('page-content').innerHTML = content;
+        
+        if (project.status === 'running') {
+            updateToggleButton();
+            renderChart(project.history);
+            startSimulation();
+        }
+        
+        document.getElementById('toggle-training-btn')?.addEventListener('click', toggleTraining);
+    }
+
+    function renderNodeRow(node, isMPCMode) {
+        const isOnline = node.status.includes('在线');
+        return `
+            <tr id="node-row-${node.id}">
+                <td class="py-4 px-4 whitespace-nowrap font-medium text-slate-800">${node.name}</td>
+                <td class="py-4 px-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <span class="w-2.5 h-2.5 rounded-full mr-2 ${isOnline ? 'bg-green-500' : 'bg-slate-400'}"></span>
+                        <span class="text-slate-700">${node.status}</span>
+                    </div>
+                </td>
+                <td class="py-4 px-4 whitespace-nowrap text-slate-500">${node.heartbeat}</td>
+                <td class="py-4 px-4 whitespace-nowrap text-slate-500">${isMPCMode ? '已加密' : node.dataSize}</td>
+            </tr>
+        `;
+    }
+
+    function navigateToDashboard() {
+        stopSimulation();
+        appState.currentPage = 'dashboard';
+        appState.currentProjectId = null;
+        renderApp();
+    }
+
+    function openCreateProjectModal() {
+        const modalContent = `
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-800">创建本地项目</h2>
+                <button class="text-slate-400 hover:text-slate-600" onclick="closeModal('create-project-modal')">&times;</button>
+            </div>
+            <div class="mt-5">
+                <form id="create-project-form">
+                    <div class="mb-4">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="project-name">项目名称 *</label>
+                        <input class="appearance-none border border-slate-300 rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="project-name" type="text" placeholder="例如: 图像分类模型训练" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="project-description">项目描述</label>
+                        <textarea class="appearance-none border border-slate-300 rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="project-description" rows="3" placeholder="简要描述项目的目标和内容"></textarea>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-slate-700 text-sm font-bold mb-2">训练模式</label>
+                        <p class="text-xs text-amber-600 mb-3">⚠️ 训练模式在项目开始后无法更改，请谨慎选择</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center p-3 border border-slate-300 rounded cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="training-mode" value="normal" class="mr-3" checked>
+                                <div>
+                                    <div class="font-medium text-slate-800 flex items-center">
+                                        <span class="mr-2">👁</span> 普通训练
+                                    </div>
+                                    <div class="text-xs text-slate-500">训练过程透明</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-slate-300 rounded cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="training-mode" value="mpc" class="mr-3">
+                                <div>
+                                    <div class="font-medium text-slate-800 flex items-center">
+                                        <span class="mr-2">🔒</span> MPC训练
+                                    </div>
+                                    <div class="text-xs text-slate-500">隐私保护模式</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-end gap-4">
+                        <button class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg" type="button" onclick="closeModal('create-project-modal')">
+                            取消
+                        </button>
+                        <button class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg" type="submit">
+                            创建项目
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.getElementById('modal-content-create').innerHTML = modalContent;
+        document.getElementById('create-project-modal').classList.remove('hidden');
+        document.getElementById('create-project-form').addEventListener('submit', handleCreateProject);
+    }
+
+    function openJoinTrainingModal() {
+        const modalContent = `
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-800">申请联合训练</h2>
+                <button class="text-slate-400 hover:text-slate-600" onclick="closeModal('join-training-modal')">&times;</button>
+            </div>
+            <div class="mt-5">
+                <form id="join-training-form">
+                    <div class="mb-4">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="training-name">训练计划名称 *</label>
+                        <input class="appearance-none border border-slate-300 rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="training-name" type="text" placeholder="例如: 多机构联合风控模型" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="data-description">数据描述 *</label>
+                        <textarea class="appearance-none border border-slate-300 rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="data-description" rows="2" placeholder="简述您可提供的数据类型和规模" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="training-plan">训练计划 *</label>
+                        <textarea class="appearance-none border border-slate-300 rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="training-plan" rows="3" placeholder="描述训练目标、预期轮次、模型类型等详细计划" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-slate-700 text-sm font-bold mb-2" for="expected-partners">期望参与方数量</label>
+                        <select class="appearance-none border border-slate-300 rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="expected-partners">
+                            <option value="2">2方</option>
+                            <option value="3" selected>3方</option>
+                            <option value="5">5方</option>
+                            <option value="10">10方</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-slate-700 text-sm font-bold mb-2">训练模式</label>
+                        <p class="text-xs text-amber-600 mb-3">⚠️ 训练模式在项目开始后无法更改，请谨慎选择</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center p-3 border border-slate-300 rounded cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="join-training-mode" value="normal" class="mr-3" checked>
+                                <div>
+                                    <div class="font-medium text-slate-800 flex items-center">
+                                        <span class="mr-2">👁</span> 普通训练
+                                    </div>
+                                    <div class="text-xs text-slate-500">训练过程对所有参与方透明</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-slate-300 rounded cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="join-training-mode" value="mpc" class="mr-3">
+                                <div>
+                                    <div class="font-medium text-slate-800 flex items-center">
+                                        <span class="mr-2">🔒</span> MPC训练
+                                    </div>
+                                    <div class="text-xs text-slate-500">使用安全多方计算保护隐私</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h4 class="text-sm font-semibold text-blue-800">申请流程</h4>
+                                <p class="text-xs text-blue-700 mt-1">1. 提交申请到总服务器 → 2. 等待其他参与方审批 → 3. 审批通过后开始联合训练</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-end gap-4">
+                        <button class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg" type="button" onclick="closeModal('join-training-modal')">
+                            取消
+                        </button>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg" type="submit">
+                            提交申请
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.getElementById('modal-content-join').innerHTML = modalContent;
+        document.getElementById('join-training-modal').classList.remove('hidden');
+        document.getElementById('join-training-form').addEventListener('submit', handleJoinTraining);
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    function handleCreateProject(event) {
+        event.preventDefault();
+        const name = document.getElementById('project-name').value;
+        const description = document.getElementById('project-description').value;
+        const trainingMode = document.querySelector('input[name="training-mode"]:checked').value;
+        
+        const newProject = {
+            id: Date.now(),
+            name,
+            description,
+            status: 'paused',
+            type: 'local',
+            trainingMode: trainingMode,
+            nodesOnline: 0,
+            nodesTotal: 1,
+            accuracy: 0.0
+        };
+        
+        appState.projects.unshift(newProject);
+        saveProjects();
+        closeModal('create-project-modal');
+        renderDashboard();
+    }
+
+    function handleJoinTraining(event) {
+        event.preventDefault();
+        const name = document.getElementById('training-name').value;
+        const dataDescription = document.getElementById('data-description').value;
+        const trainingPlan = document.getElementById('training-plan').value;
+        const expectedPartners = document.getElementById('expected-partners').value;
+        const trainingMode = document.querySelector('input[name="join-training-mode"]:checked').value;
+        
+        const newProject = {
+            id: Date.now(),
+            name,
+            description: `数据: ${dataDescription}。计划: ${trainingPlan}`,
+            status: 'waiting_approval',
+            type: 'federated',
+            trainingMode: trainingMode,
+            nodesOnline: 0,
+            nodesTotal: parseInt(expectedPartners),
+            accuracy: 0.0
+        };
+        
+        appState.projects.unshift(newProject);
+        saveProjects();
+        closeModal('join-training-modal');
+        renderDashboard();
+    }
+
+    function viewGlobalTrainingLogs() {
+        // 显示全局训练记录模态框
+        const project = appState.projectDetails;
+        const modal = document.getElementById('global-logs-modal');
+        
+        // 如果模态框不存在，创建一个
+        if (!modal) {
+            const modalHtml = `
+                <div id="global-logs-modal" class="fixed inset-0 bg-slate-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+                    <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+                        <div class="flex justify-between items-center pb-3 border-b">
+                            <h3 class="text-lg font-bold text-slate-900">全局训练记录 - ${project.name}</h3>
+                            <button class="text-slate-400 hover:text-slate-600" onclick="closeModal('global-logs-modal')">
+                                <span class="sr-only">关闭</span>
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="mt-4">
+                            <div class="bg-slate-50 rounded-lg p-4 mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-slate-600">训练模式</span>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full ${project.trainingMode === 'mpc' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'}">
+                                        ${project.trainingMode === 'mpc' ? '🔒 MPC隐私保护' : '👁 普通透明'}
+                                    </span>
+                                </div>
+                                <div class="text-xs text-slate-500">
+                                    ${project.trainingMode === 'mpc' ? 
+                                        '在MPC模式下，所有训练数据都经过加密处理，保护参与方隐私' : 
+                                        '在普通模式下，训练过程透明，可查看详细的训练指标'}
+                                </div>
+                            </div>
+                            <div class="space-y-3 max-h-96 overflow-y-auto" id="training-logs-content">
+                                <!-- 训练记录内容将在这里动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+        
+        // 加载训练记录数据
+        loadGlobalTrainingLogs(project);
+        
+        // 显示模态框
+        document.getElementById('global-logs-modal').classList.remove('hidden');
+    }
+
+    function toggleTraining() {
+        const project = appState.projectDetails;
+        if (project.status === 'running') {
+            project.status = 'paused';
+            stopSimulation();
+        } else if (project.status === 'paused') {
+            project.status = 'running';
+            startSimulation();
+        }
+        
+        // Update in projects array
+        const projectIndex = appState.projects.findIndex(p => p.id === project.id);
+        if (projectIndex !== -1) {
+            appState.projects[projectIndex].status = project.status;
+            saveProjects();
+        }
+        
+        updateToggleButton();
+    }
+    
+    function updateToggleButton() {
+        const btn = document.getElementById('toggle-training-btn');
+        if (!btn) return;
+        const project = appState.projectDetails;
+        
+        const statusConfig = {
+            running: { text: '暂停训练', icon: '⏸', classes: 'bg-orange-100 text-orange-600 hover:bg-orange-200' },
+            paused: { text: '开始训练', icon: '▶', classes: 'bg-green-100 text-green-600 hover:bg-green-200' },
+        };
+        
+        const config = statusConfig[project.status];
+        if (config) {
+            btn.innerHTML = `<span>${config.icon}</span> ${config.text}`;
+            btn.className = `font-bold py-2 px-4 rounded-lg flex items-center gap-2 ${config.classes}`;
+        }
+    }
+
+    function renderChart(history) {
+        if (!document.getElementById('performance-chart')) return;
+        
+        const ctx = document.getElementById('performance-chart').getContext('2d');
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: history.labels,
+                datasets: [{
+                    label: '模型准确率',
+                    data: history.accuracy,
+                    borderColor: appState.businessType === 'ai' ? 'rgb(240, 147, 251)' : 'rgb(79, 172, 254)',
+                    backgroundColor: appState.businessType === 'ai' ? 'rgba(240, 147, 251, 0.1)' : 'rgba(79, 172, 254, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        suggestedMin: 0.5,
+                        suggestedMax: 1.0,
+                        ticks: {
+                            callback: function(value) {
+                                return (value * 100).toFixed(0) + '%';
+                            },
+                            color: '#64748b'
+                        },
+                        grid: { color: '#e2e8f0' }
+                    },
+                    x: {
+                        title: { display: true, text: '训练轮次 (Round)', color: '#475569' },
+                        ticks: { color: '#64748b' },
+                        grid: { display: false }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return `准确率: ${(context.parsed.y * 100).toFixed(2)}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function startSimulation() {
+        if(simulationInterval) clearInterval(simulationInterval);
+        const project = appState.projectDetails;
+        if (project.status !== 'running') return;
+
+        simulationInterval = setInterval(() => {
+            if (project.status !== 'running' || project.currentRound >= project.totalRounds) {
+                stopSimulation();
+                return;
+            }
+            
+            project.currentRound++;
+            project.accuracy = Math.min(project.accuracy + (Math.random() * 0.15), 99.9);
+            if (project.trainingMode === 'normal') {
+                project.loss = Math.max(project.loss * (1 - Math.random() * 0.05), 0.01);
+            }
+            
+            // Update UI elements if they exist
+            const accElement = document.getElementById('kpi-accuracy');
+            const roundElement = document.getElementById('kpi-round');
+            const lossElement = document.getElementById('kpi-loss');
+            
+            if (accElement) accElement.textContent = `${project.accuracy.toFixed(1)}%`;
+            if (roundElement) roundElement.textContent = `${project.currentRound} / ${project.totalRounds}`;
+            if (lossElement && project.trainingMode === 'normal') {
+                lossElement.textContent = project.loss.toFixed(3);
+            }
+            
+            // Update chart
+            if (chartInstance) {
+                chartInstance.data.labels.push(project.currentRound);
+                chartInstance.data.datasets[0].data.push(project.accuracy / 100);
+                chartInstance.update('none');
+            }
+
+            // Update node heartbeats
+            project.nodes.forEach(node => {
+                if (!node.status.includes('离线')) {
+                    node.heartbeat = `${Math.floor(Math.random() * 5) + 2}秒前`;
+                    const row = document.getElementById(`node-row-${node.id}`);
+                    if (row) {
+                        row.cells[2].textContent = node.heartbeat;
+                    }
+                }
+            });
+
+        }, 2000);
+    }
+
+    function stopSimulation() {
+        if (simulationInterval) {
+            clearInterval(simulationInterval);
+            simulationInterval = null;
+        }
+    }
+
+    window.onload = () => {
+        initializeApp();
+    };
+
+    // Close user menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const userMenu = document.getElementById('userMenu');
+        const userButton = userMenu?.previousElementSibling;
+        
+        if (userMenu && !userMenu.contains(event.target) && event.target !== userButton) {
+            userMenu.classList.add('hidden');
+        }
+    });
+</script>
+
+</body>
+</html>

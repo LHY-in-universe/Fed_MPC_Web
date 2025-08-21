@@ -1,0 +1,380 @@
+/**
+ * 联邦学习平台 - 全局样式
+ * 补充TailwindCSS的自定义样式
+ */
+
+/* 全局变量 */
+:root {
+    /* 科创企业主题色 - 白色灰色系 */
+    --primary: #374151;
+    --secondary: #6b7280;
+    --accent: #9ca3af;
+    --light: #f9fafb;
+    --lighter: #ffffff;
+    
+    /* AI业务主题色 - 调整为灰色调 */
+    --ai-primary: #4b5563;
+    --ai-secondary: #6b7280;
+    --ai-gradient: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    
+    /* 区块链业务主题色 - 调整为灰色调 */
+    --blockchain-primary: #374151;
+    --blockchain-secondary: #4b5563;
+    --blockchain-gradient: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    
+    /* 通用色彩 */
+    --slate-50: #f9fafb;
+    --slate-100: #f3f4f6;
+    --slate-200: #e5e7eb;
+    --slate-300: #d1d5db;
+    --slate-400: #9ca3af;
+    --slate-500: #6b7280;
+    --slate-600: #4b5563;
+    --slate-700: #374151;
+    --slate-800: #1f2937;
+    --slate-900: #111827;
+    
+    /* 状态颜色 */
+    --success: #059669;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+}
+
+/* 全局重置和基础样式 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--slate-800);
+    background-color: var(--slate-50);
+    margin: 0;
+    padding: 0;
+}
+
+/* 平滑滚动 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 业务主题样式 */
+.ai-theme {
+    --primary-color: var(--ai-primary);
+    --secondary-color: var(--ai-secondary);
+    --gradient-bg: var(--ai-gradient);
+}
+
+.blockchain-theme {
+    --primary-color: var(--blockchain-primary);
+    --secondary-color: var(--blockchain-secondary);
+    --gradient-bg: var(--blockchain-gradient);
+}
+
+.theme-gradient-bg {
+    background: var(--gradient-bg, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
+}
+
+/* 卡片悬停效果增强 */
+.card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* 按钮样式增强 */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, var(--primary-color, #3b82f6), var(--secondary-color, #8b5cf6));
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 状态指示器 */
+.status-indicator {
+    position: relative;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status-indicator.online {
+    background-color: #10b981;
+}
+
+.status-indicator.offline {
+    background-color: #6b7280;
+}
+
+.status-indicator.training {
+    background-color: #3b82f6;
+    animation: pulse-training 2s infinite;
+}
+
+.status-indicator.waiting {
+    background-color: #f59e0b;
+    animation: pulse-waiting 1.5s infinite;
+}
+
+@keyframes pulse-training {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes pulse-waiting {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* 进度条样式 */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--slate-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color, #3b82f6), var(--secondary-color, #8b5cf6));
+    border-radius: 4px;
+    transition: width 0.8s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: progress-shine 2s infinite;
+}
+
+@keyframes progress-shine {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* 模态框样式增强 */
+.modal-overlay {
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+    animation: modal-appear 0.3s ease;
+}
+
+@keyframes modal-appear {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* 图表容器优化 */
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container canvas {
+    max-height: 400px;
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .chart-container {
+        padding: 0.5rem;
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-4px);
+    }
+    
+    .btn-primary {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* 加载状态 */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--slate-200);
+    border-radius: 50%;
+    border-top-color: var(--primary-color, #3b82f6);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 工具提示 */
+.tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* 表格优化 */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table-responsive table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-responsive th,
+.table-responsive td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.table-responsive th {
+    background-color: var(--slate-50);
+    font-weight: 600;
+    color: var(--slate-700);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table-responsive tr:hover {
+    background-color: var(--slate-50);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--slate-100);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--slate-300);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--slate-400);
+}
+
+/* 打印样式 */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .card-hover {
+        box-shadow: none !important;
+    }
+}
