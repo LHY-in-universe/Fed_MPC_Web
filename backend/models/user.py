@@ -17,6 +17,7 @@ class BusinessType(enum.Enum):
     """业务类型枚举"""
     AI = 'ai'
     BLOCKCHAIN = 'blockchain'
+    CRYPTO = 'crypto'
 
 class UserStatus(enum.Enum):
     """用户状态枚举"""
@@ -104,22 +105,62 @@ class User(BaseModel):
         base_permissions = []
         
         if self.is_client():
-            base_permissions.extend([
-                'create_local_project',
-                'view_own_projects', 
-                'submit_training_request',
-                'view_training_progress',
-                'download_own_models'
-            ])
+            if self.business_type == BusinessType.AI:
+                base_permissions.extend([
+                    'create_local_project',
+                    'view_own_projects', 
+                    'submit_training_request',
+                    'view_training_progress',
+                    'download_own_models',
+                    'manage_datasets',
+                    'view_model_metrics'
+                ])
+            elif self.business_type == BusinessType.BLOCKCHAIN:
+                base_permissions.extend([
+                    'create_transactions',
+                    'view_own_transactions',
+                    'manage_wallet',
+                    'view_blockchain_info',
+                    'participate_in_consensus'
+                ])
+            elif self.business_type == BusinessType.CRYPTO:
+                base_permissions.extend([
+                    'generate_keys',
+                    'encrypt_decrypt',
+                    'digital_signature',
+                    'key_exchange',
+                    'view_crypto_operations'
+                ])
         elif self.is_server():
-            base_permissions.extend([
-                'manage_all_clients',
-                'approve_training_requests',
-                'view_global_projects',
-                'manage_models',
-                'system_configuration',
-                'view_system_logs'
-            ])
+            if self.business_type == BusinessType.AI:
+                base_permissions.extend([
+                    'manage_all_clients',
+                    'approve_training_requests',
+                    'view_global_projects',
+                    'manage_models',
+                    'system_configuration',
+                    'view_system_logs',
+                    'monitor_training',
+                    'manage_federated_learning'
+                ])
+            elif self.business_type == BusinessType.BLOCKCHAIN:
+                base_permissions.extend([
+                    'manage_blockchain_network',
+                    'validate_transactions',
+                    'manage_consensus',
+                    'view_all_transactions',
+                    'system_administration',
+                    'node_management'
+                ])
+            elif self.business_type == BusinessType.CRYPTO:
+                base_permissions.extend([
+                    'manage_key_infrastructure',
+                    'audit_crypto_operations',
+                    'system_security_config',
+                    'manage_certificates',
+                    'security_monitoring',
+                    'compliance_reporting'
+                ])
         
         return base_permissions
     

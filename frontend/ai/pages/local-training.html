@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="ai.training.local.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地模型训练</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <span data-i18n="ai.training.local.title">本地模型训练</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <span id="userInfo" class="text-sm text-gray-600"></span>
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+                <button onclick="logout()" class="btn btn-secondary text-sm">
+                    <span data-i18n="common.logout">退出登录</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-6 py-8">
+        <!-- Training Configuration -->
+        <div class="mb-8">
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6" data-i18n="ai.training.local.trainingConfig">训练配置</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Model Configuration -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.modelConfig">模型配置</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.modelType">模型类型</label>
+                                <select id="modelType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                    <option value="cnn" data-i18n="ai.training.local.cnn">卷积神经网络 (CNN)</option>
+                                    <option value="rnn" data-i18n="ai.training.local.rnn">循环神经网络 (RNN)</option>
+                                    <option value="transformer" data-i18n="ai.training.local.transformer">Transformer</option>
+                                    <option value="mlp" data-i18n="ai.training.local.mlp">多层感知机 (MLP)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.learningRate">学习率</label>
+                                <input type="number" id="learningRate" value="0.001" step="0.0001" min="0.0001" max="1"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.batchSize">批次大小</label>
+                                <select id="batchSize" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                    <option value="16">16</option>
+                                    <option value="32" selected>32</option>
+                                    <option value="64">64</option>
+                                    <option value="128">128</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.epochs">训练轮数</label>
+                                <input type="number" id="epochs" value="100" min="1" max="1000"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dataset Configuration -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.datasetConfig">数据集配置</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.selectDataset">选择数据集</label>
+                                <select id="dataset" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                    <option value="dataset1">训练集_v1.csv (15,842条)</option>
+                                    <option value="dataset2">训练集_v2.csv (23,567条)</option>
+                                    <option value="dataset3">图像数据集 (8,934张)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.validationSplit">验证集比例</label>
+                                <input type="range" id="validationSplit" min="0.1" max="0.3" step="0.05" value="0.2"
+                                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>10%</span>
+                                    <span id="validationValue">20%</span>
+                                    <span>30%</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.dataAugmentation">数据增强</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="augmentRotation" class="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded">
+                                        <span class="ml-2 text-sm text-gray-600" data-i18n="ai.training.local.rotation">旋转</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="augmentFlip" class="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded">
+                                        <span class="ml-2 text-sm text-gray-600" data-i18n="ai.training.local.flip">翻转</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="augmentNoise" class="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded">
+                                        <span class="ml-2 text-sm text-gray-600" data-i18n="ai.training.local.noise">噪声</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training Controls -->
+                <div class="mt-8 flex justify-center space-x-4">
+                    <button id="startTraining" onclick="startTraining()" 
+                            class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        <span data-i18n="ai.training.local.startTraining">开始训练</span>
+                    </button>
+                    <button id="pauseTraining" onclick="pauseTraining()" disabled
+                            class="bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 disabled:cursor-not-allowed">
+                        <span data-i18n="ai.training.local.pauseTraining">暂停训练</span>
+                    </button>
+                    <button id="stopTraining" onclick="stopTraining()" disabled
+                            class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 disabled:cursor-not-allowed disabled:bg-gray-400">
+                        <span data-i18n="ai.training.local.stopTraining">停止训练</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Progress -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <!-- Training Metrics Chart -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingMetrics">训练指标</h3>
+                <div class="h-64">
+                    <canvas id="metricsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Loss Chart -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.lossFunction">损失函数</h3>
+                <div class="h-64">
+                    <canvas id="lossChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Status -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <!-- Current Status -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingStatus">训练状态</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.currentStatus">当前状态</span>
+                        <span id="trainingStatus" class="font-medium text-gray-500" data-i18n="ai.training.local.notStarted">● 未开始</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.currentEpoch">当前轮数</span>
+                        <span id="currentEpoch" class="font-medium text-gray-600">0 / 100</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.trainingTime">训练时间</span>
+                        <span id="trainingTime" class="font-medium text-gray-600">00:00:00</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-4">
+                    <div class="flex justify-between text-sm text-gray-600 mb-1">
+                        <span data-i18n="ai.training.local.progress">进度</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-gray-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.performanceMetrics">性能指标</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.currentAccuracy">当前准确率</span>
+                        <span id="currentAccuracy" class="font-medium text-gray-600">0.00%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.currentLoss">当前损失</span>
+                        <span id="currentLoss" class="font-medium text-gray-600">0.0000</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.bestAccuracy">最佳准确率</span>
+                        <span id="bestAccuracy" class="font-medium text-gray-600">0.00%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Usage -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.resourceUsage">资源使用</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.cpuUsage">CPU使用率</span>
+                        <span id="cpuUsage" class="font-medium text-gray-600">0%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.memoryUsage">内存使用</span>
+                        <span id="memoryUsage" class="font-medium text-gray-600">0 MB</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="ai.training.local.gpuUsage">GPU使用率</span>
+                        <span id="gpuUsage" class="font-medium text-gray-600">N/A</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Logs -->
+        <div class="card p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingLogs">训练日志</h3>
+            <div id="trainingLogs" class="bg-black text-green-400 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
+                <div data-i18n="ai.training.local.waitingToStart">等待开始训练...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        let trainingInterval;
+        let startTime;
+        let currentEpoch = 0;
+        let totalEpochs = 100;
+        let isTraining = false;
+        let isPaused = false;
+        let metricsChart, lossChart;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateValidationDisplay();
+            
+            // 验证集比例滑块事件
+            document.getElementById('validationSplit').addEventListener('input', updateValidationDisplay);
+        });
+
+        function initializeCharts() {
+            // 训练指标图表
+            const metricsCtx = document.getElementById('metricsChart').getContext('2d');
+            metricsChart = new Chart(metricsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: document.querySelector('[data-i18n="ai.training.local.accuracy"]')?.textContent || '准确率',
+                        data: [],
+                        borderColor: '#4b5563',
+                        backgroundColor: 'rgba(75, 85, 99, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+
+            // 损失函数图表
+            const lossCtx = document.getElementById('lossChart').getContext('2d');
+            lossChart = new Chart(lossCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: document.querySelector('[data-i18n="ai.training.local.trainLoss"]')?.textContent || '训练损失',
+                        data: [],
+                        borderColor: '#6b7280',
+                        backgroundColor: 'rgba(107, 114, 128, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: document.querySelector('[data-i18n="ai.training.local.validationLoss"]')?.textContent || '验证损失',
+                        data: [],
+                        borderColor: '#9ca3af',
+                        backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateValidationDisplay() {
+            const value = document.getElementById('validationSplit').value;
+            document.getElementById('validationValue').textContent = (value * 100).toFixed(0) + '%';
+        }
+
+        function startTraining() {
+            if (isPaused) {
+                resumeTraining();
+                return;
+            }
+
+            // 获取配置
+            totalEpochs = parseInt(document.getElementById('epochs').value);
+            currentEpoch = 0;
+            startTime = Date.now();
+            isTraining = true;
+            isPaused = false;
+
+            // 更新UI状态
+            document.getElementById('startTraining').disabled = true;
+            document.getElementById('pauseTraining').disabled = false;
+            document.getElementById('stopTraining').disabled = false;
+            
+            const trainingStatusElement = document.getElementById('trainingStatus');
+            trainingStatusElement.innerHTML = '<span class="text-gray-600">● 训练中</span>';
+            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.training');
+
+            // 清空图表
+            metricsChart.data.labels = [];
+            metricsChart.data.datasets[0].data = [];
+            lossChart.data.labels = [];
+            lossChart.data.datasets[0].data = [];
+            lossChart.data.datasets[1].data = [];
+            metricsChart.update();
+            lossChart.update();
+
+            // 添加初始日志
+            addTrainingLog('开始训练...');
+            addTrainingLog(`模型类型: ${document.getElementById('modelType').options[document.getElementById('modelType').selectedIndex].text}`);
+            addTrainingLog(`学习率: ${document.getElementById('learningRate').value}`);
+            addTrainingLog(`批次大小: ${document.getElementById('batchSize').value}`);
+            addTrainingLog(`总轮数: ${totalEpochs}`);
+
+            // 开始训练循环
+            trainingInterval = setInterval(updateTraining, 2000); // 每2秒更新一次
+        }
+
+        function pauseTraining() {
+            isPaused = true;
+            clearInterval(trainingInterval);
+            
+            document.getElementById('startTraining').disabled = false;
+            document.getElementById('startTraining').querySelector('span').textContent = '继续训练';
+            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.continueTraining');
+            document.getElementById('pauseTraining').disabled = true;
+            
+            const trainingStatusElement = document.getElementById('trainingStatus');
+            trainingStatusElement.innerHTML = '<span class="text-yellow-600">● 已暂停</span>';
+            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.paused');
+            
+            addTrainingLog('训练已暂停');
+        }
+
+        function resumeTraining() {
+            isPaused = false;
+            
+            document.getElementById('startTraining').disabled = true;
+            document.getElementById('startTraining').querySelector('span').textContent = '开始训练';
+            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.startTraining');
+            document.getElementById('pauseTraining').disabled = false;
+            
+            const trainingStatusElement = document.getElementById('trainingStatus');
+            trainingStatusElement.innerHTML = '<span class="text-gray-600">● 训练中</span>';
+            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.training');
+            
+            addTrainingLog('训练已继续');
+            trainingInterval = setInterval(updateTraining, 2000);
+        }
+
+        function stopTraining() {
+            isTraining = false;
+            isPaused = false;
+            clearInterval(trainingInterval);
+            
+            document.getElementById('startTraining').disabled = false;
+            document.getElementById('startTraining').querySelector('span').textContent = '开始训练';
+            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.startTraining');
+            document.getElementById('pauseTraining').disabled = true;
+            document.getElementById('stopTraining').disabled = true;
+            
+            const trainingStatusElement = document.getElementById('trainingStatus');
+            trainingStatusElement.innerHTML = '<span class="text-red-600">● 已停止</span>';
+            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.stopped');
+            
+            addTrainingLog('训练已停止');
+        }
+
+        function updateTraining() {
+            currentEpoch++;
+            
+            // 模拟训练指标
+            const accuracy = Math.min(0.95, 0.1 + (currentEpoch / totalEpochs) * 0.85 + (Math.random() - 0.5) * 0.1);
+            const trainLoss = Math.max(0.01, 2.5 - (currentEpoch / totalEpochs) * 2.4 + (Math.random() - 0.5) * 0.3);
+            const valLoss = Math.max(0.02, 2.6 - (currentEpoch / totalEpochs) * 2.5 + (Math.random() - 0.5) * 0.4);
+
+            // 更新图表
+            metricsChart.data.labels.push(`轮次 ${currentEpoch}`);
+            metricsChart.data.datasets[0].data.push(accuracy);
+            lossChart.data.labels.push(`轮次 ${currentEpoch}`);
+            lossChart.data.datasets[0].data.push(trainLoss);
+            lossChart.data.datasets[1].data.push(valLoss);
+
+            // 限制图表数据点数量
+            if (metricsChart.data.labels.length > 20) {
+                metricsChart.data.labels.shift();
+                metricsChart.data.datasets[0].data.shift();
+                lossChart.data.labels.shift();
+                lossChart.data.datasets[0].data.shift();
+                lossChart.data.datasets[1].data.shift();
+            }
+
+            metricsChart.update('none');
+            lossChart.update('none');
+
+            // 更新状态显示
+            document.getElementById('currentEpoch').textContent = `${currentEpoch} / ${totalEpochs}`;
+            document.getElementById('currentAccuracy').textContent = (accuracy * 100).toFixed(2) + '%';
+            document.getElementById('currentLoss').textContent = trainLoss.toFixed(4);
+            
+            const bestAcc = Math.max(...metricsChart.data.datasets[0].data);
+            document.getElementById('bestAccuracy').textContent = (bestAcc * 100).toFixed(2) + '%';
+
+            // 更新进度条
+            const progress = (currentEpoch / totalEpochs) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressPercent').textContent = progress.toFixed(1) + '%';
+
+            // 更新训练时间
+            const elapsed = Date.now() - startTime;
+            document.getElementById('trainingTime').textContent = formatTime(elapsed);
+
+            // 模拟资源使用
+            document.getElementById('cpuUsage').textContent = (60 + Math.random() * 30).toFixed(1) + '%';
+            document.getElementById('memoryUsage').textContent = (1200 + Math.random() * 300).toFixed(0) + ' MB';
+            document.getElementById('gpuUsage').textContent = (75 + Math.random() * 20).toFixed(1) + '%';
+
+            // 添加训练日志
+            if (currentEpoch % 5 === 0) {
+                addTrainingLog(`Epoch ${currentEpoch}/${totalEpochs} - Accuracy: ${(accuracy * 100).toFixed(2)}% - Loss: ${trainLoss.toFixed(4)}`);
+            }
+
+            // 检查是否训练完成
+            if (currentEpoch >= totalEpochs) {
+                completeTraining();
+            }
+        }
+
+        function completeTraining() {
+            isTraining = false;
+            clearInterval(trainingInterval);
+            
+            document.getElementById('startTraining').disabled = false;
+            document.getElementById('startTraining').querySelector('span').textContent = '开始训练';
+            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.startTraining');
+            document.getElementById('pauseTraining').disabled = true;
+            document.getElementById('stopTraining').disabled = true;
+            
+            const trainingStatusElement = document.getElementById('trainingStatus');
+            trainingStatusElement.innerHTML = '<span class="text-green-600">● 训练完成</span>';
+            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.completed');
+            
+            addTrainingLog('训练完成！');
+            addTrainingLog(`最终准确率: ${document.getElementById('bestAccuracy').textContent}`);
+            addTrainingLog(`总耗时: ${document.getElementById('trainingTime').textContent}`);
+        }
+
+        function addTrainingLog(message) {
+            const logsContainer = document.getElementById('trainingLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function formatTime(milliseconds) {
+            const seconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            
+            return `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
+        }
+
+        function goBack() {
+            if (isTraining && !confirm('训练正在进行中，确定要返回吗？')) {
+                return;
+            }
+            window.location.href = './client-dashboard.html';
+        }
+
+        function logout() {
+            if (isTraining && !confirm('训练正在进行中，确定要退出登录吗？')) {
+                return;
+            }
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('loginTime');
+            window.location.href = './login.html';
+        }
+
+        function goHome() {
+            if (isTraining && !confirm('训练正在进行中，确定要返回主页吗？')) {
+                return;
+            }
+            window.location.href = '../../homepage/index.html';
+        }
+    </script>
+</body>
+</html>

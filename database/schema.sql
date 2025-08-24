@@ -14,7 +14,7 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     user_type ENUM('client', 'server') NOT NULL,
-    business_type ENUM('ai', 'blockchain') NOT NULL,
+    business_type ENUM('ai', 'blockchain', 'crypto', 'homepage') NOT NULL,
     email VARCHAR(100),
     full_name VARCHAR(100),
     organization VARCHAR(100),
@@ -36,7 +36,7 @@ CREATE TABLE projects (
     description TEXT,
     project_type ENUM('local', 'federated') NOT NULL,
     training_mode ENUM('normal', 'mpc') NOT NULL,
-    business_type ENUM('ai', 'blockchain') NOT NULL,
+    business_type ENUM('ai', 'blockchain', 'crypto', 'homepage') NOT NULL,
     status ENUM('created', 'running', 'paused', 'completed', 'waiting_approval', 'approved', 'rejected', 'stopped') DEFAULT 'created',
     model_type VARCHAR(50),
     accuracy DECIMAL(5,4) DEFAULT 0.0000,
@@ -131,7 +131,7 @@ CREATE TABLE training_requests (
     expected_partners INT DEFAULT 3,
     current_partners INT DEFAULT 1,
     training_mode ENUM('normal', 'mpc') NOT NULL,
-    business_type ENUM('ai', 'blockchain') NOT NULL,
+    business_type ENUM('ai', 'blockchain', 'crypto', 'homepage') NOT NULL,
     status ENUM('pending', 'approved', 'rejected', 'cancelled') DEFAULT 'pending',
     approved_by INT NULL,
     approved_at TIMESTAMP NULL,
@@ -179,6 +179,225 @@ CREATE TABLE system_config (
     INDEX idx_config_key (config_key)
 );
 
+-- 密钥管理表
+CREATE TABLE crypto_key_pairs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    key_name VARCHAR(100) NOT NULL,
+    key_type ENUM('RSA', 'AES', 'ECC', 'DSA') NOT NULL,
+    key_size INT NOT NULL,
+    algorithm VARCHAR(50) NOT NULL,
+    public_key TEXT,
+    private_key_encrypted TEXT, -- 加密存储的私钥
+    key_fingerprint VARCHAR(255) UNIQUE,
+    usage_purpose ENUM('encryption', 'signing', 'authentication', 'key_exchange') NOT NULL,
+    status ENUM('active', 'revoked', 'expired', 'suspended') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_key_type (key_type),
+    INDEX idx_status (status),
+    INDEX idx_fingerprint (key_fingerprint)
+);
+
+-- 数字证书表
+CREATE TABLE crypto_certificates (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    key_pair_id INT,
+    cert_name VARCHAR(100) NOT NULL,
+    cert_type ENUM('self_signed', 'ca_signed', 'intermediate', 'root') NOT NULL,
+    subject_dn VARCHAR(500) NOT NULL, -- Distinguished Name
+    issuer_dn VARCHAR(500) NOT NULL,
+    serial_number VARCHAR(100) UNIQUE,
+    certificate_data TEXT NOT NULL, -- PEM格式证书
+    signature_algorithm VARCHAR(50),
+    hash_algorithm VARCHAR(50),
+    status ENUM('valid', 'revoked', 'expired', 'suspended') DEFAULT 'valid',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    valid_from TIMESTAMP NOT NULL,
+    valid_to TIMESTAMP NOT NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (key_pair_id) REFERENCES crypto_key_pairs(id) ON DELETE SET NULL,
+    INDEX idx_user_id (user_id),
+    INDEX idx_cert_type (cert_type),
+    INDEX idx_status (status),
+    INDEX idx_serial_number (serial_number)
+);
+
+-- 加密操作日志表
+CREATE TABLE crypto_operations (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    key_pair_id INT,
+    certificate_id INT,
+    operation_type ENUM('encrypt', 'decrypt', 'sign', 'verify', 'key_generate', 'cert_create', 'cert_revoke') NOT NULL,
+    operation_details JSON,
+    input_data_hash VARCHAR(255), -- 输入数据的哈希值
+    output_data_hash VARCHAR(255), -- 输出数据的哈希值
+    algorithm_used VARCHAR(50),
+    status ENUM('success', 'failed', 'pending') DEFAULT 'pending',
+    error_message TEXT,
+    execution_time_ms INT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (key_pair_id) REFERENCES crypto_key_pairs(id) ON DELETE SET NULL,
+    FOREIGN KEY (certificate_id) REFERENCES crypto_certificates(id) ON DELETE SET NULL,
+    INDEX idx_user_id (user_id),
+    INDEX idx_operation_type (operation_type),
+    INDEX idx_status (status),
+    INDEX idx_created_at (created_at)
+);
+
+-- 区块链智能合约表
+CREATE TABLE blockchain_contracts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    contract_name VARCHAR(100) NOT NULL,
+    contract_address VARCHAR(100) UNIQUE,
+    contract_code TEXT,
+    contract_abi JSON,
+    compiler_version VARCHAR(50),
+    deployment_hash VARCHAR(100),
+    gas_used BIGINT,
+    status ENUM('deployed', 'verified', 'paused', 'destroyed') DEFAULT 'deployed',
+    network VARCHAR(50) DEFAULT 'private',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deployed_at TIMESTAMP NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_contract_address (contract_address),
+    INDEX idx_status (status),
+    INDEX idx_network (network)
+);
+
+-- 区块链交易表
+CREATE TABLE blockchain_transactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    contract_id INT,
+    transaction_hash VARCHAR(100) UNIQUE NOT NULL,
+    from_address VARCHAR(100) NOT NULL,
+    to_address VARCHAR(100),
+    value DECIMAL(30,18) DEFAULT 0,
+    gas_limit BIGINT,
+    gas_used BIGINT,
+    gas_price BIGINT,
+    transaction_fee DECIMAL(30,18),
+    block_number BIGINT,
+    block_hash VARCHAR(100),
+    transaction_index INT,
+    status ENUM('pending', 'confirmed', 'failed', 'dropped') DEFAULT 'pending',
+    confirmations INT DEFAULT 0,
+    input_data TEXT,
+    logs JSON,
+    network VARCHAR(50) DEFAULT 'private',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    confirmed_at TIMESTAMP NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (contract_id) REFERENCES blockchain_contracts(id) ON DELETE SET NULL,
+    INDEX idx_user_id (user_id),
+    INDEX idx_transaction_hash (transaction_hash),
+    INDEX idx_from_address (from_address),
+    INDEX idx_to_address (to_address),
+    INDEX idx_status (status),
+    INDEX idx_block_number (block_number),
+    INDEX idx_network (network)
+);
+
+-- MPC计算会话表
+CREATE TABLE mpc_sessions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    session_id VARCHAR(100) NOT NULL UNIQUE,
+    initiator_user_id INT NOT NULL,
+    session_name VARCHAR(200),
+    computation_type ENUM('arithmetic', 'boolean', 'mixed') NOT NULL,
+    participants_required INT NOT NULL,
+    participants_joined INT DEFAULT 0,
+    security_threshold INT NOT NULL,
+    protocol VARCHAR(50), -- SPDZ, BGV, CKKS等
+    status ENUM('created', 'recruiting', 'computing', 'completed', 'failed', 'cancelled') DEFAULT 'created',
+    input_schema JSON,
+    output_schema JSON,
+    computation_result JSON,
+    privacy_budget_used DECIMAL(10,6),
+    computation_time_ms BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL,
+    completed_at TIMESTAMP NULL,
+    
+    FOREIGN KEY (initiator_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_session_id (session_id),
+    INDEX idx_initiator_user_id (initiator_user_id),
+    INDEX idx_status (status),
+    INDEX idx_created_at (created_at)
+);
+
+-- MPC会话参与者表
+CREATE TABLE mpc_participants (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    session_id INT NOT NULL,
+    user_id INT NOT NULL,
+    party_id INT NOT NULL,
+    public_key TEXT,
+    status ENUM('invited', 'joined', 'computing', 'completed', 'failed', 'left') DEFAULT 'invited',
+    contribution_hash VARCHAR(255),
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_active TIMESTAMP NULL,
+    
+    FOREIGN KEY (session_id) REFERENCES mpc_sessions(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_session_user (session_id, user_id),
+    UNIQUE KEY unique_session_party (session_id, party_id),
+    INDEX idx_session_id (session_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_status (status)
+);
+
+-- 数据集管理表
+CREATE TABLE datasets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    dataset_name VARCHAR(200) NOT NULL,
+    description TEXT,
+    dataset_type ENUM('training', 'validation', 'testing', 'raw') NOT NULL,
+    business_domain ENUM('ai', 'blockchain', 'crypto', 'general') NOT NULL,
+    format VARCHAR(50), -- CSV, JSON, Image, etc.
+    size_bytes BIGINT,
+    records_count INT,
+    columns_count INT,
+    privacy_level ENUM('public', 'private', 'confidential', 'secret') DEFAULT 'private',
+    encryption_status ENUM('none', 'client_side', 'server_side', 'both') DEFAULT 'none',
+    storage_path VARCHAR(500),
+    checksum VARCHAR(255),
+    tags JSON,
+    metadata JSON,
+    status ENUM('uploaded', 'validated', 'processed', 'error', 'deleted') DEFAULT 'uploaded',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_accessed TIMESTAMP NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_dataset_type (dataset_type),
+    INDEX idx_business_domain (business_domain),
+    INDEX idx_privacy_level (privacy_level),
+    INDEX idx_status (status)
+);
+
 -- 插入默认配置
 INSERT INTO system_config (config_key, config_value, description) VALUES
 ('platform_name', '联邦学习平台', '平台名称'),
@@ -186,11 +405,13 @@ INSERT INTO system_config (config_key, config_value, description) VALUES
 ('session_timeout', '3600', '会话超时时间（秒）'),
 ('heartbeat_interval', '30', '心跳间隔（秒）'),
 ('max_participants', '100', '最大参与方数量'),
-('supported_business_types', '["ai", "blockchain"]', '支持的业务类型'),
+('supported_business_types', '["ai", "blockchain", "crypto", "homepage"]', '支持的业务类型'),
 ('supported_training_modes', '["normal", "mpc"]', '支持的训练模式');
 
 -- 创建默认管理员用户 (密码需要在应用中hash)
 -- 默认密码: admin123 (需要在应用中修改)
 INSERT INTO users (username, password_hash, user_type, business_type, full_name, organization, email) VALUES 
-('admin', '$2b$12$placeholder_hash_here', 'server', 'ai', '系统管理员', '联邦学习平台', 'admin@federated.com'),
-('blockchain-admin', '$2b$12$placeholder_hash_here', 'server', 'blockchain', '区块链管理员', '联邦学习平台', 'blockchain-admin@federated.com');
+('admin', '$2b$12$placeholder_hash_here', 'server', 'homepage', '系统管理员', '联邦学习平台', 'admin@federated.com'),
+('ai-admin', '$2b$12$placeholder_hash_here', 'server', 'ai', 'AI模块管理员', '联邦学习平台', 'ai-admin@federated.com'),
+('blockchain-admin', '$2b$12$placeholder_hash_here', 'server', 'blockchain', '区块链管理员', '联邦学习平台', 'blockchain-admin@federated.com'),
+('crypto-admin', '$2b$12$placeholder_hash_here', 'server', 'crypto', '密钥管理员', '联邦学习平台', 'crypto-admin@federated.com');

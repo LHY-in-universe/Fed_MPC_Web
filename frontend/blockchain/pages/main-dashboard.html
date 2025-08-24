@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区块链模块 - 金融区块链平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/blockchain-styles.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container-fluid px-4">
+            <div class="navbar-brand d-flex align-items-center">
+                <div class="me-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg d-flex align-items-center justify-content-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-0 text-2xl font-bold">区块链模块</h4>
+                    <small class="text-muted">去中心化金融应用平台</small>
+                </div>
+            </div>
+            
+            <div class="navbar-nav d-flex align-items-center">
+                <button class="btn btn-outline-secondary me-2" onclick="goHome()">
+                    <i class="bi bi-house"></i> 返回主页
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> 用户中心
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="showProfile()">个人资料</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showWallet()">我的钱包</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showSettings()">设置</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()">退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <!-- 欢迎区域 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="blockchain-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-2">欢迎来到区块链模块</h2>
+                            <p class="text-muted mb-0">管理您的数字资产和智能合约</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="badge bg-success mb-2">网络正常</div>
+                            <br>
+                            <small class="text-muted">当前网络: <span class="fw-bold">测试网</span></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络统计概览 -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="blockchain-card text-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewBlockDetails()">
+                    <div class="stat-value text-primary" id="blockHeight">0</div>
+                    <div class="stat-label">最新区块</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="blockchain-card text-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewTransactionStats()">
+                    <div class="stat-value text-success" id="totalTransactions">0</div>
+                    <div class="stat-label">总交易数</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="blockchain-card text-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewContractStats()">
+                    <div class="stat-value text-warning" id="activeContracts">0</div>
+                    <div class="stat-label">活跃合约</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="blockchain-card text-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewGasPriceHistory()">
+                    <div class="stat-value text-info" id="gasPrice">0</div>
+                    <div class="stat-label">Gas价格(Gwei)</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要功能区域 -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="blockchain-card h-100 cursor-pointer" onclick="openTransactionMonitor()">
+                    <div class="text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-arrow-left-right text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">交易监控</h5>
+                        <p class="card-text text-muted">实时监控区块链交易状态</p>
+                        <div class="mt-3">
+                            <span class="badge bg-info">实时监控</span>
+                            <span class="badge bg-success">状态追踪</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="blockchain-card h-100 cursor-pointer" onclick="openContractManager()">
+                    <div class="text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-file-earmark-code text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">智能合约</h5>
+                        <p class="card-text text-muted">管理和部署智能合约</p>
+                        <div class="mt-3">
+                            <span class="badge bg-warning">合约管理</span>
+                            <span class="badge bg-primary">部署工具</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="blockchain-card h-100 cursor-pointer" onclick="openNetworkMonitor()">
+                    <div class="text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-diagram-3 text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">网络监控</h5>
+                        <p class="card-text text-muted">监控区块链网络健康状态</p>
+                        <div class="mt-3">
+                            <span class="badge bg-success">网络状态</span>
+                            <span class="badge bg-info">性能监控</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="row">
+            <!-- 交易监控区域 -->
+            <div class="col-lg-8 mb-4">
+                <div class="blockchain-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-activity me-2"></i>实时交易监控
+                        </h5>
+                        <button class="blockchain-btn blockchain-btn-secondary" onclick="expandTransactionMonitor()">
+                            <i class="bi bi-arrows-fullscreen"></i> 全屏查看
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="transactionMonitorContainer" style="height: 400px;">
+                            <!-- 交易监控组件将在这里加载 -->
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-3 text-muted">正在加载交易监控...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边栏信息 -->
+            <div class="col-lg-4 mb-4">
+                <div class="row">
+                    <!-- 我的钱包 -->
+                    <div class="col-12 mb-4">
+                        <div class="blockchain-card h-100 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewWalletDetails()">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-wallet2 me-2"></i>我的钱包
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="wallet-info">
+                                    <div class="wallet-address mb-3">
+                                        <small class="text-muted">地址:</small>
+                                        <div class="hash-address">0x742d35Cc6635C0532925a3b8D400e...</div>
+                                    </div>
+                                    <div class="wallet-balance">
+                                        <div class="balance-item">
+                                            <span class="balance-label">ETH余额:</span>
+                                            <span class="balance-value">12.5678 ETH</span>
+                                        </div>
+                                        <div class="balance-item">
+                                            <span class="balance-label">USD价值:</span>
+                                            <span class="balance-value">$25,135.60</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-blue-600 mt-2">点击查看钱包详情</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最近交易 -->
+                    <div class="col-12">
+                        <div class="blockchain-card">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-clock-history me-2"></i>最近交易
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="recentTransactions">
+                                    <div class="transaction-item cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" onclick="viewTransactionDetail('0xabc123...')">
+                                        <div class="transaction-type">发送</div>
+                                        <div class="transaction-amount">-2.5 ETH</div>
+                                        <div class="transaction-time">5分钟前</div>
+                                        <div class="transaction-status confirmed">已确认</div>
+                                        <div class="text-xs text-blue-600 mt-1 col-span-2">点击查看详情</div>
+                                    </div>
+                                    <div class="transaction-item cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" onclick="viewTransactionDetail('0xdef456...')">
+                                        <div class="transaction-type">接收</div>
+                                        <div class="transaction-amount">+5.0 ETH</div>
+                                        <div class="transaction-time">1小时前</div>
+                                        <div class="transaction-status confirmed">已确认</div>
+                                        <div class="text-xs text-blue-600 mt-1 col-span-2">点击查看详情</div>
+                                    </div>
+                                    <div class="transaction-item cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors" onclick="viewTransactionDetail('0xghi789...')">
+                                        <div class="transaction-type">合约调用</div>
+                                        <div class="transaction-amount">-0.1 ETH</div>
+                                        <div class="transaction-time">2小时前</div>
+                                        <div class="transaction-status pending">处理中</div>
+                                        <div class="text-xs text-blue-600 mt-1 col-span-2">点击查看详情</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作区 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="blockchain-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-charge me-2"></i>快速操作
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="blockchain-btn" onclick="sendTransaction()">
+                                <i class="bi bi-send me-2"></i>发送交易
+                            </button>
+                            <button class="blockchain-btn blockchain-btn-secondary" onclick="deployContract()">
+                                <i class="bi bi-file-earmark-plus me-2"></i>部署合约
+                            </button>
+                            <button class="blockchain-btn blockchain-btn-secondary" onclick="checkBalance()">
+                                <i class="bi bi-wallet me-2"></i>查看余额
+                            </button>
+                            <button class="blockchain-btn blockchain-btn-secondary" onclick="viewHistory()">
+                                <i class="bi bi-clock-history me-2"></i>交易历史
+                            </button>
+                            <button class="blockchain-btn blockchain-btn-secondary" onclick="exportData()">
+                                <i class="bi bi-download me-2"></i>导出数据
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全屏交易监控模态框 -->
+    <div class="modal fade" id="fullscreenTransactionModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">交易监控 - 全屏模式</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="fullscreenTransactionMonitor">
+                        <!-- 全屏交易监控将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/notification-system.js"></script>
+    <script src="../components/transaction-monitor.js"></script>
+    <script src="../components/contract-manager.js"></script>
+    <script src="../components/blockchain-monitor.js"></script>
+
+    <script>
+        // 全局变量
+        let transactionMonitor;
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            loadNetworkStats();
+            updateNetworkStats();
+            
+            // 每10秒更新一次网络统计
+            setInterval(updateNetworkStats, 10000);
+        });
+        
+        function initializeDashboard() {
+            // 初始化交易监控（简化版）
+            try {
+                transactionMonitor = new TransactionMonitor('transactionMonitorContainer');
+            } catch (error) {
+                console.error('初始化交易监控失败:', error);
+                document.getElementById('transactionMonitorContainer').innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        交易监控暂时不可用，请稍后重试
+                    </div>
+                `;
+            }
+        }
+        
+        async function loadNetworkStats() {
+            try {
+                // 模拟API调用
+                const stats = {
+                    blockHeight: Math.floor(Math.random() * 1000000) + 15000000,
+                    totalTransactions: Math.floor(Math.random() * 10000) + 1000000,
+                    activeContracts: Math.floor(Math.random() * 100) + 50,
+                    gasPrice: Math.floor(Math.random() * 50) + 20
+                };
+                
+                // 更新统计数据
+                document.getElementById('blockHeight').textContent = stats.blockHeight.toLocaleString();
+                document.getElementById('totalTransactions').textContent = stats.totalTransactions.toLocaleString();
+                document.getElementById('activeContracts').textContent = stats.activeContracts;
+                document.getElementById('gasPrice').textContent = stats.gasPrice;
+                
+            } catch (error) {
+                console.error('加载网络统计失败:', error);
+            }
+        }
+        
+        function updateNetworkStats() {
+            loadNetworkStats();
+        }
+        
+        // 导航函数
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+        
+        function openTransactionMonitor() {
+            window.location.href = 'transaction-dashboard.html';
+        }
+        
+        function openContractManager() {
+            window.location.href = 'contract-dashboard.html';
+        }
+        
+        function openNetworkMonitor() {
+            window.location.href = 'network-dashboard.html';
+        }
+        
+        // 全屏监控
+        function expandTransactionMonitor() {
+            const modal = new bootstrap.Modal(document.getElementById('fullscreenTransactionModal'));
+            modal.show();
+            
+            // 在全屏模态框中初始化交易监控
+            setTimeout(() => {
+                try {
+                    new TransactionMonitor('fullscreenTransactionMonitor');
+                } catch (error) {
+                    console.error('初始化全屏交易监控失败:', error);
+                }
+            }, 500);
+        }
+        
+        // 快速操作函数
+        function sendTransaction() {
+            notificationSystem.info('发送交易', '发送交易功能开发中...
+
+将支持：
+• 普通转账
+• 智能合约调用
+• 批量交易
+• Gas费优化', {
+                duration: 5000
+            });
+        }
+        
+        function deployContract() {
+            window.location.href = 'contract-dashboard.html?action=deploy';
+        }
+        
+        function checkBalance() {
+            notificationSystem.success('钱包余额', '💰 当前余额详情：
+
+🔹 ETH余额: 12.5678 ETH
+🔹 USD价值: $25,135.60
+🔹 24h变化: +2.34%
+🔹 最后更新: 刚刚', {
+                duration: 6000
+            });
+        }
+        
+        function viewHistory() {
+            window.location.href = 'transaction-dashboard.html';
+        }
+        
+        function exportData() {
+            notificationSystem.info('数据导出', '数据导出功能开发中...
+
+预计功能：
+• 交易历史导出
+• 合约数据导出
+• 统计报表生成
+• 多格式支持（CSV、JSON、PDF）', {
+                duration: 6000
+            });
+        }
+        
+        // 用户管理函数
+        function showProfile() {
+            notificationSystem.info('个人资料', '个人资料功能开发中...
+
+将支持：
+• 用户信息管理
+• KYC认证状态
+• 交易偏好设置', {
+                duration: 5000
+            });
+        }
+        
+        function showWallet() {
+            notificationSystem.info('钱包管理', '钱包管理功能开发中...
+
+预计功能：
+• 多钱包管理
+• 助记词备份
+• 硬件钱包支持
+• 冷钱包集成', {
+                duration: 5000
+            });
+        }
+        
+        function showSettings() {
+            notificationSystem.info('系统设置', '设置功能开发中...
+
+预计功能：
+• 网络切换
+• Gas费设置
+• 通知偏好
+• 安全选项', {
+                duration: 5000
+            });
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../../homepage/index.html';
+        }
+
+        // 网络统计详情点击功能
+        function viewBlockDetails() {
+            alert('最新区块详细信息:\n\n区块高度: ' + document.getElementById('blockHeight').textContent + '\n区块哈希: 0xa1b2c3d4e5f6789...\n矿工地址: 0x1234567890abcdef...\n区块大小: 245.8 KB\n交易数量: 156\nGas使用量: 12,456,789 / 30,000,000\n时间戳: ' + new Date().toLocaleString() + '\n奖励: 2.5 ETH\n难度: 15,847,923,456\n\n点击查看完整区块浏览器信息...');
+        }
+
+        function viewTransactionStats() {
+            alert('交易统计详细信息:\n\n📊 交易概览:\n总交易数: ' + document.getElementById('totalTransactions').textContent + '\n24小时交易量: 45,678笔\n平均交易费: 0.0025 ETH\n\n⚡ 性能指标:\n平均确认时间: 15.2秒\nTPS (每秒交易数): 12.5\n网络拥堵度: 中等\n\n💰 交易费用分布:\n低费用 (<20 Gwei): 35%\n标准费用 (20-50 Gwei): 45%\n高费用 (>50 Gwei): 20%\n\n🔗 类型分布:\n普通转账: 60%\n智能合约调用: 30%\nDeFi交易: 10%');
+        }
+
+        function viewContractStats() {
+            alert('智能合约统计详细信息:\n\n📈 合约概览:\n活跃合约数: ' + document.getElementById('activeContracts').textContent + '\n总部署合约: 8,456个\n今日新增: 15个\n\n🏷️ 合约类型分布:\nERC-20代币: 35%\nDeFi协议: 25%\nNFT合约: 20%\n治理合约: 10%\n其他: 10%\n\n⚡ 活动统计:\n日调用次数: 125,647\n平均Gas消耗: 45,000\n合约验证率: 78%\n\n🔝 热门合约:\n1. Uniswap V3 Router\n2. USDC Token Contract\n3. OpenSea Registry\n4. Compound Protocol\n5. Aave Lending Pool');
+        }
+
+        function viewGasPriceHistory() {
+            alert('Gas价格历史详细信息:\n\n⛽ 当前Gas价格: ' + document.getElementById('gasPrice').textContent + ' Gwei\n\n📊 24小时价格走势:\n最低价格: 18 Gwei (凌晨3:00)\n最高价格: 85 Gwei (下午2:30)\n平均价格: 42 Gwei\n\n🎯 推荐Gas价格:\n🚀 快速确认 (1-2分钟): 65 Gwei\n⚡ 标准确认 (3-5分钟): 45 Gwei\n🐌 经济确认 (10+分钟): 25 Gwei\n\n📈 价格预测:\n接下来1小时: 稍微上升 ↗️\n接下来6小时: 保持稳定 ➡️\n接下来24小时: 轻微下降 ↘️\n\n💡 节费建议: 等待凌晨时段进行交易可节省60%的Gas费用');
+        }
+
+        function viewWalletDetails() {
+            alert('钱包详细信息:\n\n💼 钱包概览:\n地址: 0x742d35Cc6635C0532925a3b8D400e...\n创建时间: 2023-05-15\n\n💰 资产详情:\nETH余额: 12.5678 ETH\nUSD价值: $25,135.60\n\n🪙 代币持有:\n• USDC: 5,000.00 USDC\n• UNI: 150.75 UNI\n• LINK: 85.32 LINK\n• AAVE: 12.45 AAVE\n\n📊 交易统计:\n总交易次数: 1,247\n总发送金额: 156.78 ETH\n总接收金额: 169.35 ETH\n\n🎨 NFT收藏:\n持有NFT: 8个\n总价值: 2.5 ETH\n最贵NFT: CryptoPunk #1234\n\n🔒 安全信息:\n最后活动: 5分钟前\n授权合约: 12个\n风险等级: 低');
+        }
+
+        function viewTransactionDetail(txHash) {
+            alert('交易详细信息:\n\n🔗 交易哈希: ' + txHash + '\n\n📊 基本信息:\n状态: ' + (Math.random() > 0.5 ? '已确认 ✅' : '处理中 ⏳') + '\n区块高度: ' + (Math.floor(Math.random() * 1000) + 15000000) + '\n确认数: ' + Math.floor(Math.random() * 100 + 50) + '\n\n💰 交易详情:\n发送方: 0x' + Math.random().toString(16).substring(2, 10) + '...\n接收方: 0x' + Math.random().toString(16).substring(2, 10) + '...\n金额: ' + (Math.random() * 10).toFixed(4) + ' ETH\n\n⛽ Gas信息:\nGas限制: ' + Math.floor(Math.random() * 50000 + 21000) + '\nGas使用: ' + Math.floor(Math.random() * 30000 + 21000) + '\nGas价格: ' + Math.floor(Math.random() * 50 + 20) + ' Gwei\n交易费: ' + (Math.random() * 0.01).toFixed(6) + ' ETH\n\n⏰ 时间信息:\n发起时间: ' + new Date(Date.now() - Math.random() * 3600000).toLocaleString() + '\n确认时间: ' + new Date(Date.now() - Math.random() * 1800000).toLocaleString());
+        }
+    </script>
+
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .cursor-pointer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .blockchain-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .blockchain-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8, #06b6d4);
+        }
+        
+        .blockchain-card:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.12);
+        }
+        
+        .wallet-info {
+            padding: 16px;
+            background: rgba(248, 250, 252, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .wallet-address {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #1e40af;
+            font-weight: 600;
+        }
+        
+        .hash-address {
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        
+        .balance-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        .balance-value {
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .transaction-item {
+            padding: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: rgba(248, 250, 252, 0.5);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .transaction-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .transaction-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .transaction-type {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        .transaction-amount {
+            font-size: 13px;
+            font-weight: 700;
+            text-align: right;
+            color: #1e293b;
+        }
+        
+        .transaction-time {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        
+        .transaction-status {
+            font-size: 11px;
+            text-align: right;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        .transaction-status.confirmed {
+            color: #059669;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .transaction-status.pending {
+            color: #d97706;
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* 导航栏美化 */
+        .navbar {
+            background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* 按钮美化 */
+        .blockchain-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .blockchain-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+        
+        .blockchain-btn-secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+        }
+        
+        .blockchain-btn-secondary:hover {
+            background: linear-gradient(135deg, #475569, #334155);
+            box-shadow: 0 6px 25px rgba(100, 116, 139, 0.4);
+        }
+        
+        /* 卡片头部美化 */
+        .card-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 20px;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        /* 徽章美化 */
+        .badge {
+            padding: 6px 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        .badge.bg-success {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+        }
+        
+        .badge.bg-info {
+            background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+        }
+        
+        .badge.bg-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        }
+        
+        .badge.bg-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+        }
+        
+        /* 模块背景渐变 */
+        .module-background {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        /* 欢迎区域特殊样式 */
+        .blockchain-card h2 {
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+        
+        /* 统计卡片点击效果 */
+        .blockchain-card.cursor-pointer:hover {
+            transform: translateY(-3px);
+        }
+        
+        .text-xs {
+            font-size: 11px;
+        }
+        
+        .text-blue-600 {
+            color: #2563eb;
+        }
+        
+        .hover\:bg-gray-50:hover {
+            background-color: rgba(249, 250, 251, 0.8);
+        }
+        
+        .transition-colors {
+            transition: background-color 0.2s ease;
+        }
+        
+        /* 加载动画美化 */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 4px;
+            border-top-color: #3b82f6;
+            border-right-color: #1d4ed8;
+        }
+        
+        /* 响应式改进 */
+        @media (max-width: 768px) {
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .blockchain-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .transaction-item {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+    </style>
+</body>
+</html>

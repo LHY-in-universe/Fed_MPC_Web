@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="ai.dashboard.client.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户端控制台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="ai.dashboard.client.title">客户端控制面板</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <span id="userInfo" class="text-sm text-gray-600"></span>
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+                <button onclick="logout()" class="btn btn-secondary text-sm">
+                    <span data-i18n="common.logout">退出登录</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-6 py-8">
+        <!-- Welcome Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                <span data-i18n="ai.dashboard.client.welcome">欢迎回来！</span>
+            </h2>
+            <p class="text-gray-600" data-i18n="ai.dashboard.client.selectMode">选择您想要进行的训练模式</p>
+        </div>
+
+        <!-- Training Options -->
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <!-- Local Training -->
+            <div class="card cursor-pointer transition-all duration-300 hover:scale-105" onclick="selectTrainingMode('local')">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3" data-i18n="ai.dashboard.client.localTraining">本地模型训练</h3>
+                    <p class="text-gray-600 mb-6" data-i18n="ai.dashboard.client.localDesc">使用本地数据独立训练模型，保护数据隐私</p>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <div class="text-sm text-gray-700 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span data-i18n="ai.dashboard.client.dataSecurity">数据安全性：</span>
+                                <span class="font-medium text-gray-600" data-i18n="ai.dashboard.client.localStorage">本地存储</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span data-i18n="ai.dashboard.client.trainingSpeed">训练速度：</span>
+                                <span class="font-medium text-gray-600" data-i18n="ai.dashboard.client.fast">快速</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span data-i18n="ai.dashboard.client.modelEffect">模型效果：</span>
+                                <span class="font-medium text-gray-600" data-i18n="ai.dashboard.client.limitedByLocal">受限于本地数据</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-gray-700 font-semibold">
+                        <span data-i18n="ai.dashboard.client.startLocal">开始本地训练</span> →
+                    </div>
+                </div>
+            </div>
+
+            <!-- Federated Training -->
+            <div class="card cursor-pointer transition-all duration-300 hover:scale-105" onclick="selectTrainingMode('federated')">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3" data-i18n="ai.dashboard.client.federatedTraining">联邦学习训练</h3>
+                    <p class="text-gray-600 mb-6" data-i18n="ai.dashboard.client.federatedDesc">参与分布式联邦学习，获得更好的模型效果</p>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <div class="text-sm text-gray-700 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span data-i18n="ai.dashboard.client.dataSecurity">数据安全性：</span>
+                                <span class="font-medium text-gray-600" data-i18n="ai.dashboard.client.privacyProtected">隐私保护</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span data-i18n="ai.dashboard.client.trainingSpeed">训练速度：</span>
+                                <span class="font-medium text-gray-600" data-i18n="ai.dashboard.client.moderate">适中</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span data-i18n="ai.dashboard.client.modelEffect">模型效果：</span>
+                                <span class="font-medium text-gray-600" data-i18n="ai.dashboard.client.excellent">优秀</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-gray-700 font-semibold">
+                        <span data-i18n="ai.dashboard.client.startFederated">开始联邦训练</span> →
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Overview -->
+        <div class="card mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6" data-i18n="ai.dashboard.client.status">训练状态概览</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewCompletedTraining()">
+                    <div class="text-2xl font-bold text-gray-700">3</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.completedTraining">已完成训练</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+                <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewOngoingTraining()">
+                    <div class="text-2xl font-bold text-gray-700">1</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.ongoingTraining">进行中训练</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+                <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewAccuracyStats()">
+                    <div class="text-2xl font-bold text-gray-700">92.5%</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.averageAccuracy">平均准确率</div>
+                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Training History -->
+        <div class="card">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.client.recentHistory">最近训练记录</h3>
+                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium" onclick="viewAllTrainingHistory()">
+                    查看全部 →
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewTrainingDetail('img_classify_001')">
+                    <div>
+                        <div class="font-medium text-gray-900" data-i18n="ai.dashboard.client.imageClassification">图像分类模型</div>
+                        <div class="text-sm text-gray-500">2024-01-15 14:30</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm font-medium text-gray-700">准确率: 94.2%</div>
+                        <div class="text-xs text-gray-500" data-i18n="ai.dashboard.client.localTraining">本地训练</div>
+                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewTrainingDetail('text_classify_002')">
+                    <div>
+                        <div class="font-medium text-gray-900" data-i18n="ai.dashboard.client.textClassification">文本分类模型</div>
+                        <div class="text-sm text-gray-500">2024-01-14 10:15</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm font-medium text-gray-700">准确率: 91.8%</div>
+                        <div class="text-xs text-gray-500" data-i18n="ai.dashboard.client.federatedTraining">联邦训练</div>
+                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewTrainingDetail('regression_003')">
+                    <div>
+                        <div class="font-medium text-gray-900" data-i18n="ai.dashboard.client.regressionModel">回归预测模型</div>
+                        <div class="text-sm text-gray-500">2024-01-13 16:45</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm font-medium text-gray-700">RMSE: 0.023</div>
+                        <div class="text-xs text-gray-500" data-i18n="ai.dashboard.client.localTraining">本地训练</div>
+                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        function selectTrainingMode(mode) {
+            if (mode === 'local') {
+                window.location.href = './local-training.html';
+            } else if (mode === 'federated') {
+                window.location.href = './federated-training-select.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('loginTime');
+            window.location.href = './login.html';
+        }
+
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+
+        // 训练状态概览详细信息
+        function viewCompletedTraining() {
+            alert('已完成训练详情\n\n共完成 3 个训练任务：\n• 图像分类模型 (准确率: 94.2%)\n• 文本分类模型 (准确率: 91.8%)\n• 回归预测模型 (RMSE: 0.023)\n\n平均训练时间: 2.5小时\n成功率: 100%');
+        }
+
+        function viewOngoingTraining() {
+            alert('进行中训练详情\n\n当前正在训练：\n• 深度学习图像识别模型\n\n进度: 65%\n预计剩余时间: 1.2小时\n当前准确率: 89.3%\n\n训练参数：\n- 学习率: 0.001\n- 批次大小: 32\n- 当前轮次: 65/100');
+        }
+
+        function viewAccuracyStats() {
+            alert('准确率统计详情\n\n整体统计：\n• 平均准确率: 92.5%\n• 最高准确率: 94.2% (图像分类)\n• 最低准确率: 91.8% (文本分类)\n\n按训练类型：\n• 本地训练平均: 93.1%\n• 联邦训练平均: 91.8%\n\n趋势：相比上月提升 2.3%');
+        }
+
+        // 训练详细信息
+        function viewTrainingDetail(trainingId) {
+            const trainingDetails = {
+                'img_classify_001': {
+                    name: '图像分类模型',
+                    type: '本地训练',
+                    accuracy: '94.2%',
+                    date: '2024-01-15 14:30',
+                    duration: '2.5小时',
+                    dataset: 'CIFAR-10',
+                    epochs: '100',
+                    loss: '0.15',
+                    parameters: '1.2M'
+                },
+                'text_classify_002': {
+                    name: '文本分类模型', 
+                    type: '联邦训练',
+                    accuracy: '91.8%',
+                    date: '2024-01-14 10:15',
+                    duration: '3.2小时',
+                    dataset: 'IMDb评论',
+                    epochs: '80',
+                    loss: '0.22',
+                    parameters: '850K'
+                },
+                'regression_003': {
+                    name: '回归预测模型',
+                    type: '本地训练', 
+                    accuracy: 'RMSE: 0.023',
+                    date: '2024-01-13 16:45',
+                    duration: '1.8小时',
+                    dataset: '房价数据',
+                    epochs: '120',
+                    loss: '0.031',
+                    parameters: '450K'
+                }
+            };
+
+            const detail = trainingDetails[trainingId];
+            if (detail) {
+                alert(`${detail.name} 详细信息\n\n` +
+                    `训练类型: ${detail.type}\n` +
+                    `准确率/误差: ${detail.accuracy}\n` +
+                    `训练时间: ${detail.date}\n` +
+                    `训练时长: ${detail.duration}\n\n` +
+                    `数据集: ${detail.dataset}\n` +
+                    `训练轮次: ${detail.epochs}\n` +
+                    `最终损失: ${detail.loss}\n` +
+                    `模型参数: ${detail.parameters}\n\n` +
+                    `点击确定查看训练曲线图...`);
+            }
+        }
+
+        function viewAllTrainingHistory() {
+            alert('全部训练历史\n\n' +
+                '跳转到训练历史页面，您可以查看：\n' +
+                '• 所有历史训练记录\n' +
+                '• 训练性能趋势图\n' +
+                '• 模型对比分析\n' +
+                '• 导出训练报告\n' +
+                '• 训练日志下载\n\n' +
+                '即将跳转到详细页面...');
+            
+            // 实际项目中可以跳转到训练历史页面
+            // window.location.href = './training-history.html';
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userInfo = document.getElementById('userInfo');
+            if (user.name) {
+                userInfo.textContent = `${user.name}`;
+            }
+        });
+    </script>
+</body>
+</html>

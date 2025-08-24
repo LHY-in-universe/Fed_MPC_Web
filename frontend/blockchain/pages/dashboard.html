@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="blockchain.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区块链金融</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="blockchain.title">区块链金融</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+                <button onclick="goHome()" class="btn btn-secondary">
+                    <span data-i18n="common.home">返回模块选择</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Navigation Tabs -->
+    <div class="secondary-background border-b border-gray-300">
+        <div class="max-w-4xl mx-auto">
+            <nav class="flex space-x-8 px-6">
+                <button onclick="showSection('overview')" class="navbar-link py-4 border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-i18n="blockchain.nav.overview">概览</button>
+                <button onclick="showSection('contracts')" class="navbar-link py-4 border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-i18n="blockchain.nav.contracts">智能合约</button>
+                <button onclick="showSection('transactions')" class="navbar-link py-4 border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-i18n="blockchain.nav.transactions">交易</button>
+                <button onclick="showSection('mpc')" class="navbar-link py-4 border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-i18n="blockchain.nav.mpc">MPC计算</button>
+                <button onclick="showSection('consensus')" class="navbar-link py-4 border-b-2 border-transparent hover:border-gray-400 whitespace-nowrap" data-i18n="blockchain.nav.consensus">共识机制</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto py-6 px-6">
+        
+        <!-- Overview Section -->
+        <div id="overview-section">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="blockchain.stats.smartContracts">智能合约</dt>
+                                <dd class="text-lg font-medium text-gray-900">12</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="blockchain.stats.activeTransactions">活跃交易</dt>
+                                <dd class="text-lg font-medium text-gray-900">2,847</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="blockchain.stats.mpcTasks">MPC任务</dt>
+                                <dd class="text-lg font-medium text-gray-900">8</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="blockchain.stats.networkTPS">网络TPS</dt>
+                                <dd class="text-lg font-medium text-gray-900">1,256</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Smart Contracts -->
+                <div class="card">
+                    <div class="mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="blockchain.recentContracts.title">最新合约</h3>
+                        <p class="mt-1 text-sm text-gray-500" data-i18n="blockchain.recentContracts.subtitle">最近部署的智能合约</p>
+                    </div>
+                    <ul class="divide-y divide-gray-200">
+                        <li class="py-4 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" data-i18n="blockchain.contracts.federatedCreditAssessment">银行间信用评估联邦学习</p>
+                                        <p class="text-sm text-gray-500" data-i18n="blockchain.contracts.federatedCreditDesc">联邦学习合约 • 4个参与方 • 活跃</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-900">92.3%</p>
+                                    <p class="text-sm text-gray-500" data-i18n="blockchain.stats.accuracy">准确率</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="py-4 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">多方安全计算合约</p>
+                                        <p class="text-sm text-gray-500">隐私保护合约 • 3个参与方 • 等待</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-900">12</p>
+                                    <p class="text-sm text-gray-500">计算任务</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="py-4 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-2 h-2 bg-gray-500 rounded-full mr-3"></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">反洗钱模型训练</p>
+                                        <p class="text-sm text-gray-500">机器学习合约 • 已完成 • 5个参与方</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-900">87.6%</p>
+                                    <p class="text-sm text-gray-500">F1分数</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card">
+                    <div class="mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">最新交易</h3>
+                        <p class="mt-1 text-sm text-gray-500">区块链交易记录</p>
+                    </div>
+                    <ul class="divide-y divide-gray-200">
+                        <li class="py-4 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900" data-i18n="blockchain.transactions.modelUpdate">模型更新提交</p>
+                                    <p class="text-sm text-gray-500" data-i18n="blockchain.transactions.modelUpdateTime">0x1234...abcd • 2分钟前</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></div>
+                                    <span class="text-sm text-green-600" data-i18n="blockchain.transactions.confirmed">已确认</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="py-4 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900" data-i18n="blockchain.transactions.aggregateComputation">聚合计算执行</p>
+                                    <p class="text-sm text-gray-500" data-i18n="blockchain.transactions.aggregateComputationTime">0x5678...efgh • 5分钟前</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></div>
+                                    <span class="text-sm text-green-600" data-i18n="blockchain.transactions.confirmed">已确认</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="py-4 hover:bg-gray-50 cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900" data-i18n="blockchain.transactions.dataSubmission">数据提交验证</p>
+                                    <p class="text-sm text-gray-500" data-i18n="blockchain.transactions.dataSubmissionTime">0x9abc...ijkl • 8分钟前</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="w-2 h-2 bg-yellow-500 rounded-full inline-block mr-2"></div>
+                                    <span class="text-sm text-yellow-600" data-i18n="blockchain.transactions.pending">等待确认</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Network Performance Chart -->
+            <div class="card">
+                <div class="mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="blockchain.networkPerformance.title">网络性能监控</h3>
+                    <p class="mt-1 text-sm text-gray-500" data-i18n="blockchain.networkPerformance.subtitle">区块链网络 TPS 和延迟监控</p>
+                </div>
+                <div class="h-80">
+                    <canvas id="networkChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smart Contracts Section -->
+        <div id="contracts-section" class="hidden">
+            <div class="card">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="blockchain.contractManagement.title">智能合约管理</h3>
+                        <p class="mt-1 text-sm text-gray-500" data-i18n="blockchain.contractManagement.subtitle">部署和管理区块链智能合约</p>
+                    </div>
+                    <button class="btn btn-primary">
+                        <span data-i18n="blockchain.contractManagement.deployContract">部署合约</span>
+                    </button>
+                </div>
+                <div class="text-center text-gray-500 py-12" data-i18n="blockchain.contractManagement.inDevelopment">
+                    智能合约管理功能开发中...
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Section -->
+        <div id="transactions-section" class="hidden">
+            <div class="card">
+                <div class="mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">交易管理</h3>
+                    <p class="mt-1 text-sm text-gray-500">查看和管理区块链交易</p>
+                </div>
+                <div class="text-center text-gray-500 py-12">
+                    交易管理功能开发中...
+                </div>
+            </div>
+        </div>
+
+        <!-- MPC Section -->
+        <div id="mpc-section" class="hidden">
+            <div class="card">
+                <div class="mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">多方安全计算</h3>
+                    <p class="mt-1 text-sm text-gray-500">隐私保护的多方计算任务</p>
+                </div>
+                <div class="text-center text-gray-500 py-12">
+                    MPC计算功能开发中...
+                </div>
+            </div>
+        </div>
+
+        <!-- Consensus Section -->
+        <div id="consensus-section" class="hidden">
+            <div class="card">
+                <div class="mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">共识机制</h3>
+                    <p class="mt-1 text-sm text-gray-500">区块链共识算法监控</p>
+                </div>
+                <div class="text-center text-gray-500 py-12">
+                    共识机制功能开发中...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        // Navigation functions
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['overview', 'contracts', 'transactions', 'mpc', 'consensus'];
+            sections.forEach(section => {
+                document.getElementById(section + '-section').classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Update navigation active state
+            document.querySelectorAll('nav button').forEach(button => {
+                button.classList.remove('border-gray-600');
+                button.classList.add('border-transparent');
+            });
+            event.target.classList.remove('border-transparent');
+            event.target.classList.add('border-gray-600');
+        }
+
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+
+        // Initialize network performance chart
+        function initNetworkChart() {
+            const ctx = document.getElementById('networkChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: 'TPS (交易每秒)',
+                        data: Array.from({length: 24}, () => Math.floor(Math.random() * 500) + 1000),
+                        borderColor: 'rgb(115, 115, 115)',
+                        backgroundColor: 'rgba(115, 115, 115, 0.1)',
+                        tension: 0.1,
+                        yAxisID: 'y'
+                    }, {
+                        label: '延迟 (毫秒)',
+                        data: Array.from({length: 24}, () => Math.floor(Math.random() * 50) + 10),
+                        borderColor: 'rgb(82, 82, 82)',
+                        backgroundColor: 'rgba(82, 82, 82, 0.1)',
+                        tension: 0.1,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: '时间'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'TPS'
+                            },
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '延迟 (ms)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Page initialization
+        window.addEventListener('DOMContentLoaded', function() {
+            initNetworkChart();
+            showSection('overview');
+        });
+    </script>
+</body>
+</html>

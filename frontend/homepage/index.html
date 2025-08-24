@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="homepage.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联邦学习与多方计算平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../shared/css/theme-system.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        /* 高级渐变背景 */
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 50%, var(--bg-tertiary) 100%);
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* 动态几何背景 */
+        .hero-gradient::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(115, 115, 115, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(82, 82, 82, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(64, 64, 64, 0.02) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+        
+        /* 企业级logo区域 */
+        .enterprise-logo {
+            background: linear-gradient(135deg, var(--gray-600) 0%, var(--gray-700) 100%);
+            box-shadow: 
+                0 20px 40px -12px rgba(82, 82, 82, 0.25),
+                0 8px 16px -8px rgba(82, 82, 82, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 高级模块卡片 */
+        .premium-module-card {
+            position: relative;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 24px;
+            padding: 40px 32px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .premium-module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gray-600) 0%, var(--gray-700) 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .premium-module-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .premium-module-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 
+                0 32px 64px -8px rgba(82, 82, 82, 0.25),
+                0 16px 32px -8px rgba(82, 82, 82, 0.15),
+                0 8px 16px -8px rgba(82, 82, 82, 0.1);
+            border-color: var(--gray-500);
+        }
+        
+        /* 图标容器升级 */
+        .premium-icon-container {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 16px -4px rgba(82, 82, 82, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .premium-module-card:hover .premium-icon-container {
+            background: linear-gradient(135deg, var(--gray-600) 0%, var(--gray-700) 100%);
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 
+                0 16px 32px -8px rgba(82, 82, 82, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .premium-module-card:hover .premium-icon-container svg {
+            color: var(--gray-100);
+            transform: scale(1.1);
+        }
+        
+        /* 标题动画 */
+        .hero-title {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--gray-600) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleShine 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleShine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* 子标题效果 */
+        .hero-subtitle {
+            position: relative;
+            padding-left: 24px;
+        }
+        
+        .hero-subtitle::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--gray-600) 0%, var(--gray-700) 100%);
+            border-radius: 2px;
+        }
+        
+        /* 模块描述文字效果 */
+        .module-description {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .module-description::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--gray-600) 50%, transparent 100%);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .premium-module-card:hover .module-description::after {
+            width: 80%;
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .premium-module-card {
+                padding: 32px 24px;
+            }
+            
+            .premium-icon-container {
+                width: 64px;
+                height: 64px;
+                border-radius: 16px;
+            }
+        }
+        
+        /* 加载动画 */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 错开动画 */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="hero-gradient">
+    <!-- 高级导航栏 -->
+    <nav class="navbar backdrop-blur-xl bg-opacity-80 border-b border-gray-200/20">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="enterprise-logo w-12 h-12 rounded-xl flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div class="navbar-brand text-xl font-bold">
+                    <span data-i18n="homepage.title">联邦学习与多方计算平台</span>
+                </div>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative z-10">
+        <!-- 英雄区域 -->
+        <div class="max-w-6xl mx-auto px-6 pt-24 pb-20">
+            <!-- 主标题区域 -->
+            <div class="text-center mb-20 fade-in-up">
+                <h1 class="hero-title text-5xl md:text-7xl font-extrabold mb-8 leading-tight" data-i18n="homepage.title">
+                    联邦学习与多方计算平台
+                </h1>
+                <p class="hero-subtitle text-xl md:text-2xl text-gray-600 font-medium max-w-3xl mx-auto leading-relaxed">
+                    Enterprise-Grade Federated Learning & Multi-Party Computation
+                </p>
+                <div class="mt-8 flex justify-center">
+                    <div class="w-24 h-1 bg-gradient-to-r from-transparent via-gray-500 to-transparent rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- 模块选择区域 -->
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- AI模块 -->
+                <div class="premium-module-card cursor-pointer fade-in-up delay-1" onclick="selectBusinessType('ai')">
+                    <div class="text-center">
+                        <div class="premium-icon-container">
+                            <svg class="w-10 h-10 text-gray-700 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.ai.title">AI模型训练</h3>
+                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.ai.description">
+                            联邦学习与多方计算训练
+                        </p>
+                        <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
+                            进入模块
+                            <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 区块链模块 -->
+                <div class="premium-module-card cursor-pointer fade-in-up delay-2" onclick="selectBusinessType('blockchain')">
+                    <div class="text-center">
+                        <div class="premium-icon-container">
+                            <svg class="w-10 h-10 text-gray-700 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.blockchain.title">区块链金融</h3>
+                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.blockchain.description">
+                            去中心化金融应用
+                        </p>
+                        <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
+                            进入模块
+                            <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 密钥加密模块 -->
+                <div class="premium-module-card cursor-pointer fade-in-up delay-3" onclick="selectBusinessType('crypto')">
+                    <div class="text-center">
+                        <div class="premium-icon-container">
+                            <svg class="w-10 h-10 text-gray-700 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.crypto.title">密钥加密</h3>
+                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.crypto.description">
+                            安全密码学工具
+                        </p>
+                        <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
+                            进入模块
+                            <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部特性展示 -->
+            <div class="mt-20 text-center fade-in-up delay-4">
+                <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">企业级安全</h4>
+                        <p class="text-gray-600 text-sm">银行级别的数据安全保护</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">高性能计算</h4>
+                        <p class="text-gray-600 text-sm">分布式架构，极致性能优化</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">易于集成</h4>
+                        <p class="text-gray-600 text-sm">标准化API，快速业务集成</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 脚本文件 -->
+    <script src="../shared/js/theme-manager.js"></script>
+    <script src="../shared/js/i18n-manager.js"></script>
+    <script>
+        function selectBusinessType(type) {
+            localStorage.setItem('businessType', type);
+            localStorage.setItem('selectedModule', type);
+            
+            if (type === 'ai') {
+                window.location.href = '../ai/pages/user-type-select.html';
+            } else if (type === 'blockchain') {
+                window.location.href = '../blockchain/pages/login.html';
+            } else if (type === 'crypto') {
+                window.location.href = '../crypto/pages/login.html';
+            }
+        }
+
+        window.onload = function() {
+            localStorage.removeItem('userType');
+            localStorage.removeItem('userData');
+        };
+    </script>
+</body>
+</html>

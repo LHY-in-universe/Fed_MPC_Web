@@ -1,0 +1,701 @@
+/* AI模块专用样式 */
+
+/* AI主题色彩 */
+:root {
+    --ai-primary: #667eea;
+    --ai-primary-dark: #5a67d8;
+    --ai-secondary: #764ba2;
+    --ai-accent: #f093fb;
+    --ai-success: #10b981;
+    --ai-warning: #f59e0b;
+    --ai-error: #ef4444;
+}
+
+/* AI渐变背景 */
+.ai-gradient {
+    background: linear-gradient(135deg, var(--ai-primary) 0%, var(--ai-secondary) 100%);
+}
+
+.ai-gradient-light {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+}
+
+/* AI卡片样式 */
+.ai-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.ai-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: var(--ai-primary);
+}
+
+/* 状态指示器 */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-training {
+    background-color: var(--ai-primary);
+    animation: pulse 2s infinite;
+}
+
+.status-completed {
+    background-color: var(--ai-success);
+}
+
+.status-paused {
+    background-color: var(--ai-warning);
+}
+
+.status-error {
+    background-color: var(--ai-error);
+}
+
+/* 脉冲动画 */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* AI按钮样式 */
+.ai-btn {
+    background: var(--ai-primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.ai-btn:hover {
+    background: var(--ai-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.ai-btn-secondary {
+    background: transparent;
+    color: var(--ai-primary);
+    border: 1px solid var(--ai-primary);
+}
+
+.ai-btn-secondary:hover {
+    background: var(--ai-primary);
+    color: white;
+}
+
+/* AI表格样式 */
+.ai-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.ai-table th {
+    background: var(--ai-primary);
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.ai-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ai-table tr:hover {
+    background: #f9fafb;
+}
+
+/* AI表单样式 */
+.ai-form-group {
+    margin-bottom: 16px;
+}
+
+.ai-form-label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.ai-form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.ai-form-input:focus {
+    outline: none;
+    border-color: var(--ai-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* AI进度条 */
+.ai-progress {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ai-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-accent));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* AI通知样式 */
+.ai-notification {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+}
+
+.ai-notification.success {
+    background: #ecfdf5;
+    border-color: var(--ai-success);
+    color: #065f46;
+}
+
+.ai-notification.warning {
+    background: #fffbeb;
+    border-color: var(--ai-warning);
+    color: #92400e;
+}
+
+.ai-notification.error {
+    background: #fef2f2;
+    border-color: var(--ai-error);
+    color: #991b1b;
+}
+
+/* 训练监控组件样式 */
+.training-monitor {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.monitor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.monitor-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.monitor-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ai-primary);
+}
+
+.monitor-chart {
+    margin-bottom: 24px;
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.monitor-logs {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 24px;
+}
+
+.log-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #1f2937;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.log-entry {
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+}
+
+.log-time {
+    color: #9ca3af;
+    margin-right: 8px;
+}
+
+.log-entry.log-success .log-message {
+    color: #10b981;
+}
+
+.log-entry.log-error .log-message {
+    color: #ef4444;
+}
+
+.log-entry.log-warning .log-message {
+    color: #f59e0b;
+}
+
+.log-entry.log-info .log-message {
+    color: #3b82f6;
+}
+
+/* 模型管理组件样式 */
+.model-manager {
+    padding: 24px;
+}
+
+.manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.manager-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.manager-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.model-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.model-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: var(--ai-primary);
+}
+
+.model-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.model-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.model-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-created {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.status-training {
+    background: #dbeafe;
+    color: #1d4ed8;
+    animation: pulse 2s infinite;
+}
+
+.status-trained {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-deployed {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.model-info {
+    margin-bottom: 16px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.info-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.model-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.model-footer {
+    text-align: right;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 12px;
+}
+
+/* 数据集管理组件样式 */
+.dataset-manager {
+    padding: 24px;
+}
+
+.datasets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.dataset-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dataset-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: var(--ai-primary);
+}
+
+.dataset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.dataset-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.dataset-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.dataset-progress {
+    margin: 16px 0;
+}
+
+.dataset-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.dataset-footer {
+    text-align: right;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 12px;
+}
+
+/* 模态框增强样式 */
+.modal-xl .modal-dialog {
+    max-width: 90%;
+}
+
+.detail-section {
+    margin-bottom: 24px;
+}
+
+.detail-section h6 {
+    color: var(--ai-primary);
+    font-weight: 600;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 8px;
+}
+
+.detail-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item label {
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.metric-card {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ai-primary);
+    margin-bottom: 4px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* 空状态样式 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1f2937;
+}
+
+.empty-state p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* 数据预览样式 */
+.data-preview {
+    padding: 16px;
+}
+
+.preview-info {
+    background: #f3f4f6;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.image-samples {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.image-sample {
+    text-align: center;
+}
+
+.image-placeholder {
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 8px;
+}
+
+.image-placeholder span {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.image-info {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.image-info span {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* 质量评分条 */
+.quality-item {
+    margin-bottom: 12px;
+}
+
+.quality-item label {
+    display: block;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.quality-bar {
+    position: relative;
+    background: #e5e7eb;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.quality-fill {
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-success));
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.quality-bar span {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .ai-card {
+        margin-bottom: 16px;
+    }
+    
+    .ai-table {
+        font-size: 14px;
+    }
+    
+    .ai-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    
+    .models-grid,
+    .datasets-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .monitor-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .manager-filters {
+        flex-direction: column;
+    }
+    
+    .manager-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .manager-controls {
+        justify-content: center;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

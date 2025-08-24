@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="ai.login.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background min-h-screen flex items-center justify-center p-4">
+    <!-- 导航栏 -->
+    <nav class="navbar fixed top-0 left-0 right-0">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="ai.title">AI模型训练</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-md w-full mt-16">
+        <!-- 标题区域 -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold mb-2" data-i18n="ai.login.title">登录</h1>
+            <p id="userTypeDisplay" class="text-lg font-medium text-gray-600"></p>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="card">
+            <form id="loginForm" class="space-y-6">
+                <div class="form-group">
+                    <label for="username" class="form-label" data-i18n="ai.login.username">用户名</label>
+                    <input type="text" id="username" name="username" required class="input"
+                           placeholder="请输入您的用户名">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label" data-i18n="ai.login.password">密码</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required class="input pr-10"
+                               placeholder="请输入您的密码">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="rememberMe" class="h-4 w-4 border-gray-300 rounded focus:border-gray-500">
+                        <span class="ml-2 text-sm text-gray-600">记住我</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">
+                    <span id="loginButtonText" data-i18n="ai.login.loginBtn">登录</span>
+                    <div id="loginSpinner" class="hidden inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                </button>
+            </form>
+
+            <!-- 快速进入按钮 -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3" data-i18n="ai.login.quickAccess">快速进入：</h4>
+                <div class="space-y-2">
+                    <button onclick="quickLogin('client1', '123456')" class="btn btn-secondary w-full text-sm">
+                        <span data-i18n="ai.login.quickClient">客户端登录</span>
+                    </button>
+                    <button onclick="quickLogin('server', 'admin123')" class="btn btn-secondary w-full text-sm">
+                        <span data-i18n="ai.login.quickServer">服务器登录</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模拟账号提示 -->
+            <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700 mb-2" data-i18n="ai.login.testAccounts">测试账号：</h4>
+                <div class="text-xs text-gray-600 space-y-1">
+                    <div data-i18n="ai.login.clientAccount1">客户端: client1 / 123456</div>
+                    <div data-i18n="ai.login.clientAccount2">客户端: client2 / 123456</div>
+                    <div data-i18n="ai.login.serverAccount1">服务器: server / admin123</div>
+                    <div data-i18n="ai.login.serverAccount2">服务器: admin / admin123</div>
+                </div>
+            </div>
+
+            <!-- 返回链接 -->
+            <div class="mt-6 text-center">
+                <button onclick="goBack()" class="btn btn-secondary">
+                    ← 返回用户类型选择
+                </button>
+            </div>
+        </div>
+
+        <!-- 错误消息 -->
+        <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-red-600 text-sm"></p>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        // 快速登录功能
+        function quickLogin(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            
+            // 根据用户名设置对应的用户类型
+            if (username.startsWith('client')) {
+                localStorage.setItem('aiUserType', 'client');
+                localStorage.setItem('userType', 'client');
+            } else if (username === 'server' || username === 'admin') {
+                localStorage.setItem('aiUserType', 'server');
+                localStorage.setItem('userType', 'server');
+            }
+            
+            // 更新用户类型显示
+            const userTypeDisplay = document.getElementById('userTypeDisplay');
+            const userType = localStorage.getItem('aiUserType');
+            if (userType === 'client') {
+                userTypeDisplay.textContent = '客户端登录';
+            } else if (userType === 'server') {
+                userTypeDisplay.textContent = '服务器管理登录';
+            }
+            
+            // 创建一个模拟的事件对象并调用登录处理函数
+            const mockEvent = {
+                preventDefault: () => {}
+            };
+            handleLogin(mockEvent);
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            let userType = localStorage.getItem('aiUserType') || localStorage.getItem('userType');
+            const userTypeDisplay = document.getElementById('userTypeDisplay');
+            
+            // 如果没有用户类型，设置默认为client
+            if (!userType) {
+                userType = 'client';
+                localStorage.setItem('aiUserType', 'client');
+                localStorage.setItem('userType', 'client');
+            }
+            
+            if (userType === 'client') {
+                userTypeDisplay.textContent = '客户端登录';
+            } else if (userType === 'server') {
+                userTypeDisplay.textContent = '服务器管理登录';
+            } else {
+                userTypeDisplay.textContent = '用户登录';
+            }
+
+            // 密码显示/隐藏切换
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const passwordInput = document.getElementById('password');
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // 切换图标
+                this.innerHTML = type === 'password' ? 
+                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>' :
+                    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path></svg>';
+            });
+
+            // 表单提交
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        });
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const userType = localStorage.getItem('aiUserType') || localStorage.getItem('userType');
+            
+            if (!username || !password) {
+                showError('请填写完整的登录信息');
+                return;
+            }
+
+            // 显示加载状态
+            showLoading(true);
+            hideError();
+
+            try {
+                // 模拟登录API调用
+                const loginData = {
+                    username: username,
+                    password: password,
+                    user_type: userType,
+                    business_type: 'ai'
+                };
+
+                // 模拟网络延迟和登录验证
+                const response = await simulateLogin(loginData);
+                
+                if (response.success) {
+                    // 保存登录信息
+                    localStorage.setItem('token', response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    localStorage.setItem('loginTime', new Date().toISOString());
+                    
+                    // 根据用户类型跳转到不同的界面
+                    if (userType === 'client') {
+                        window.location.href = './client-dashboard.html';
+                    } else if (userType === 'server') {
+                        window.location.href = './server-dashboard.html';
+                    } else {
+                        window.location.href = './client-dashboard.html';
+                    }
+                } else {
+                    showError(response.message || '登录失败，请检查用户名和密码');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('网络错误，请稍后重试');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function simulateLogin(loginData) {
+            // 模拟网络延迟
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 模拟登录验证逻辑
+            const validUsers = {
+                'client1': { password: '123456', type: 'client', name: '客户端用户1' },
+                'client2': { password: '123456', type: 'client', name: '客户端用户2' },
+                'server': { password: 'admin123', type: 'server', name: '服务器管理员' },
+                'admin': { password: 'admin123', type: 'server', name: '系统管理员' }
+            };
+
+            const user = validUsers[loginData.username];
+            
+            if (user && user.password === loginData.password && user.type === loginData.user_type) {
+                return {
+                    success: true,
+                    token: 'mock_jwt_token_' + Date.now(),
+                    user: {
+                        id: Math.floor(Math.random() * 1000),
+                        username: loginData.username,
+                        name: user.name,
+                        type: user.type,
+                        business_type: 'ai'
+                    }
+                };
+            } else {
+                return {
+                    success: false,
+                    message: '用户名或密码错误，或用户类型不匹配'
+                };
+            }
+        }
+
+        function showLoading(show) {
+            const button = document.getElementById('loginButtonText');
+            const spinner = document.getElementById('loginSpinner');
+            const submitBtn = document.querySelector('button[type="submit"]');
+            
+            if (show) {
+                button.textContent = '登录中...';
+                spinner.classList.remove('hidden');
+                submitBtn.disabled = true;
+            } else {
+                button.textContent = '登录';
+                spinner.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = errorDiv.querySelector('p');
+            errorText.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        function goBack() {
+            window.location.href = './user-type-select.html';
+        }
+
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>证书管理 - 密钥加密模块</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/crypto-styles.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container-fluid px-4">
+            <div class="navbar-brand d-flex align-items-center">
+                <button class="btn btn-outline-secondary me-3" onclick="goBack()">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <div>
+                    <h4 class="mb-0">证书管理中心</h4>
+                    <small class="text-muted">数字证书和PKI管理</small>
+                </div>
+            </div>
+            
+            <div class="navbar-nav d-flex align-items-center">
+                <button class="btn btn-outline-secondary me-2" onclick="goHome()">
+                    <i class="bi bi-house"></i> 返回主页
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <!-- 证书管理主容器 -->
+        <div id="certificateManagerContainer">
+            <!-- 证书管理组件将在这里加载 -->
+            <div class="crypto-card p-4 text-center">
+                <i class="bi bi-award text-success" style="font-size: 4rem;"></i>
+                <h3 class="mt-3 mb-3">数字证书管理</h3>
+                <p class="text-muted mb-4">管理X.509证书、证书链和PKI基础设施</p>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="certificate-card p-3 cursor-pointer hover:bg-gray-50 transition-colors" onclick="createCertificate()">
+                            <h6>创建证书</h6>
+                            <p class="text-muted small">生成新的数字证书</p>
+                            <button class="crypto-btn btn-sm" onclick="createCertificate()">创建</button>
+                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="certificate-card p-3 cursor-pointer hover:bg-gray-50 transition-colors" onclick="importCertificate()">
+                            <h6>导入证书</h6>
+                            <p class="text-muted small">导入现有证书文件</p>
+                            <button class="crypto-btn btn-sm" onclick="importCertificate()">导入</button>
+                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="certificate-card p-3 cursor-pointer hover:bg-gray-50 transition-colors" onclick="validateCertificate()">
+                            <h6>验证证书</h6>
+                            <p class="text-muted small">验证证书有效性</p>
+                            <button class="crypto-btn btn-sm" onclick="validateCertificate()">验证</button>
+                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>证书列表</h5>
+                    <div class="crypto-table-container mt-3">
+                        <table class="crypto-table">
+                            <thead>
+                                <tr>
+                                    <th>证书名称</th>
+                                    <th>颁发者</th>
+                                    <th>有效期</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewCertificateDetail('ssl-example-com')">
+                                    <td>SSL证书 - example.com</td>
+                                    <td>Let's Encrypt</td>
+                                    <td>2024-12-31</td>
+                                    <td><span class="status-indicator status-active"></span>有效</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); viewCertificateDetail('ssl-example-com')">查看</button>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation(); renewCertificate('ssl-example-com')">续期</button>
+                                    </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewCertificateDetail('code-signing')">
+                                    <td>代码签名证书</td>
+                                    <td>DigiCert</td>
+                                    <td>2025-06-15</td>
+                                    <td><span class="status-indicator status-active"></span>有效</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); viewCertificateDetail('code-signing')">查看</button>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation(); exportCertificate('code-signing')">导出</button>
+                                    </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewCertificateDetail('client-cert')">
+                                    <td>客户端证书</td>
+                                    <td>内部CA</td>
+                                    <td>2024-03-20</td>
+                                    <td><span class="status-indicator status-expired"></span>已过期</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation(); updateCertificate('client-cert')">更新</button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); revokeCertificate('client-cert')">撤销</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../shared/js/theme-manager.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('证书管理页面已加载');
+        });
+        
+        function goBack() {
+            window.location.href = 'main-dashboard.html';
+        }
+        
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+        
+        function createCertificate() {
+            alert('证书创建功能开发中...\n\n将提供以下功能：\n- 选择证书类型（SSL、代码签名、客户端等）\n- 设置证书参数\n- 生成密钥对\n- 创建证书签名请求');
+        }
+        
+        function importCertificate() {
+            alert('证书导入功能开发中...\n\n支持导入格式：\n- PEM (.pem, .crt)\n- DER (.der)\n- PKCS#12 (.p12, .pfx)\n- JKS (.jks)');
+        }
+        
+        function validateCertificate() {
+            alert('证书验证功能开发中...\n\n验证内容包括：\n- 证书有效性\n- 证书链完整性\n- 撤销状态检查\n- 时间有效性');
+        }
+
+        // 证书详情查看功能
+        function viewCertificateDetail(certId) {
+            const certDetails = {
+                'ssl-example-com': {
+                    name: 'SSL证书 - example.com',
+                    issuer: "Let's Encrypt",
+                    status: '有效',
+                    serial: 'A1B2C3D4E5F6789012345678',
+                    algorithm: 'RSA-2048',
+                    validFrom: '2024-01-01 00:00:00',
+                    validTo: '2024-12-31 23:59:59',
+                    keyUsage: 'Digital Signature, Key Encipherment',
+                    subjectAltName: 'DNS:example.com, DNS:www.example.com'
+                },
+                'code-signing': {
+                    name: '代码签名证书',
+                    issuer: 'DigiCert',
+                    status: '有效',
+                    serial: 'B2C3D4E5F6789012345678A1',
+                    algorithm: 'RSA-4096',
+                    validFrom: '2023-06-15 12:00:00',
+                    validTo: '2025-06-15 12:00:00',
+                    keyUsage: 'Digital Signature, Code Signing',
+                    subjectAltName: 'N/A'
+                },
+                'client-cert': {
+                    name: '客户端证书',
+                    issuer: '内部CA',
+                    status: '已过期',
+                    serial: 'C3D4E5F6789012345678A1B2',
+                    algorithm: 'ECDSA-256',
+                    validFrom: '2023-03-20 10:30:00',
+                    validTo: '2024-03-20 10:30:00',
+                    keyUsage: 'Digital Signature, Key Agreement',
+                    subjectAltName: 'email:user@company.com'
+                }
+            };
+
+            const cert = certDetails[certId];
+            if (cert) {
+                alert(`证书详细信息:\n\n📜 基本信息:\n证书名称: ${cert.name}\n颁发者: ${cert.issuer}\n状态: ${cert.status}\n序列号: ${cert.serial}\n\n🔒 加密信息:\n算法: ${cert.algorithm}\n密钥用途: ${cert.keyUsage}\n\n📅 有效期:\n生效时间: ${cert.validFrom}\n过期时间: ${cert.validTo}\n\n🏷️ 扩展信息:\n主题替代名: ${cert.subjectAltName}\n\n📊 证书链状态: 完整\n🚫 撤销状态: 未被撤销\n🔍 CRL检查: 通过\n🌐 OCSP响应: 正常`);
+            }
+        }
+
+        function renewCertificate(certId) {
+            if (confirm(`确定要续期证书 ${certId} 吗？`)) {
+                alert(`证书续期申请已提交\n\n续期进度:\n• 生成新密钥对: 完成\n• 创建 CSR: 完成\n• 提交到 CA: 完成\n• CA 签发: 处理中...\n\n预计完成时间: 24-48小时\n您将收到邮件通知`);
+            }
+        }
+
+        function exportCertificate(certId) {
+            alert(`证书导出选项:\n\n可导出格式:\n• PEM (.pem) - 推荐\n• DER (.der)\n• PKCS#12 (.p12/.pfx) - 包含私钥\n• JKS (.jks) - Java 密钥库\n\n导出内容:\n☑️ 公钥证书\n☐ 私钥 (需要密码)\n☐ 证书链\n☐ 中间证书\n\n请选择导出格式和内容...`);
+        }
+
+        function updateCertificate(certId) {
+            if (confirm(`确定要更新过期证书 ${certId} 吗？`)) {
+                alert(`证书更新流程启动:\n\n更新步骤:\n1. 🔄 生成新密钥对\n2. 📄 创建证书签名请求 (CSR)\n3. 📫 提交到内部CA\n4. ✅ CA审批和签发\n5. 📦 安装新证书\n\n当前状态: 步骤1 - 生成新密钥对...\n预计完成: 2-4小时`);
+            }
+        }
+
+        function revokeCertificate(certId) {
+            const reason = prompt('请选择撤销原因:\n\n1. 密钥泄露\n2. CA泄露\n3. 需要更改\n4. 停止使用\n5. 证书作废\n6. 权利终止\n\n请输入选项编号 (1-6):');
+            
+            if (reason && reason >= '1' && reason <= '6') {
+                const reasons = ['', '密钥泄露', 'CA泄露', '需要更改', '停止使用', '证书作废', '权利终止'];
+                if (confirm(`确定要撤销证书 ${certId} 吗？\n\n撤销原因: ${reasons[parseInt(reason)]}\n\n❗ 警告: 此操作不可撤销！`)) {
+                    alert(`证书撤销请求已提交\n\n撤销信息:\n证书ID: ${certId}\n撤销原因: ${reasons[parseInt(reason)]}\n撤销时间: ${new Date().toLocaleString()}\n\n撤销状态: 处理中...\nCRL更新: 待发布\nOCSP更新: 待同步\n\n预计生效时间: 1-4小时`);
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .crypto-table-container {
+            overflow-x: auto;
+        }
+        
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        
+        .transition-colors {
+            transition: background-color 0.2s ease;
+        }
+        
+        .hover\:bg-gray-50:hover {
+            background-color: #f9fafb;
+        }
+    </style>
+</body>
+</html>

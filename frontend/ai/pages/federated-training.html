@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="ai.training.federated.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>标准联邦学习训练</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <span data-i18n="ai.training.federated.standardTitle">标准联邦学习训练</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <span id="userInfo" class="text-sm text-gray-600"></span>
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+                <button onclick="logout()" class="btn btn-secondary text-sm">
+                    <span data-i18n="common.logout">退出登录</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-6 py-8">
+        <!-- Training Mode Info -->
+        <div class="mb-8">
+            <div class="card p-6 bg-gray-50">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2" data-i18n="ai.training.federated.standard">标准联邦学习</h3>
+                        <p class="text-gray-600" data-i18n="ai.training.federated.standardDesc">传统的联邦学习模式，在保护数据隐私的同时，允许查看全局训练进度和统计信息</p>
+                        <div class="mt-3 flex items-center text-sm">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800" data-i18n="ai.training.federated.transparentAggregation">模型聚合透明</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2" data-i18n="ai.training.federated.globalProgress">可查看全局进度</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Configuration -->
+        <div class="mb-8">
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6" data-i18n="ai.training.local.trainingConfig">训练配置</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Model Configuration -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.modelConfig">模型配置</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.modelType">模型类型</label>
+                                <select class="input" id="modelType">
+                                    <option value="cnn" data-i18n="ai.training.local.cnn">卷积神经网络 (CNN)</option>
+                                    <option value="rnn" data-i18n="ai.training.local.rnn">循环神经网络 (RNN)</option>
+                                    <option value="transformer" data-i18n="ai.training.local.transformer">Transformer</option>
+                                    <option value="mlp" data-i18n="ai.training.local.mlp">多层感知机 (MLP)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.learningRate">学习率</label>
+                                <input type="number" class="input" value="0.001" step="0.0001" min="0.0001" max="0.1" id="learningRate">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.batchSize">批次大小</label>
+                                <select class="input" id="batchSize">
+                                    <option value="16">16</option>
+                                    <option value="32" selected>32</option>
+                                    <option value="64">64</option>
+                                    <option value="128">128</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.local.epochs">训练轮数</label>
+                                <input type="number" class="input" value="10" min="1" max="100" id="epochs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Federated Configuration -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.federated.federatedConfig">联邦配置</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.federated.participants">期望参与方数量</label>
+                                <input type="number" class="input" value="3" min="2" max="10" id="participants">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.federated.aggregationRounds">聚合轮数</label>
+                                <input type="number" class="input" value="5" min="1" max="20" id="aggregationRounds">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.federated.localEpochs">本地训练轮数</label>
+                                <input type="number" class="input" value="2" min="1" max="10" id="localEpochs">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.training.federated.aggregationMethod">聚合方法</label>
+                                <select class="input" id="aggregationMethod">
+                                    <option value="fedavg" data-i18n="ai.training.federated.fedAvg">FedAvg (联邦平均)</option>
+                                    <option value="fedprox" data-i18n="ai.training.federated.fedProx">FedProx</option>
+                                    <option value="scaffold" data-i18n="ai.training.federated.scaffold">SCAFFOLD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center mt-8">
+                    <div class="flex space-x-4">
+                        <button id="startTrainingBtn" onclick="startTraining()" class="btn btn-primary">
+                            <span data-i18n="ai.training.local.startTraining">开始训练</span>
+                        </button>
+                        <button id="pauseTrainingBtn" onclick="pauseTraining()" class="btn btn-secondary hidden">
+                            <span data-i18n="ai.training.local.pauseTraining">暂停训练</span>
+                        </button>
+                        <button id="stopTrainingBtn" onclick="stopTraining()" class="btn btn-secondary hidden">
+                            <span data-i18n="ai.training.local.stopTraining">停止训练</span>
+                        </button>
+                    </div>
+                    <button onclick="resetConfig()" class="btn btn-secondary">
+                        <span data-i18n="ai.training.federated.resetConfig">重置配置</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Status -->
+        <div class="grid lg:grid-cols-2 gap-8 mb-8">
+            <!-- Training Progress -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingStatus">训练状态</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.local.currentStatus">当前状态</span>
+                        <span id="trainingStatus" class="text-sm font-semibold text-gray-900" data-i18n="ai.training.local.notStarted">● 未开始</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.federated.currentRound">当前聚合轮次</span>
+                        <span id="currentRound" class="text-sm font-semibold text-gray-900">0/5</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.federated.connectedParticipants">已连接参与方</span>
+                        <span id="connectedParticipants" class="text-sm font-semibold text-gray-900">0/3</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.local.trainingTime">训练时间</span>
+                        <span id="trainingTime" class="text-sm font-semibold text-gray-900">00:00:00</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.local.progress">进度</span>
+                            <span id="progressPercentage" class="text-sm font-semibold text-gray-900">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="progressBar" class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="card p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.performanceMetrics">性能指标</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.local.currentAccuracy">当前准确率</span>
+                        <span id="currentAccuracy" class="text-sm font-semibold text-gray-900">0%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.local.currentLoss">当前损失</span>
+                        <span id="currentLoss" class="text-sm font-semibold text-gray-900">0.0</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.local.bestAccuracy">最佳准确率</span>
+                        <span id="bestAccuracy" class="text-sm font-semibold text-gray-900">0%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-600" data-i18n="ai.training.federated.globalAccuracy">全局准确率</span>
+                        <span id="globalAccuracy" class="text-sm font-semibold text-gray-900">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Metrics Chart -->
+        <div class="card p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingMetrics">训练指标</h3>
+            <div class="h-80">
+                <canvas id="trainingChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Global Statistics -->
+        <div class="card p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.federated.globalStatistics">全局统计信息</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-700" id="totalParticipants">0</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.training.federated.totalParticipants">总参与方</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-700" id="totalSamples">0</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.training.federated.totalSamples">总样本数</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-700" id="averageTime">0s</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.training.federated.averageRoundTime">平均轮次时间</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        let trainingInterval;
+        let trainingStartTime;
+        let currentTrainingStatus = 'not-started';
+        let trainingChart;
+
+        function goBack() {
+            window.location.href = './federated-training-select.html';
+        }
+
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('loginTime');
+            window.location.href = './login.html';
+        }
+
+        function startTraining() {
+            currentTrainingStatus = 'training';
+            trainingStartTime = Date.now();
+            
+            document.getElementById('trainingStatus').textContent = '● 训练中';
+            document.getElementById('startTrainingBtn').classList.add('hidden');
+            document.getElementById('pauseTrainingBtn').classList.remove('hidden');
+            document.getElementById('stopTrainingBtn').classList.remove('hidden');
+            
+            // 模拟联邦训练进度
+            trainingInterval = setInterval(updateTrainingProgress, 1000);
+            
+            // 模拟参与方连接
+            setTimeout(() => {
+                document.getElementById('connectedParticipants').textContent = '3/3';
+            }, 2000);
+        }
+
+        function pauseTraining() {
+            if (currentTrainingStatus === 'training') {
+                currentTrainingStatus = 'paused';
+                clearInterval(trainingInterval);
+                document.getElementById('trainingStatus').textContent = '● 已暂停';
+                document.getElementById('pauseTrainingBtn').textContent = '继续训练';
+            } else if (currentTrainingStatus === 'paused') {
+                currentTrainingStatus = 'training';
+                trainingInterval = setInterval(updateTrainingProgress, 1000);
+                document.getElementById('trainingStatus').textContent = '● 训练中';
+                document.getElementById('pauseTrainingBtn').textContent = '暂停训练';
+            }
+        }
+
+        function stopTraining() {
+            currentTrainingStatus = 'stopped';
+            clearInterval(trainingInterval);
+            
+            document.getElementById('trainingStatus').textContent = '● 已停止';
+            document.getElementById('startTrainingBtn').classList.remove('hidden');
+            document.getElementById('pauseTrainingBtn').classList.add('hidden');
+            document.getElementById('stopTrainingBtn').classList.add('hidden');
+        }
+
+        function resetConfig() {
+            // 重置所有配置为默认值
+            document.getElementById('modelType').selectedIndex = 0;
+            document.getElementById('learningRate').value = '0.001';
+            document.getElementById('batchSize').selectedIndex = 1;
+            document.getElementById('epochs').value = '10';
+            document.getElementById('participants').value = '3';
+            document.getElementById('aggregationRounds').value = '5';
+            document.getElementById('localEpochs').value = '2';
+            document.getElementById('aggregationMethod').selectedIndex = 0;
+        }
+
+        function updateTrainingProgress() {
+            if (currentTrainingStatus !== 'training') return;
+            
+            const elapsed = Date.now() - trainingStartTime;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            document.getElementById('trainingTime').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // 模拟训练进度
+            const maxRounds = parseInt(document.getElementById('aggregationRounds').value);
+            const progress = Math.min((elapsed / 1000) / (maxRounds * 30), 1); // 每轮30秒
+            const currentRoundNum = Math.min(Math.floor(progress * maxRounds) + 1, maxRounds);
+            
+            document.getElementById('progressPercentage').textContent = `${Math.floor(progress * 100)}%`;
+            document.getElementById('progressBar').style.width = `${progress * 100}%`;
+            document.getElementById('currentRound').textContent = `${currentRoundNum}/${maxRounds}`;
+            
+            // 模拟指标更新
+            const accuracy = Math.min(50 + progress * 40 + Math.random() * 5, 95);
+            const loss = Math.max(1.0 - progress * 0.8 + Math.random() * 0.1, 0.1);
+            const globalAcc = Math.min(60 + progress * 35 + Math.random() * 3, 98);
+            
+            document.getElementById('currentAccuracy').textContent = `${accuracy.toFixed(1)}%`;
+            document.getElementById('currentLoss').textContent = loss.toFixed(3);
+            document.getElementById('globalAccuracy').textContent = `${globalAcc.toFixed(1)}%`;
+            document.getElementById('bestAccuracy').textContent = `${Math.max(accuracy, parseFloat(document.getElementById('bestAccuracy').textContent.replace('%', '')) || 0).toFixed(1)}%`;
+            
+            // 更新全局统计
+            document.getElementById('totalParticipants').textContent = '3';
+            document.getElementById('totalSamples').textContent = '15,000';
+            document.getElementById('averageTime').textContent = '45s';
+            
+            // 如果训练完成
+            if (progress >= 1) {
+                currentTrainingStatus = 'completed';
+                clearInterval(trainingInterval);
+                document.getElementById('trainingStatus').textContent = '● 训练完成';
+                document.getElementById('startTrainingBtn').classList.remove('hidden');
+                document.getElementById('pauseTrainingBtn').classList.add('hidden');
+                document.getElementById('stopTrainingBtn').classList.add('hidden');
+            }
+        }
+
+        function initTrainingChart() {
+            const ctx = document.getElementById('trainingChart').getContext('2d');
+            trainingChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '本地准确率',
+                        data: [],
+                        borderColor: 'rgb(115, 115, 115)',
+                        backgroundColor: 'rgba(115, 115, 115, 0.1)',
+                        tension: 0.1
+                    }, {
+                        label: '全局准确率',
+                        data: [],
+                        borderColor: 'rgb(82, 82, 82)',
+                        backgroundColor: 'rgba(82, 82, 82, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '准确率 (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '聚合轮次'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userInfo = document.getElementById('userInfo');
+            if (user.name) {
+                userInfo.textContent = `${user.name}`;
+            }
+            
+            initTrainingChart();
+        });
+    </script>
+</body>
+</html>

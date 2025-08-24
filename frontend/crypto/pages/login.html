@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="crypto.login.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密钥加密登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background min-h-screen flex items-center justify-center p-4">
+    <!-- 导航栏 -->
+    <nav class="navbar fixed top-0 left-0 right-0">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="crypto.title">密钥加密</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-md w-full mt-16">
+        <!-- 标题区域 -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold mb-2" data-i18n="crypto.login.title">密钥加密登录</h1>
+            <p class="text-lg font-medium text-gray-600" data-i18n="crypto.login.subtitle">安全的密码学工具平台</p>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="card">
+            <form id="loginForm" class="space-y-6">
+                <div class="form-group">
+                    <label for="username" class="form-label" data-i18n="crypto.login.username">用户名</label>
+                    <input type="text" id="username" name="username" required class="input"
+                           data-i18n-placeholder="crypto.login.usernamePlaceholder"
+                           placeholder="请输入您的用户名">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label" data-i18n="crypto.login.password">密码</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required class="input pr-10"
+                               data-i18n-placeholder="crypto.login.passwordPlaceholder"
+                               placeholder="请输入您的密码">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="rememberMe" class="h-4 w-4 border-gray-300 rounded focus:border-gray-500">
+                        <span class="ml-2 text-sm text-gray-600" data-i18n="crypto.login.rememberMe">记住我</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">
+                    <span id="loginButtonText" data-i18n="crypto.login.loginBtn">登录</span>
+                    <div id="loginSpinner" class="hidden inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                </button>
+            </form>
+
+            <!-- 快速进入按钮 -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3" data-i18n="crypto.login.quickAccess">快速进入：</h4>
+                <div class="space-y-2">
+                    <button onclick="quickLogin('cryptographer', 'crypto123')" class="btn btn-secondary w-full text-sm">
+                        <span data-i18n="crypto.login.quickCryptographer">密码学专家登录</span>
+                    </button>
+                    <button onclick="quickLogin('security', 'security123')" class="btn btn-secondary w-full text-sm">
+                        <span data-i18n="crypto.login.quickSecurity">安全管理员登录</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模拟账号提示 -->
+            <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700 mb-2" data-i18n="crypto.login.testAccounts">测试账号：</h4>
+                <div class="text-xs text-gray-600 space-y-1">
+                    <div data-i18n="crypto.login.cryptographerAccount">密码学专家: cryptographer / crypto123</div>
+                    <div data-i18n="crypto.login.securityAccount">安全管理员: security / security123</div>
+                    <div data-i18n="crypto.login.developerAccount">开发者: dev / dev123</div>
+                    <div data-i18n="crypto.login.auditAccount">审计员: audit / audit123</div>
+                </div>
+            </div>
+
+            <!-- 返回链接 -->
+            <div class="mt-6 text-center">
+                <button onclick="goHome()" class="btn btn-secondary">
+                    <span data-i18n="common.home">← 返回主页</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 错误消息 -->
+        <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-red-600 text-sm"></p>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        // 模拟账号数据
+        const mockAccounts = {
+            'cryptographer': { password: 'crypto123', role: 'cryptographer', name: '密码学专家' },
+            'security': { password: 'security123', role: 'security', name: '安全管理员' },
+            'dev': { password: 'dev123', role: 'developer', name: '开发者' },
+            'audit': { password: 'audit123', role: 'auditor', name: '审计员' }
+        };
+
+        // 密码可见性切换
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('svg');
+            if (type === 'text') {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+            }
+        });
+
+        // 快速登录功能
+        function quickLogin(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            handleLogin();
+        }
+
+        // 登录表单处理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButtonText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // 显示加载状态
+            loginButton.textContent = '登录中...';
+            loginSpinner.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+
+            // 模拟登录验证
+            setTimeout(() => {
+                const account = mockAccounts[username];
+                
+                if (account && account.password === password) {
+                    // 登录成功
+                    const user = {
+                        username: username,
+                        name: account.name,
+                        role: account.role,
+                        module: 'crypto'
+                    };
+
+                    // 保存用户信息
+                    localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('token', 'mock-token-' + Date.now());
+                    localStorage.setItem('loginTime', new Date().toISOString());
+
+                    // 跳转到仪表板
+                    window.location.href = './crypto-dashboard.html';
+                } else {
+                    // 登录失败
+                    errorMessage.querySelector('p').textContent = '用户名或密码错误';
+                    errorMessage.classList.remove('hidden');
+                    loginButton.textContent = '登录';
+                    loginSpinner.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+
+        // 页面初始化时应用翻译
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用翻译到placeholder
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            
+            // 监听语言变更事件来更新placeholder
+            window.addEventListener('languageChanged', function(e) {
+                const lang = e.detail.language;
+                if (lang === 'en') {
+                    usernameInput.placeholder = 'Enter your username';
+                    passwordInput.placeholder = 'Enter your password';
+                } else {
+                    usernameInput.placeholder = '请输入您的用户名';
+                    passwordInput.placeholder = '请输入您的密码';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

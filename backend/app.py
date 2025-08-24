@@ -20,11 +20,16 @@ from config import config
 from models.base import db
 from database import init_database, create_cli_commands
 
-# 导入路由模块
+# 导入通用路由模块
 from routes.auth import auth_bp
 from routes.client import client_bp
 from routes.server import server_bp
-from routes.training import training_bp
+
+# 导入业务模块 - 与前端结构保持一致
+from ai import ai_bp
+from blockchain import blockchain_bp
+from crypto import crypto_bp
+from homepage import homepage_bp
 
 def create_app(config_name=None):
     """应用工厂函数"""
@@ -68,10 +73,16 @@ def create_app(config_name=None):
     app.logger.info('联邦学习平台启动中...')
     
     # 注册蓝图
+    # 通用路由
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(client_bp, url_prefix='/api/client')
     app.register_blueprint(server_bp, url_prefix='/api/server')
-    app.register_blueprint(training_bp, url_prefix='/api/training')
+    
+    # 业务模块路由 - 与前端结构保持一致
+    app.register_blueprint(homepage_bp, url_prefix='/api/homepage')
+    app.register_blueprint(ai_bp, url_prefix='/api/ai')
+    app.register_blueprint(blockchain_bp, url_prefix='/api/blockchain')
+    app.register_blueprint(crypto_bp, url_prefix='/api/crypto')
     
     # 全局错误处理
     @app.errorhandler(400)
@@ -199,7 +210,7 @@ def create_app(config_name=None):
             'status': status,
             'timestamp': datetime.now().isoformat(),
             'services': services,
-            'supported_business_types': ['ai', 'blockchain'],
+            'supported_business_types': ['ai', 'blockchain', 'crypto'],
             'version': '1.0.0'
         })
     

@@ -11,21 +11,109 @@ import logging
 
 auth_bp = Blueprint('auth', __name__)
 
+def get_user_permissions(user_type, business_type):
+    """根据用户类型和业务类型获取权限列表"""
+    permissions = []
+    
+    if user_type == 'client':
+        if business_type == 'ai':
+            permissions = [
+                'create_local_project',
+                'view_own_projects',
+                'submit_training_request', 
+                'view_training_progress',
+                'download_own_models',
+                'manage_datasets',
+                'view_model_metrics'
+            ]
+        elif business_type == 'blockchain':
+            permissions = [
+                'create_transactions',
+                'view_own_transactions',
+                'manage_wallet',
+                'view_blockchain_info',
+                'participate_in_consensus'
+            ]
+        elif business_type == 'crypto':
+            permissions = [
+                'generate_keys',
+                'encrypt_decrypt',
+                'digital_signature',
+                'key_exchange',
+                'view_crypto_operations'
+            ]
+    elif user_type == 'server':
+        if business_type == 'ai':
+            permissions = [
+                'manage_all_clients',
+                'approve_training_requests',
+                'view_global_projects',
+                'manage_models',
+                'system_configuration',
+                'view_system_logs',
+                'monitor_training',
+                'manage_federated_learning'
+            ]
+        elif business_type == 'blockchain':
+            permissions = [
+                'manage_blockchain_network',
+                'validate_transactions',
+                'manage_consensus',
+                'view_all_transactions',
+                'system_administration',
+                'node_management'
+            ]
+        elif business_type == 'crypto':
+            permissions = [
+                'manage_key_infrastructure',
+                'audit_crypto_operations',
+                'system_security_config',
+                'manage_certificates',
+                'security_monitoring',
+                'compliance_reporting'
+            ]
+    
+    return permissions
+
 # 模拟用户数据库（实际应用中应使用数据库）
 MOCK_USERS = {
     'client': {
-        '上海一厂': {'password': 'password123', 'address': 'http://shanghai.client.com', 'business_type': 'ai'},
-        '武汉二厂': {'password': 'password123', 'address': 'http://wuhan.client.com', 'business_type': 'ai'},
-        '西安三厂': {'password': 'password123', 'address': 'http://xian.client.com', 'business_type': 'ai'},
-        '广州四厂': {'password': 'password123', 'address': 'http://guangzhou.client.com', 'business_type': 'ai'},
-        '工商银行': {'password': 'password123', 'address': 'http://icbc.bank.com', 'business_type': 'blockchain'},
-        '建设银行': {'password': 'password123', 'address': 'http://ccb.bank.com', 'business_type': 'blockchain'},
-        '招商银行': {'password': 'password123', 'address': 'http://cmb.bank.com', 'business_type': 'blockchain'},
+        # AI模块客户端
+        'client1': {'password': '123456', 'address': 'http://client1.ai.com', 'business_type': 'ai', 'full_name': '客户端1', 'organization': 'AI科技公司'},
+        'client2': {'password': '123456', 'address': 'http://client2.ai.com', 'business_type': 'ai', 'full_name': '客户端2', 'organization': 'AI研发中心'},
+        '上海一厂': {'password': 'password123', 'address': 'http://shanghai.client.com', 'business_type': 'ai', 'full_name': '上海第一工厂', 'organization': '上海制造集团'},
+        '武汉二厂': {'password': 'password123', 'address': 'http://wuhan.client.com', 'business_type': 'ai', 'full_name': '武汉第二工厂', 'organization': '武汉工业园'},
+        '西安三厂': {'password': 'password123', 'address': 'http://xian.client.com', 'business_type': 'ai', 'full_name': '西安第三工厂', 'organization': '西安高新区'},
+        '广州四厂': {'password': 'password123', 'address': 'http://guangzhou.client.com', 'business_type': 'ai', 'full_name': '广州第四工厂', 'organization': '广州科技园'},
+        
+        # 区块链模块客户端
+        'user': {'password': 'user123', 'address': 'http://user.blockchain.com', 'business_type': 'blockchain', 'full_name': '普通用户', 'organization': '金融用户'},
+        'dev': {'password': 'dev123', 'address': 'http://dev.blockchain.com', 'business_type': 'blockchain', 'full_name': '开发用户', 'organization': '技术开发部'},
+        'test': {'password': 'test123', 'address': 'http://test.blockchain.com', 'business_type': 'blockchain', 'full_name': '测试用户', 'organization': '测试部门'},
+        '工商银行': {'password': 'password123', 'address': 'http://icbc.bank.com', 'business_type': 'blockchain', 'full_name': '中国工商银行', 'organization': '国有大型银行'},
+        '建设银行': {'password': 'password123', 'address': 'http://ccb.bank.com', 'business_type': 'blockchain', 'full_name': '中国建设银行', 'organization': '国有大型银行'},
+        '招商银行': {'password': 'password123', 'address': 'http://cmb.bank.com', 'business_type': 'blockchain', 'full_name': '招商银行', 'organization': '股份制银行'},
+        
+        # 密码学模块客户端
+        'cryptographer': {'password': 'crypto123', 'address': 'http://crypto.secure.com', 'business_type': 'crypto', 'full_name': '密码学专家', 'organization': '密码学研究院'},
+        'security': {'password': 'security123', 'address': 'http://security.secure.com', 'business_type': 'crypto', 'full_name': '安全工程师', 'organization': '网络安全部'},
+        'audit': {'password': 'audit123', 'address': 'http://audit.secure.com', 'business_type': 'crypto', 'full_name': '审计专员', 'organization': '安全审计部'},
     },
     'server': {
-        'admin': {'password': 'admin123', 'business_type': 'ai'},
-        'blockchain-admin': {'password': 'admin123', 'business_type': 'blockchain'},
-        'demo-admin': {'password': 'demo123', 'business_type': 'ai'},
+        # AI模块服务器
+        'server': {'password': 'admin123', 'business_type': 'ai', 'full_name': 'AI服务器管理员', 'organization': 'AI平台管理'},
+        'admin': {'password': 'admin123', 'business_type': 'ai', 'full_name': 'AI系统管理员', 'organization': 'AI平台管理'},
+        'demo-admin': {'password': 'demo123', 'business_type': 'ai', 'full_name': 'AI演示管理员', 'organization': 'AI演示平台'},
+        
+        # 区块链模块服务器
+        'admin': {'password': 'admin123', 'business_type': 'blockchain', 'full_name': '区块链管理员', 'organization': '区块链平台管理'},
+        'blockchain-admin': {'password': 'admin123', 'business_type': 'blockchain', 'full_name': '区块链系统管理员', 'organization': '区块链平台管理'},
+        'dev': {'password': 'dev123', 'business_type': 'blockchain', 'full_name': '区块链开发管理员', 'organization': '区块链开发团队'},
+        
+        # 密码学模块服务器
+        'crypto-admin': {'password': 'crypto123', 'business_type': 'crypto', 'full_name': '密码学管理员', 'organization': '密码学平台管理'},
+        'security-admin': {'password': 'security123', 'business_type': 'crypto', 'full_name': '安全管理员', 'organization': '安全管理部门'},
+        'dev': {'password': 'dev123', 'business_type': 'crypto', 'full_name': '密码学开发管理员', 'organization': '密码学开发团队'},
     }
 }
 
@@ -54,7 +142,7 @@ def login():
         if user_type not in ['client', 'server']:
             return jsonify({'error': '无效的用户类型'}), 400
         
-        if business_type not in ['ai', 'blockchain']:
+        if business_type not in ['ai', 'blockchain', 'crypto']:
             return jsonify({'error': '无效的业务类型'}), 400
         
         # 获取用户标识
@@ -92,8 +180,9 @@ def login():
             'exp': datetime.utcnow() + timedelta(hours=24)
         }
         
-        # TODO: 使用实际的SECRET_KEY
-        token = jwt.encode(token_payload, 'secret_key', algorithm='HS256')
+        # 使用配置文件中的SECRET_KEY
+        from flask import current_app
+        token = jwt.encode(token_payload, current_app.config['SECRET_KEY'], algorithm='HS256')
         
         # 构建响应数据
         response_data = {
@@ -102,7 +191,10 @@ def login():
             'user': {
                 'id': user_id,
                 'type': user_type,
-                'businessType': business_type
+                'businessType': business_type,
+                'fullName': user_data.get('full_name', user_id),
+                'organization': user_data.get('organization', ''),
+                'permissions': get_user_permissions(user_type, business_type)
             }
         }
         
@@ -150,8 +242,9 @@ def verify_token():
         token = auth_header.split(' ')[1]
         
         try:
-            # TODO: 使用实际的SECRET_KEY
-            payload = jwt.decode(token, 'secret_key', algorithms=['HS256'])
+            # 使用配置文件中的SECRET_KEY
+            from flask import current_app
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
             
             return jsonify({
                 'valid': True,
@@ -185,8 +278,9 @@ def refresh_token():
         token = auth_header.split(' ')[1]
         
         try:
-            # TODO: 使用实际的SECRET_KEY
-            payload = jwt.decode(token, 'secret_key', algorithms=['HS256'])
+            # 使用配置文件中的SECRET_KEY
+            from flask import current_app
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
             
             # 生成新token
             new_payload = {
@@ -196,7 +290,7 @@ def refresh_token():
                 'exp': datetime.utcnow() + timedelta(hours=24)
             }
             
-            new_token = jwt.encode(new_payload, 'secret_key', algorithm='HS256')
+            new_token = jwt.encode(new_payload, current_app.config['SECRET_KEY'], algorithm='HS256')
             
             return jsonify({
                 'success': True,

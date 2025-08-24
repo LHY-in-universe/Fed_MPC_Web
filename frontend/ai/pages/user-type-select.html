@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="ai.userType.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择用户类型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+</head>
+<body class="module-background">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="ai.title">AI模型训练</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-6 py-16">
+        <!-- 标题区域 -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold mb-6" data-i18n="ai.userType.title">
+                选择用户类型
+            </h1>
+        </div>
+
+        <!-- 用户类型选择 -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- 客户端 -->
+            <div class="card cursor-pointer transition-all duration-300 hover:scale-105" onclick="selectUserType('client')">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="ai.userType.client">客户端</h3>
+                    <p class="text-gray-600 mb-6" data-i18n="ai.userType.clientDesc">
+                        参与联邦训练，保护本地数据隐私
+                    </p>
+                </div>
+            </div>
+
+            <!-- 服务器 -->
+            <div class="card cursor-pointer transition-all duration-300 hover:scale-105" onclick="selectUserType('server')">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4" data-i18n="ai.userType.server">总服务器</h3>
+                    <p class="text-gray-600 mb-6" data-i18n="ai.userType.serverDesc">
+                        管理全局模型，协调训练过程
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航按钮 -->
+        <div class="text-center">
+            <button onclick="goBack()" class="btn btn-secondary">
+                ← 返回模块选择
+            </button>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <!-- 脚本文件 -->
+    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        function selectUserType(userType) {
+            localStorage.setItem('aiUserType', userType);
+            localStorage.setItem('userType', userType);
+            window.location.href = './login.html';
+        }
+
+        function goBack() {
+            window.location.href = '../../homepage/index.html';
+        }
+
+        function goHome() {
+            window.location.href = '../../homepage/index.html';
+        }
+    </script>
+</body>
+</html>
