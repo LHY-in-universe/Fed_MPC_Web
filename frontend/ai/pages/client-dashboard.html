@@ -7,6 +7,428 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <style>
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+        }
+        
+        .modal-overlay.hidden {
+            display: none;
+        }
+        
+        .modal-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-container {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(107, 114, 128, 0.1);
+            color: #374151;
+        }
+        
+        .modal-body {
+            padding: 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            background: #f9fafb;
+        }
+        
+        /* 详情内容样式 */
+        .detail-section {
+            color: #374151;
+        }
+        
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .detail-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .detail-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .detail-badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .detail-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .detail-badge.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .detail-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .detail-item {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .detail-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        
+        .detail-meta {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .detail-summary {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 12px;
+            display: grid;
+            gap: 12px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .summary-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        /* 训练进度样式 */
+        .training-progress {
+            margin-bottom: 24px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-details {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .training-params {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 12px;
+        }
+        
+        .params-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .param-item {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .param-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        
+        .param-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        /* 统计卡片样式 */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .stat-card.best {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 1px solid #a7f3d0;
+        }
+        
+        .stat-card.average {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid #93c5fd;
+        }
+        
+        .stat-card.low {
+            background: linear-gradient(135deg, #fef7ff, #fae8ff);
+            border: 1px solid #d8b4fe;
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+        
+        .stat-desc {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        
+        .stats-breakdown {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .type-stats {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .type-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .type-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .type-indicator.local {
+            background: #10b981;
+        }
+        
+        .type-indicator.federated {
+            background: #3b82f6;
+        }
+        
+        .type-label {
+            flex: 1;
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        .type-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .trend-info {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .trend-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .trend-arrow {
+            font-size: 20px;
+        }
+        
+        .trend-text {
+            flex: 1;
+        }
+        
+        .trend-desc {
+            font-size: 14px;
+            color: #374151;
+            margin-right: 8px;
+        }
+        
+        .trend-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #166534;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .modal-container {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .modal-header, .modal-content, .modal-footer {
+                padding: 16px;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .params-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body class="module-background">
     <!-- Navigation -->
@@ -187,6 +609,28 @@
         </svg>
     </button>
 
+    <!-- 详情模态框 -->
+    <div id="detailModal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">详情信息</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent" class="modal-content">
+                    <!-- 动态内容将在这里加载 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../../shared/js/theme-manager.js"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
@@ -206,20 +650,219 @@
         }
 
         function goHome() {
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/frontend/homepage/index.html';
         }
+
+        // 模态框控制函数
+        function showModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = content;
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // 点击背景关闭模态框
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
 
         // 训练状态概览详细信息
         function viewCompletedTraining() {
-            alert('已完成训练详情\n\n共完成 3 个训练任务：\n• 图像分类模型 (准确率: 94.2%)\n• 文本分类模型 (准确率: 91.8%)\n• 回归预测模型 (RMSE: 0.023)\n\n平均训练时间: 2.5小时\n成功率: 100%');
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">已完成训练</h4>
+                        <span class="detail-badge success">3 个任务</span>
+                    </div>
+                    
+                    <div class="stats-overview">
+                        <div class="stat-card best">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-content">
+                                <div class="stat-label">最高准确率</div>
+                                <div class="stat-value">94.2%</div>
+                                <div class="stat-desc">图像分类模型</div>
+                            </div>
+                        </div>
+                        <div class="stat-card average">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <div class="stat-label">平均时长</div>
+                                <div class="stat-value">2.5</div>
+                                <div class="stat-desc">小时</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-content">
+                                <div class="stat-label">成功率</div>
+                                <div class="stat-value">100%</div>
+                                <div class="stat-desc">无失败记录</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-summary">
+                        <h5 style="margin-bottom: 12px; font-weight: 600; color: #374151;">完成的训练任务</h5>
+                        <div class="summary-item">
+                            <span class="summary-label">📸 图像分类模型</span>
+                            <span class="summary-value">准确率: 94.2%</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">📝 文本分类模型</span>
+                            <span class="summary-value">准确率: 91.8%</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">📈 回归预测模型</span>
+                            <span class="summary-value">RMSE: 0.023</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">⏱️ 总训练时间</span>
+                            <span class="summary-value">7.5 小时</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            showModal('已完成训练详情', content);
         }
 
         function viewOngoingTraining() {
-            alert('进行中训练详情\n\n当前正在训练：\n• 深度学习图像识别模型\n\n进度: 65%\n预计剩余时间: 1.2小时\n当前准确率: 89.3%\n\n训练参数：\n- 学习率: 0.001\n- 批次大小: 32\n- 当前轮次: 65/100');
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">深度学习图像识别模型</h4>
+                        <span class="detail-badge info">进行中</span>
+                    </div>
+                    
+                    <div class="training-progress">
+                        <div class="progress-header">
+                            <span style="font-weight: 600;">训练进度</span>
+                            <span style="color: #3b82f6; font-weight: 600;">65%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <div class="progress-details">
+                            <div class="detail-row">
+                                <span>当前轮次</span>
+                                <span style="font-weight: 600;">65 / 100</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>预计剩余时间</span>
+                                <span style="font-weight: 600;">1.2 小时</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>当前准确率</span>
+                                <span style="font-weight: 600; color: #3b82f6;">89.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="training-params">
+                        <h5 style="margin-bottom: 12px; font-weight: 600; color: #374151;">训练参数</h5>
+                        <div class="params-grid">
+                            <div class="param-item">
+                                <div class="param-label">学习率</div>
+                                <div class="param-value">0.001</div>
+                            </div>
+                            <div class="param-item">
+                                <div class="param-label">批次大小</div>
+                                <div class="param-value">32</div>
+                            </div>
+                            <div class="param-item">
+                                <div class="param-label">优化器</div>
+                                <div class="param-value">Adam</div>
+                            </div>
+                            <div class="param-item">
+                                <div class="param-label">损失函数</div>
+                                <div class="param-value">CrossEntropy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            showModal('进行中训练详情', content);
         }
 
         function viewAccuracyStats() {
-            alert('准确率统计详情\n\n整体统计：\n• 平均准确率: 92.5%\n• 最高准确率: 94.2% (图像分类)\n• 最低准确率: 91.8% (文本分类)\n\n按训练类型：\n• 本地训练平均: 93.1%\n• 联邦训练平均: 91.8%\n\n趋势：相比上月提升 2.3%');
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">准确率统计</h4>
+                        <span class="detail-badge success">92.5%</span>
+                    </div>
+                    
+                    <div class="stats-overview">
+                        <div class="stat-card best">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-content">
+                                <div class="stat-label">最高准确率</div>
+                                <div class="stat-value">94.2%</div>
+                                <div class="stat-desc">图像分类</div>
+                            </div>
+                        </div>
+                        <div class="stat-card average">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <div class="stat-label">平均准确率</div>
+                                <div class="stat-value">92.5%</div>
+                                <div class="stat-desc">全部模型</div>
+                            </div>
+                        </div>
+                        <div class="stat-card low">
+                            <div class="stat-icon">📉</div>
+                            <div class="stat-content">
+                                <div class="stat-label">最低准确率</div>
+                                <div class="stat-value">91.8%</div>
+                                <div class="stat-desc">文本分类</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-breakdown">
+                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">按训练类型统计</h5>
+                        <div class="type-stats">
+                            <div class="type-item">
+                                <div class="type-indicator local"></div>
+                                <span class="type-label">本地训练平均</span>
+                                <span class="type-value">93.1%</span>
+                            </div>
+                            <div class="type-item">
+                                <div class="type-indicator federated"></div>
+                                <span class="type-label">联邦训练平均</span>
+                                <span class="type-value">91.8%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="trend-info">
+                        <div class="trend-card">
+                            <div class="trend-arrow">📈</div>
+                            <div class="trend-text">
+                                <span class="trend-desc">趋势分析：相比上月提升</span>
+                                <span class="trend-value">+2.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            showModal('准确率统计详情', content);
         }
 
         // 训练详细信息
@@ -234,7 +877,8 @@
                     dataset: 'CIFAR-10',
                     epochs: '100',
                     loss: '0.15',
-                    parameters: '1.2M'
+                    parameters: '1.2M',
+                    status: 'completed'
                 },
                 'text_classify_002': {
                     name: '文本分类模型', 
@@ -245,7 +889,8 @@
                     dataset: 'IMDb评论',
                     epochs: '80',
                     loss: '0.22',
-                    parameters: '850K'
+                    parameters: '850K',
+                    status: 'completed'
                 },
                 'regression_003': {
                     name: '回归预测模型',
@@ -256,37 +901,130 @@
                     dataset: '房价数据',
                     epochs: '120',
                     loss: '0.031',
-                    parameters: '450K'
+                    parameters: '450K',
+                    status: 'completed'
                 }
             };
 
             const detail = trainingDetails[trainingId];
             if (detail) {
-                alert(`${detail.name} 详细信息\n\n` +
-                    `训练类型: ${detail.type}\n` +
-                    `准确率/误差: ${detail.accuracy}\n` +
-                    `训练时间: ${detail.date}\n` +
-                    `训练时长: ${detail.duration}\n\n` +
-                    `数据集: ${detail.dataset}\n` +
-                    `训练轮次: ${detail.epochs}\n` +
-                    `最终损失: ${detail.loss}\n` +
-                    `模型参数: ${detail.parameters}\n\n` +
-                    `点击确定查看训练曲线图...`);
+                const badgeClass = detail.status === 'completed' ? 'success' : 'info';
+                const statusText = detail.status === 'completed' ? '已完成' : '进行中';
+                const isRegression = trainingId === 'regression_003';
+                
+                const content = `
+                    <div class="detail-section">
+                        <div class="detail-header">
+                            <h4 class="detail-title">${detail.name}</h4>
+                            <span class="detail-badge ${badgeClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">训练类型</div>
+                                <div class="detail-value">${detail.type}</div>
+                                <div class="detail-meta">${detail.type === '本地训练' ? '数据本地处理' : '分布式协作训练'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">${isRegression ? '模型误差' : '准确率'}</div>
+                                <div class="detail-value" style="color: ${isRegression ? '#059669' : '#3b82f6'};">${detail.accuracy}</div>
+                                <div class="detail-meta">${isRegression ? '均方根误差' : '测试集表现'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">训练时长</div>
+                                <div class="detail-value">${detail.duration}</div>
+                                <div class="detail-meta">完成时间: ${detail.date}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="training-params">
+                            <h5 style="margin-bottom: 12px; font-weight: 600; color: #374151;">训练配置详情</h5>
+                            <div class="params-grid">
+                                <div class="param-item">
+                                    <div class="param-label">数据集</div>
+                                    <div class="param-value">${detail.dataset}</div>
+                                </div>
+                                <div class="param-item">
+                                    <div class="param-label">训练轮次</div>
+                                    <div class="param-value">${detail.epochs}</div>
+                                </div>
+                                <div class="param-item">
+                                    <div class="param-label">最终损失</div>
+                                    <div class="param-value">${detail.loss}</div>
+                                </div>
+                                <div class="param-item">
+                                    <div class="param-label">模型参数</div>
+                                    <div class="param-value">${detail.parameters}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="trend-info">
+                            <div class="trend-card">
+                                <div class="trend-arrow">📊</div>
+                                <div class="trend-text">
+                                    <span class="trend-desc">训练已完成，可查看详细性能曲线图和模型评估报告</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                showModal(`${detail.name} - 详细信息`, content);
             }
         }
 
         function viewAllTrainingHistory() {
-            alert('全部训练历史\n\n' +
-                '跳转到训练历史页面，您可以查看：\n' +
-                '• 所有历史训练记录\n' +
-                '• 训练性能趋势图\n' +
-                '• 模型对比分析\n' +
-                '• 导出训练报告\n' +
-                '• 训练日志下载\n\n' +
-                '即将跳转到详细页面...');
-            
-            // 实际项目中可以跳转到训练历史页面
-            // window.location.href = './training-history.html';
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">训练历史页面</h4>
+                        <span class="detail-badge info">功能预览</span>
+                    </div>
+                    
+                    <div class="detail-summary">
+                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">📊 可用功能</h5>
+                        <div class="summary-item">
+                            <span class="summary-label">📚 历史记录</span>
+                            <span class="summary-value">所有历史训练记录</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">📈 性能趋势</span>
+                            <span class="summary-value">训练性能趋势图</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">🔍 模型对比</span>
+                            <span class="summary-value">模型对比分析</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">📄 报告导出</span>
+                            <span class="summary-value">导出训练报告</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">📋 日志下载</span>
+                            <span class="summary-value">训练日志下载</span>
+                        </div>
+                    </div>
+                    
+                    <div class="trend-info">
+                        <div class="trend-card">
+                            <div class="trend-arrow">🔗</div>
+                            <div class="trend-text">
+                                <span class="trend-desc">点击下方按钮跳转到详细的训练历史页面</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="closeModal(); /* window.location.href = './training-history.html'; */">
+                            🚀 跳转到训练历史页面
+                        </button>
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                            * 演示模式下暂未实现页面跳转
+                        </div>
+                    </div>
+                </div>
+            `;
+            showModal('全部训练历史', content);
         }
 
         // 页面初始化

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Fed_MPC_Web 本地演示启动器
-不依赖Docker，快速展示完整系统
+Fed_MPC_Web 本地服务启动器
+联邦学习与多方计算平台
 """
 
 import sys
@@ -33,7 +33,7 @@ def install_requirements():
 
 def create_demo_app():
     """创建并启动演示应用"""
-    print("🚀 启动Fed_MPC_Web演示服务器...")
+    print("🚀 启动Fed_MPC_Web服务器...")
     
     from flask import Flask, jsonify, send_from_directory, request
     from flask_cors import CORS
@@ -64,17 +64,17 @@ def create_demo_app():
     def health_check():
         return jsonify({
             'status': 'healthy',
-            'message': 'Fed_MPC_Web Demo is running',
-            'version': '1.0.0-demo',
+            'message': 'Fed_MPC_Web is running',
+            'version': '1.0.0',
             'timestamp': datetime.now().isoformat(),
-            'environment': 'local-demo'
+            'environment': 'production'
         })
     
     @app.route('/api/test')
     def test_api():
         return jsonify({
             'success': True,
-            'message': '演示API正常工作！',
+            'message': 'API服务正常运行！',
             'data': {
                 'modules': ['ai', 'blockchain', 'crypto'],
                 'features': ['联邦学习', '区块链交易', '密钥管理'],
@@ -149,65 +149,20 @@ def create_demo_app():
     # 前端路由
     @app.route('/')
     def index():
+        import os
         try:
-            return send_from_directory('frontend/homepage', 'index.html')
-        except:
-            return """
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Fed_MPC_Web Demo</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-                    .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
-                    .logo { text-align: center; color: #2c3e50; margin-bottom: 30px; }
-                    .module { display: inline-block; margin: 10px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #333; }
-                    .module:hover { background: #f0f0f0; }
-                    .status { background: #e8f5e8; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h1 class="logo">🚀 Fed_MPC_Web 演示系统</h1>
-                    <div class="status">
-                        <strong>✅ 系统状态:</strong> 运行正常<br>
-                        <strong>📊 API状态:</strong> <span id="api-status">检查中...</span>
-                    </div>
-                    <h3>📋 可用模块:</h3>
-                    <a href="/ai/" class="module">
-                        <h4>🤖 AI联邦学习</h4>
-                        <p>机器学习模型训练和管理</p>
-                    </a>
-                    <a href="/blockchain/" class="module">
-                        <h4>⛓️ 区块链</h4>
-                        <p>分布式账本和智能合约</p>
-                    </a>
-                    <a href="/crypto/" class="module">
-                        <h4>🔐 密码学</h4>
-                        <p>密钥管理和数据加密</p>
-                    </a>
-                    <h3>🔗 API接口:</h3>
-                    <ul>
-                        <li><a href="/api/health" target="_blank">健康检查</a></li>
-                        <li><a href="/api/test" target="_blank">API测试</a></li>
-                        <li><a href="/api/ai/projects" target="_blank">AI项目列表</a></li>
-                        <li><a href="/api/blockchain/transactions" target="_blank">区块链交易</a></li>
-                        <li><a href="/api/crypto/keys" target="_blank">密钥列表</a></li>
-                    </ul>
-                </div>
-                <script>
-                    fetch('/api/health')
-                        .then(r => r.json())
-                        .then(d => {
-                            document.getElementById('api-status').textContent = d.status === 'healthy' ? '✅ 正常' : '❌ 异常';
-                        })
-                        .catch(() => {
-                            document.getElementById('api-status').textContent = '❌ 连接失败';
-                        });
-                </script>
-            </body>
-            </html>
-            """
+            # 尝试直接读取文件
+            homepage_path = os.path.join(os.path.dirname(__file__), 'frontend', 'homepage', 'index.html')
+            if os.path.exists(homepage_path):
+                with open(homepage_path, 'r', encoding='utf-8') as f:
+                    return f.read()
+            else:
+                # 如果文件不存在，使用send_from_directory
+                return send_from_directory('homepage', 'index.html')
+        except Exception as e:
+            print(f"Error loading homepage: {e}")
+            from flask import abort
+            abort(500)  # 直接返回500错误，不显示任何演示页面
     
     @app.route('/ai/')
     @app.route('/ai/<path:filename>')
@@ -218,7 +173,8 @@ def create_demo_app():
             else:
                 return send_from_directory('frontend/ai/pages', 'main-dashboard.html')
         except:
-            return f"<h1>🤖 AI联邦学习模块</h1><p>演示模式 - 前端文件未找到</p><a href='/'>返回首页</a>"
+            from flask import abort
+            abort(404)
     
     @app.route('/blockchain/')
     @app.route('/blockchain/<path:filename>')
@@ -229,7 +185,8 @@ def create_demo_app():
             else:
                 return send_from_directory('frontend/blockchain/pages', 'main-dashboard.html')
         except:
-            return f"<h1>⛓️ 区块链模块</h1><p>演示模式 - 前端文件未找到</p><a href='/'>返回首页</a>"
+            from flask import abort
+            abort(404)
     
     @app.route('/crypto/')
     @app.route('/crypto/<path:filename>')
@@ -240,7 +197,8 @@ def create_demo_app():
             else:
                 return send_from_directory('frontend/crypto/pages', 'main-dashboard.html')
         except:
-            return f"<h1>🔐 密码学模块</h1><p>演示模式 - 前端文件未找到</p><a href='/'>返回首页</a>"
+            from flask import abort
+            abort(404)
     
     @app.route('/shared/<path:filename>')
     def shared_files(filename):
@@ -264,7 +222,7 @@ def open_browser_delayed(url, delay=2):
 def main():
     """主函数"""
     print("="*60)
-    print("🎯 Fed_MPC_Web 本地演示部署")
+    print("🎯 Fed_MPC_Web 系统启动")
     print("="*60)
     
     try:
@@ -274,7 +232,7 @@ def main():
         # 创建应用
         app = create_demo_app()
         
-        print("✅ 演示系统准备完成!")
+        print("✅ 系统准备完成!")
         print()
         print("🌐 访问地址:")
         print("  主页:       http://127.0.0.1:8888")
@@ -289,7 +247,7 @@ def main():
         print("  区块链用户: user / user123")
         print("  密码学专家: cryptographer / crypto123")
         print()
-        print("📊 系统状态: 正在启动...")
+        print("📊 系统状态: 已启动，准备接收请求...")
         print("="*60)
         
         # 在后台打开浏览器
@@ -303,7 +261,7 @@ def main():
         app.run(host='127.0.0.1', port=8888, debug=False, threaded=True)
         
     except KeyboardInterrupt:
-        print("\n👋 演示服务器已停止")
+        print("\n👋 服务器已停止")
     except Exception as e:
         print(f"❌ 启动失败: {e}")
         import traceback

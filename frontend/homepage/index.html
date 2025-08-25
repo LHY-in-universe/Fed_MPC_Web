@@ -206,6 +206,55 @@
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
+
+        /* 深色模式适配 */
+        [data-theme="dark"] .hero-subtitle {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .navbar-brand {
+            color: var(--text-primary) !important;
+        }
+
+        /* 修复硬编码的灰色背景和文字 */
+        [data-theme="dark"] .w-16.h-16.bg-gradient-to-br.from-gray-100.to-gray-200 {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+        }
+
+        [data-theme="dark"] .text-gray-800 {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .text-gray-600 {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .text-gray-500 {
+            color: var(--text-tertiary) !important;
+        }
+
+        [data-theme="dark"] .bg-gradient-to-r.from-transparent.via-gray-500.to-transparent {
+            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
+        }
+
+        /* 特性卡片深色模式 */
+        [data-theme="dark"] .text-lg.font-semibold.text-gray-800 {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .text-sm.text-gray-600 {
+            color: var(--text-secondary) !important;
+        }
+
+        /* SVG图标深色模式 */
+        [data-theme="dark"] .text-gray-600 svg {
+            color: var(--text-secondary) !important;
+        }
+
+        /* 底部特性区域的图标背景 */
+        [data-theme="dark"] .w-16.h-16.bg-gradient-to-br {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+        }
     </style>
 </head>
 <body class="hero-gradient">

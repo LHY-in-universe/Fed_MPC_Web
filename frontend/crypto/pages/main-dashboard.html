@@ -4,11 +4,275 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>密钥加密模块 - 安全密码学工具</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/crypto-styles.css">
     <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <style>
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+        }
+        
+        .modal-overlay.hidden {
+            display: none;
+        }
+        
+        .modal-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-container {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .modal-body {
+            padding: 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            background: #f9fafb;
+        }
+        
+        /* 详情内容样式 */
+        .detail-section {
+            color: #374151;
+        }
+        
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .detail-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .detail-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .detail-badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .detail-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .detail-badge.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .detail-badge.crypto {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        
+        .detail-summary {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 12px;
+            display: grid;
+            gap: 12px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .summary-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        /* 密码学样式 */
+        .crypto-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .crypto-feature {
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+            border: 1px solid #c084fc;
+        }
+        
+        .crypto-feature.keys {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 1px solid #34d399;
+        }
+        
+        .crypto-feature.encrypt {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid #60a5fa;
+        }
+        
+        .crypto-feature.cert {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #fbbf24;
+        }
+        
+        .crypto-icon {
+            font-size: 32px;
+        }
+        
+        .crypto-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .crypto-desc {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        /* 主题适配 */
+        [data-theme="dark"] .modal-container {
+            background: #1f2937;
+        }
+        
+        [data-theme="dark"] .modal-header {
+            background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+        }
+        
+        [data-theme="dark"] .modal-footer {
+            background: #111827;
+            border-color: #374151;
+        }
+        
+        [data-theme="dark"] .detail-section {
+            color: #d1d5db;
+        }
+        
+        [data-theme="dark"] .detail-title {
+            color: #f9fafb;
+        }
+        
+        [data-theme="dark"] .detail-summary {
+            background: #374151;
+        }
+        
+        [data-theme="dark"] .summary-value {
+            color: #f9fafb;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .modal-container {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .modal-header, .modal-content, .modal-footer {
+                padding: 16px;
+            }
+            
+            .crypto-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body class="module-background">
     <!-- 导航栏 -->
@@ -147,28 +411,179 @@
             </div>
         </div>
 
-        <!-- 主要内容区域 -->
+        <!-- 主要管理和监控区域 -->
         <div class="row">
-            <!-- 密钥管理区域 -->
-            <div class="col-lg-8 mb-4">
-                <div class="crypto-card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
+            <!-- 密钥管理 -->
+            <div class="col-lg-6 mb-4">
+                <div class="crypto-card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewKeyManagementDetails()">
+                    <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-key-fill me-2"></i>密钥管理中心
+                            <i class="bi bi-key-fill me-2"></i>最近密钥
                         </h5>
-                        <button class="crypto-btn crypto-btn-secondary" onclick="expandKeyManager()">
-                            <i class="bi bi-arrows-fullscreen"></i> 全屏管理
-                        </button>
+                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
                     </div>
                     <div class="card-body">
-                        <div id="keyManagerContainer" style="height: 400px;">
-                            <!-- 密钥管理组件将在这里加载 -->
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <div class="text-center">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-value text-primary">24</div>
+                                    <div class="stat-label">密钥数量</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-value text-success">18</div>
+                                    <div class="stat-label">活跃密钥</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-value text-info">RSA-2048</div>
+                                    <div class="stat-label">主密钥</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>最新密钥活动</h6>
+                            <div class="key-activity">
+                                <div class="activity-item">
+                                    <span class="key-type">联邦学习主密钥</span>
+                                    <span class="key-status active">活跃</span>
+                                    <span class="key-time">使用156次</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="key-type">数据传输加密密钥</span>
+                                    <span class="key-status active">活跃</span>
+                                    <span class="key-time">使用1,024次</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="key-type">临时签名密钥</span>
+                                    <span class="key-status expired">已过期</span>
+                                    <span class="key-time">需要续期</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 证书管理 -->
+            <div class="col-lg-6 mb-4">
+                <div class="crypto-card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewCertificateDetails()">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-award me-2"></i>证书管理
+                        </h5>
+                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-value text-warning">12</div>
+                                    <div class="stat-label">证书数量</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-value text-danger">3</div>
+                                    <div class="stat-label">即将过期</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-value text-success">X.509</div>
+                                    <div class="stat-label">标准格式</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>证书状态</h6>
+                            <div class="cert-status">
+                                <div class="status-item">
+                                    <span class="cert-type">SSL服务器证书</span>
+                                    <span class="cert-validity">2天后到期</span>
+                                    <span class="cert-status warning">即将过期</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="cert-type">代码签名证书</span>
+                                    <span class="cert-validity">30天有效</span>
+                                    <span class="cert-status active">正常</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 加密操作统计 -->
+            <div class="col-lg-12 mb-4">
+                <div class="crypto-card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewEncryptionStatsDetails()">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shield-lock me-2"></i>密钥使用统计
+                        </h5>
+                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-value text-success">156</div>
+                                    <div class="stat-label">签名操作</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-value text-primary">1,024</div>
+                                    <div class="stat-label">加密操作</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-value text-warning">89</div>
+                                    <div class="stat-label">解密操作</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-value text-info">98.5%</div>
+                                    <div class="stat-label">成功率</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 row">
+                            <div class="col-md-6">
+                                <h6>近期操作趋势</h6>
+                                <div class="operation-trends">
+                                    <div class="trend-item">
+                                        <span class="trend-type">数据签名</span>
+                                        <span class="trend-count">↑ 23%</span>
                                     </div>
-                                    <p class="mt-3 text-muted">正在加载密钥管理...</p>
+                                    <div class="trend-item">
+                                        <span class="trend-type">文件加密</span>
+                                        <span class="trend-count">↑ 15%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>热门算法</h6>
+                                <div class="algorithm-stats">
+                                    <div class="algo-item">
+                                        <span class="algo-name">RSA-2048</span>
+                                        <span class="algo-usage">45%</span>
+                                    </div>
+                                    <div class="algo-item">
+                                        <span class="algo-name">AES-256</span>
+                                        <span class="algo-usage">35%</span>
+                                    </div>
+                                    <div class="algo-item">
+                                        <span class="algo-name">ECC-P256</span>
+                                        <span class="algo-usage">20%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -311,6 +726,9 @@
         
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，准备初始化...');
+            console.log('viewKeyManagementDetails 函数:', typeof viewKeyManagementDetails);
+            console.log('viewCertificateDetails 函数:', typeof viewCertificateDetails);
             initializeDashboard();
             loadStatistics();
             updateLastUpdateTime();
@@ -362,7 +780,7 @@
         
         // 导航函数
         function goHome() {
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/frontend/homepage/index.html';
         }
         
         function openKeyManager() {
@@ -409,26 +827,385 @@
             window.location.href = 'certificate-dashboard.html?action=validate';
         }
         
+        // 模态框控制函数
+        function showModal(title, content) {
+            // 检查当前语言
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            document.getElementById('modalTitle').textContent = isEnglish ? translateTitle(title) : title;
+            document.getElementById('modalContent').innerHTML = content;
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // 点击背景关闭模态框
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('detailModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // 简单的标题翻译函数
+        function translateTitle(chineseTitle) {
+            const translations = {
+                '密钥导出': 'Key Export',
+                '个人资料': 'User Profile',
+                '安全设置': 'Security Settings',
+                '设置': 'Settings'
+            };
+            return translations[chineseTitle] || chineseTitle;
+        }
+
         function exportKeys() {
-            alert('密钥导出功能开发中...');
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'Key Export' : '密钥导出'}</h4>
+                        <span class="detail-badge warning">${isEnglish ? 'Coming Soon' : '开发中'}</span>
+                    </div>
+                    
+                    <div class="crypto-features">
+                        <div class="crypto-feature keys">
+                            <div class="crypto-icon">🔐</div>
+                            <h5 class="crypto-title">${isEnglish ? 'Private Keys' : '私钥导出'}</h5>
+                            <p class="crypto-desc">${isEnglish ? 'Secure private key backup' : '安全私钥备份'}</p>
+                        </div>
+                        <div class="crypto-feature encrypt">
+                            <div class="crypto-icon">📜</div>
+                            <h5 class="crypto-title">${isEnglish ? 'Public Keys' : '公钥导出'}</h5>
+                            <p class="crypto-desc">${isEnglish ? 'Export public key certificates' : '导出公钥证书'}</p>
+                        </div>
+                        <div class="crypto-feature cert">
+                            <div class="crypto-icon">💾</div>
+                            <h5 class="crypto-title">${isEnglish ? 'Backup Archive' : '备份归档'}</h5>
+                            <p class="crypto-desc">${isEnglish ? 'Complete encrypted backup' : '完整加密备份'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-summary">
+                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">${isEnglish ? '🛡️ Export Features' : '🛡️ 导出功能'}</h5>
+                        <div class="summary-item">
+                            <span class="summary-label">${isEnglish ? '🔒 Password Protection' : '🔒 密码保护'}</span>
+                            <span class="summary-value">${isEnglish ? 'AES-256 encryption' : 'AES-256加密'}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">${isEnglish ? '📊 Multiple Formats' : '📊 多种格式'}</span>
+                            <span class="summary-value">${isEnglish ? 'PEM, PKCS#12, JKS' : 'PEM, PKCS#12, JKS'}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">${isEnglish ? '⚙️ Batch Export' : '⚙️ 批量导出'}</span>
+                            <span class="summary-value">${isEnglish ? 'Multiple keys at once' : '多个密钥同时导出'}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">${isEnglish ? '📅 Auto Backup' : '📅 自动备份'}</span>
+                            <span class="summary-value">${isEnglish ? 'Scheduled exports' : '定时导出'}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px; background: #fef3c7; border-radius: 12px; margin-top: 16px;">
+                        <p style="color: #92400e; margin: 0;">${isEnglish ? '⏳ Key export functionality with advanced security features is under development.' : '⏳ 具有高级安全功能的密钥导出功能正在开发中。'}</p>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'Key Export' : '密钥导出', content);
         }
         
         // 用户管理函数
         function showProfile() {
-            alert('个人资料功能开发中...');
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'User Profile' : '个人资料'}</h4>
+                        <span class="detail-badge info">${isEnglish ? 'Coming Soon' : '开发中'}</span>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px; background: #eff6ff; border-radius: 12px;">
+                        <p style="color: #1e40af; margin: 0; font-size: 16px;">${isEnglish ? '🛠️ User profile management features are under development!' : '🛠️ 用户资料管理功能正在开发中！'}</p>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'User Profile' : '个人资料', content);
         }
         
         function showSecurity() {
-            alert('安全设置功能开发中...');
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'Security Settings' : '安全设置'}</h4>
+                        <span class="detail-badge crypto">${isEnglish ? 'Coming Soon' : '开发中'}</span>
+                    </div>
+                    
+                    <div class="crypto-features">
+                        <div class="crypto-feature keys">
+                            <div class="crypto-icon">🔐</div>
+                            <h5 class="crypto-title">${isEnglish ? '2FA Setup' : '双因子认证'}</h5>
+                            <p class="crypto-desc">${isEnglish ? 'Enhanced account security' : '增强账户安全性'}</p>
+                        </div>
+                        <div class="crypto-feature encrypt">
+                            <div class="crypto-icon">🚪</div>
+                            <h5 class="crypto-title">${isEnglish ? 'Access Control' : '访问控制'}</h5>
+                            <p class="crypto-desc">${isEnglish ? 'Manage permissions' : '管理访问权限'}</p>
+                        </div>
+                        <div class="crypto-feature cert">
+                            <div class="crypto-icon">📊</div>
+                            <h5 class="crypto-title">${isEnglish ? 'Activity Log' : '活动日志'}</h5>
+                            <p class="crypto-desc">${isEnglish ? 'Security audit trail' : '安全审计跟踪'}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px; background: #f3e8ff; border-radius: 12px; margin-top: 16px;">
+                        <p style="color: #7c3aed; margin: 0; font-size: 16px;">${isEnglish ? '🛠️ Advanced security settings are under development!' : '🛠️ 高级安全设置功能正在开发中！'}</p>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'Security Settings' : '安全设置', content);
         }
         
         function showSettings() {
-            alert('设置功能开发中...');
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'Settings' : '设置'}</h4>
+                        <span class="detail-badge info">${isEnglish ? 'Coming Soon' : '开发中'}</span>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px; background: #eff6ff; border-radius: 12px;">
+                        <p style="color: #1e40af; margin: 0; font-size: 16px;">${isEnglish ? '🛠️ Settings panel is under development!' : '🛠️ 设置面板正在开发中！'}</p>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'Settings' : '设置', content);
         }
         
         function logout() {
             localStorage.clear();
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/frontend/homepage/index.html';
+        }
+
+        // 新的大区域modal函数
+        function viewKeyManagementDetails() {
+            console.log('viewKeyManagementDetails 函数被调用');
+            alert('密钥管理详情功能正常工作！');
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'Key Management Details' : '密钥管理详情'}</h4>
+                        <span class="detail-badge success">24 ${isEnglish ? 'keys total' : '个密钥'}</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h5>${isEnglish ? 'Active Keys' : '活跃密钥'}</h5>
+                                <span class="detail-status high">18 ${isEnglish ? 'active' : '个活跃'}</span>
+                            </div>
+                            <div class="detail-card-content">
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Federated Learning Master Key' : '联邦学习主密钥'}</span>
+                                    <span class="detail-status-indicator active"></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Data Transmission Key' : '数据传输加密密钥'}</span>
+                                    <span class="detail-status-indicator active"></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Temporary Signature Key' : '临时签名密钥'}</span>
+                                    <span class="detail-status-indicator expired"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h5>${isEnglish ? 'Key Usage Statistics' : '密钥使用统计'}</h5>
+                                <span class="detail-status medium">${isEnglish ? 'Daily usage' : '日使用量'}</span>
+                            </div>
+                            <div class="detail-card-content">
+                                <div class="detail-item">
+                                    <span>RSA-2048</span>
+                                    <span class="detail-time">156 ${isEnglish ? 'operations' : '次操作'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>AES-256</span>
+                                    <span class="detail-time">1,024 ${isEnglish ? 'operations' : '次操作'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>ECC-P256</span>
+                                    <span class="detail-time">89 ${isEnglish ? 'operations' : '次操作'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="detail-btn primary" onclick="generateNewKey()">${isEnglish ? 'Generate New Key' : '生成新密钥'}</button>
+                        <button class="detail-btn secondary" onclick="exportKeys()">${isEnglish ? 'Export Keys' : '导出密钥'}</button>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'Key Management Details' : '密钥管理详情', content);
+        }
+
+        function viewCertificateDetails() {
+            console.log('viewCertificateDetails 函数被调用');
+            alert('证书管理详情功能正常工作！');
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'Certificate Management' : '证书管理详情'}</h4>
+                        <span class="detail-badge warning">12 ${isEnglish ? 'certificates' : '个证书'}</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h5>${isEnglish ? 'Certificate Status' : '证书状态'}</h5>
+                                <span class="detail-status high">3 ${isEnglish ? 'expiring' : '即将过期'}</span>
+                            </div>
+                            <div class="detail-card-content">
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'SSL Server Certificate' : 'SSL服务器证书'}</span>
+                                    <span class="detail-status-indicator warning"></span>
+                                    <span class="detail-time">2 ${isEnglish ? 'days left' : '天后到期'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Code Signing Certificate' : '代码签名证书'}</span>
+                                    <span class="detail-status-indicator active"></span>
+                                    <span class="detail-time">30 ${isEnglish ? 'days valid' : '天有效期'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Client Authentication' : '客户端认证证书'}</span>
+                                    <span class="detail-status-indicator active"></span>
+                                    <span class="detail-time">180 ${isEnglish ? 'days valid' : '天有效期'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h5>${isEnglish ? 'Certificate Chain' : '证书链验证'}</h5>
+                                <span class="detail-status low">${isEnglish ? 'All valid' : '全部有效'}</span>
+                            </div>
+                            <div class="detail-card-content">
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Root CA' : '根证书'}</span>
+                                    <span class="detail-time">${isEnglish ? 'Valid' : '有效'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Intermediate CA' : '中级证书'}</span>
+                                    <span class="detail-time">${isEnglish ? 'Valid' : '有效'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'End Entity' : '终端实体'}</span>
+                                    <span class="detail-time">${isEnglish ? 'Valid' : '有效'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="detail-btn primary" onclick="renewCertificates()">${isEnglish ? 'Renew Certificates' : '续期证书'}</button>
+                        <button class="detail-btn secondary" onclick="validateCert()">${isEnglish ? 'Validate Chain' : '验证证书链'}</button>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'Certificate Details' : '证书详情', content);
+        }
+
+        function viewEncryptionStatsDetails() {
+            const currentLang = document.documentElement.lang || 'zh-CN';
+            const isEnglish = currentLang === 'en';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${isEnglish ? 'Encryption Statistics' : '加密操作统计'}</h4>
+                        <span class="detail-badge success">98.5% ${isEnglish ? 'success rate' : '成功率'}</span>
+                    </div>
+                    <div class="detail-grid">
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h5>${isEnglish ? 'Operation Breakdown' : '操作分类统计'}</h5>
+                                <span class="detail-status high">1,269 ${isEnglish ? 'total' : '总操作'}</span>
+                            </div>
+                            <div class="detail-card-content">
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Data Encryption' : '数据加密'}</span>
+                                    <span class="detail-time">1,024 ${isEnglish ? 'ops' : '次'}</span>
+                                    <span class="detail-badge success">80.6%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Digital Signature' : '数字签名'}</span>
+                                    <span class="detail-time">156 ${isEnglish ? 'ops' : '次'}</span>
+                                    <span class="detail-badge info">12.3%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>${isEnglish ? 'Data Decryption' : '数据解密'}</span>
+                                    <span class="detail-time">89 ${isEnglish ? 'ops' : '次'}</span>
+                                    <span class="detail-badge warning">7.1%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-card-header">
+                                <h5>${isEnglish ? 'Algorithm Usage' : '算法使用统计'}</h5>
+                                <span class="detail-status medium">${isEnglish ? 'Performance' : '性能优化'}</span>
+                            </div>
+                            <div class="detail-card-content">
+                                <div class="detail-item">
+                                    <span>RSA-2048</span>
+                                    <span class="detail-time">45% ${isEnglish ? 'usage' : '使用率'}</span>
+                                    <span class="detail-badge primary">主力算法</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>AES-256</span>
+                                    <span class="detail-time">35% ${isEnglish ? 'usage' : '使用率'}</span>
+                                    <span class="detail-badge success">高效算法</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>ECC-P256</span>
+                                    <span class="detail-time">20% ${isEnglish ? 'usage' : '使用率'}</span>
+                                    <span class="detail-badge info">现代算法</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="detail-btn primary" onclick="viewPerformanceReport()">${isEnglish ? 'Performance Report' : '性能报告'}</button>
+                        <button class="detail-btn secondary" onclick="exportStats()">${isEnglish ? 'Export Statistics' : '导出统计'}</button>
+                    </div>
+                </div>
+            `;
+            showModal(isEnglish ? 'Encryption Statistics Details' : '加密统计详情', content);
         }
     </script>
 
@@ -692,5 +1469,27 @@
             }
         }
     </style>
+
+    <!-- 详情模态框 -->
+    <div id="detailModal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">详情信息</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent" class="modal-content">
+                    <!-- 动态内容将在这里加载 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

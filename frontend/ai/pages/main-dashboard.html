@@ -294,7 +294,6 @@
 
     <!-- JavaScript -->
     <script src="../../shared/js/theme-manager.js"></script>
-    <script src="../../shared/js/notification-system.js"></script>
     <script src="../components/training-monitor.js"></script>
     <script src="../components/model-manager.js"></script>
     <script src="../components/dataset-manager.js"></script>
@@ -358,7 +357,7 @@
         
         // 导航函数
         function goHome() {
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/frontend/homepage/index.html';
         }
         
         function openTrainingMonitor() {
@@ -406,27 +405,21 @@
         }
         
         function exportResults() {
-            notificationSystem.info('导出功能', '导出功能正在开发中，敬请期待！\n\n预计功能：\n• 模型权重导出\n• 训练日志导出\n• 性能报告生成', {
-                duration: 6000
-            });
+            alert('导出功能开发中...');
         }
         
         // 用户管理函数
         function showProfile() {
-            notificationSystem.info('个人资料', '个人资料功能开发中...\n\n将支持：\n• 个人信息管理\n• 头像上传\n• 偏好设置', {
-                duration: 5000
-            });
+            alert('个人资料功能开发中...');
         }
         
         function showSettings() {
-            notificationSystem.info('系统设置', '设置功能开发中...\n\n预计功能：\n• 主题切换\n• 语言设置\n• 通知配置\n• 快捷键设置', {
-                duration: 5000
-            });
+            alert('设置功能开发中...');
         }
         
         function logout() {
             localStorage.clear();
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/frontend/homepage/index.html';
         }
     </script>
 
