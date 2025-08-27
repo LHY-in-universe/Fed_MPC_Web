@@ -15,12 +15,14 @@
         "error": "Error",
         "success": "Success",
         "warning": "Warning",
-        "info": "Information"
+        "info": "Information",
+        "backToModules": "← Back to Module Selection"
     },
 
     "homepage": {
         "title": "Federated Learning & Multi-Party Computation Platform",
         "subtitle": "Secure and Efficient Distributed Machine Learning Solutions",
+        "enterModule": "Enter Module",
         "modules": {
             "ai": {
                 "title": "AI Model Training",
@@ -33,6 +35,20 @@
             "crypto": {
                 "title": "Key Encryption",
                 "description": "Secure Cryptographic Tools"
+            }
+        },
+        "features": {
+            "security": {
+                "title": "Enterprise Security",
+                "description": "Bank-grade data security protection"
+            },
+            "performance": {
+                "title": "High Performance Computing",
+                "description": "Distributed architecture with extreme performance optimization"
+            },
+            "integration": {
+                "title": "Easy Integration",
+                "description": "Standardized API for rapid business integration"
             }
         }
     },
@@ -52,6 +68,9 @@
             "password": "Password", 
             "loginBtn": "Login",
             "registerBtn": "Register Account",
+            "usernamePlaceholder": "Enter your username",
+            "passwordPlaceholder": "Enter your password",
+            "backToUserType": "← Back to User Type Selection",
             "quickAccess": "Quick Access:",
             "quickClient": "Client Login",
             "quickServer": "Server Login",
@@ -88,7 +107,14 @@
                 "recentHistory": "Recent Training History",
                 "imageClassification": "Image Classification Model",
                 "textClassification": "Text Classification Model",
-                "regressionModel": "Regression Prediction Model"
+                "regressionModel": "Regression Prediction Model",
+                "viewAll": "View All →",
+                "accuracy": "Accuracy",
+                "highestAccuracy": "Highest Accuracy",
+                "lowestAccuracy": "Lowest Accuracy",
+                "averageAccuracyStat": "Average Accuracy",
+                "currentAccuracyStat": "Current Accuracy",
+                "accuracyStats": "Accuracy Statistics"
             },
             "server": {
                 "title": "Server Dashboard",
@@ -455,6 +481,422 @@
             "securityAccount": "Security Admin: security / security123",
             "developerAccount": "Developer: dev / dev123",
             "auditAccount": "Auditor: audit / audit123"
+        },
+        "keys": {
+            "federatedLearningMainKey": "Federated Learning Master Key",
+            "dataTransmissionEncryptionKey": "Data Transmission Encryption Key",
+            "temporarySigningKey": "Temporary Signing Key",
+            "active": "Active",
+            "expired": "Expired",
+            "needsRenewal": "Needs Renewal",
+            "keyCreation": "Key Creation",
+            "usageCount": "Usage Count"
+        }
+    },
+
+    "modals": {
+        "ai": {
+            "trainingProjects": {
+                "title": "Training Projects Details",
+                "content": {
+                    "totalProjects": "Total Projects",
+                    "activeProjects": "Active Projects",
+                    "completedProjects": "Completed Projects",
+                    "totalModels": "Total Models Trained",
+                    "averageAccuracy": "Average Accuracy",
+                    "recentProjects": "Recent Projects",
+                    "imageClassification": "Image Classification Project",
+                    "textClassification": "Text Classification Project",
+                    "regressionModel": "Regression Model Project",
+                    "projectStatus": "Project Status",
+                    "status": {
+                        "active": "Active",
+                        "completed": "Completed",
+                        "paused": "Paused",
+                        "pending": "Pending"
+                    }
+                }
+            },
+            "activeClients": {
+                "title": "Active Clients Details",
+                "content": {
+                    "onlineClients": "Online Clients",
+                    "totalRegistered": "Total Registered",
+                    "lastActive": "Last Active",
+                    "connectionStatus": "Connection Status",
+                    "performanceMetrics": "Performance Metrics",
+                    "dataContributed": "Data Contributed",
+                    "trainingParticipation": "Training Participation Rate",
+                    "clientList": "Client List",
+                    "factory1": "Shanghai Factory 1",
+                    "factory2": "Wuhan Factory 2",
+                    "factory3": "Xi'an Factory 3",
+                    "factory4": "Guangzhou Factory 4",
+                    "status": {
+                        "online": "Online",
+                        "idle": "Idle",
+                        "training": "Training",
+                        "offline": "Offline"
+                    }
+                }
+            },
+            "pendingRequests": {
+                "title": "Pending Requests Details",
+                "content": {
+                    "newRequests": "New Requests",
+                    "awaitingApproval": "Awaiting Approval",
+                    "underReview": "Under Review",
+                    "requestTypes": "Request Types",
+                    "federatedTraining": "Federated Training Requests",
+                    "modelSharing": "Model Sharing Requests",
+                    "dataCollaboration": "Data Collaboration Requests",
+                    "recentRequests": "Recent Requests",
+                    "request1": "Multi-party Image Classification Training",
+                    "request2": "Financial Risk Assessment Model",
+                    "request3": "Medical Data Analysis Collaboration",
+                    "priority": {
+                        "high": "High Priority",
+                        "medium": "Medium Priority",
+                        "low": "Low Priority"
+                    }
+                }
+            },
+            "trainingTasks": {
+                "title": "Training Tasks Details",
+                "content": {
+                    "runningTasks": "Running Tasks",
+                    "queuedTasks": "Queued Tasks",
+                    "completedToday": "Completed Today",
+                    "taskDistribution": "Task Distribution",
+                    "standardFederated": "Standard Federated Learning",
+                    "mpcTraining": "MPC Training",
+                    "localTraining": "Local Training",
+                    "taskPerformance": "Task Performance",
+                    "averageTime": "Average Completion Time",
+                    "successRate": "Success Rate",
+                    "resourceUtilization": "Resource Utilization",
+                    "currentTasks": "Current Running Tasks",
+                    "task1": "CNN Image Recognition Training",
+                    "task2": "LSTM Text Analysis Training",
+                    "task3": "Collaborative Recommendation Model"
+                }
+            },
+            "pendingTrainingRequests": {
+                "title": "Pending Training Requests",
+                "content": {
+                    "requestDetails": "Request Details",
+                    "applicationTime": "Application Time",
+                    "expectedParticipants": "Expected Participants",
+                    "trainingMode": "Training Mode",
+                    "dataType": "Data Type",
+                    "modelType": "Model Type",
+                    "priority": "Priority Level",
+                    "estimatedDuration": "Estimated Duration",
+                    "resourceRequirements": "Resource Requirements",
+                    "approvalProcess": "Approval Process",
+                    "securityReview": "Security Review",
+                    "technicalAssessment": "Technical Assessment",
+                    "finalApproval": "Final Approval"
+                }
+            },
+            "activeTrainingSessions": {
+                "title": "Active Training Sessions",
+                "content": {
+                    "sessionOverview": "Session Overview",
+                    "participatingClients": "Participating Clients",
+                    "trainingProgress": "Training Progress",
+                    "currentRound": "Current Round",
+                    "aggregationStatus": "Aggregation Status",
+                    "modelAccuracy": "Model Accuracy",
+                    "convergenceMetrics": "Convergence Metrics",
+                    "networkLatency": "Network Latency",
+                    "dataTransferred": "Data Transferred",
+                    "sessionHealth": "Session Health Status",
+                    "estimatedCompletion": "Estimated Completion",
+                    "resourceUsage": "Resource Usage",
+                    "performanceStats": "Performance Statistics"
+                }
+            },
+            "modelManagement": {
+                "title": "Model Management",
+                "content": {
+                    "totalModels": "Total Models",
+                    "activeModels": "Active Models",
+                    "modelVersions": "Model Versions",
+                    "deployedModels": "Deployed Models",
+                    "modelTypes": "Model Types Distribution",
+                    "cnn": "Convolutional Neural Networks",
+                    "rnn": "Recurrent Neural Networks",
+                    "transformer": "Transformer Models",
+                    "mlp": "Multi-Layer Perceptron",
+                    "modelPerformance": "Model Performance Metrics",
+                    "averageAccuracy": "Average Accuracy",
+                    "inferenceLatency": "Inference Latency",
+                    "modelSize": "Average Model Size",
+                    "recentUpdates": "Recent Model Updates"
+                }
+            },
+            "systemStats": {
+                "title": "System Statistics",
+                "content": {
+                    "systemHealth": "System Health",
+                    "uptime": "System Uptime",
+                    "totalConnections": "Total Connections",
+                    "dataProcessed": "Data Processed",
+                    "computeHours": "Compute Hours",
+                    "networkTraffic": "Network Traffic",
+                    "storageUsed": "Storage Used",
+                    "performanceMetrics": "Performance Metrics",
+                    "cpuUtilization": "CPU Utilization",
+                    "memoryUsage": "Memory Usage",
+                    "diskUsage": "Disk Usage",
+                    "networkBandwidth": "Network Bandwidth",
+                    "systemLogs": "Recent System Events"
+                }
+            }
+        },
+        "blockchain": {
+            "smartContracts": {
+                "title": "Smart Contracts Details",
+                "content": {
+                    "totalContracts": "Total Contracts",
+                    "activeContracts": "Active Contracts",
+                    "deployedToday": "Deployed Today",
+                    "contractTypes": "Contract Types",
+                    "federatedLearning": "Federated Learning Contracts",
+                    "mpcContracts": "MPC Computation Contracts",
+                    "dataSharing": "Data Sharing Contracts",
+                    "contractStatus": "Contract Status Distribution",
+                    "deployed": "Deployed",
+                    "pending": "Pending",
+                    "failed": "Failed",
+                    "gasUsage": "Gas Usage Statistics",
+                    "averageGas": "Average Gas Cost",
+                    "totalGasConsumed": "Total Gas Consumed",
+                    "recentContracts": "Recent Contract Deployments"
+                }
+            },
+            "activeTransactions": {
+                "title": "Active Transactions Details",
+                "content": {
+                    "currentTransactions": "Current Transactions",
+                    "transactionVolume": "Transaction Volume",
+                    "averageGasPrice": "Average Gas Price",
+                    "networkCongestion": "Network Congestion",
+                    "transactionTypes": "Transaction Types",
+                    "modelUpdates": "Model Updates",
+                    "dataSubmissions": "Data Submissions",
+                    "contractInteractions": "Contract Interactions",
+                    "tokenTransfers": "Token Transfers",
+                    "transactionStatus": "Transaction Status",
+                    "confirmed": "Confirmed",
+                    "pending": "Pending",
+                    "failed": "Failed",
+                    "networkStats": "Network Statistics",
+                    "blocksPerSecond": "Blocks per Second",
+                    "averageBlockTime": "Average Block Time"
+                }
+            },
+            "mpcTasks": {
+                "title": "MPC Tasks Details",
+                "content": {
+                    "runningTasks": "Running Tasks",
+                    "completedTasks": "Completed Tasks",
+                    "queuedTasks": "Queued Tasks",
+                    "taskTypes": "Task Types",
+                    "secureComputation": "Secure Computation",
+                    "privateDataAnalysis": "Private Data Analysis",
+                    "multiPartyAggregation": "Multi-party Aggregation",
+                    "taskPerformance": "Task Performance",
+                    "averageExecutionTime": "Average Execution Time",
+                    "successRate": "Success Rate",
+                    "securityLevel": "Security Level",
+                    "participantCount": "Participant Count",
+                    "computationalComplexity": "Computational Complexity",
+                    "resourceUsage": "Resource Usage",
+                    "recentTasks": "Recent MPC Tasks"
+                }
+            },
+            "networkTPS": {
+                "title": "Network TPS Details",
+                "content": {
+                    "currentTPS": "Current TPS",
+                    "peakTPS": "Peak TPS",
+                    "averageTPS": "Average TPS (24h)",
+                    "networkHealth": "Network Health",
+                    "nodeCount": "Active Nodes",
+                    "consensusStatus": "Consensus Status",
+                    "blockHeight": "Block Height",
+                    "networkLatency": "Network Latency",
+                    "transactionPool": "Transaction Pool Size",
+                    "mempoolStatus": "Mempool Status",
+                    "networkCapacity": "Network Capacity",
+                    "throughputHistory": "Throughput History",
+                    "performanceMetrics": "Performance Metrics",
+                    "nodeDistribution": "Node Distribution",
+                    "geographicDistribution": "Geographic Distribution"
+                }
+            },
+            "recentContracts": {
+                "title": "Recent Contract Activity",
+                "content": {
+                    "deploymentActivity": "Deployment Activity",
+                    "contractInteractions": "Contract Interactions",
+                    "gasUsageAnalysis": "Gas Usage Analysis",
+                    "popularContracts": "Popular Contracts",
+                    "contractMetrics": "Contract Metrics",
+                    "executionSuccess": "Execution Success Rate",
+                    "averageGasCost": "Average Gas Cost",
+                    "contractUptime": "Contract Uptime",
+                    "securityAudits": "Security Audits",
+                    "complianceStatus": "Compliance Status",
+                    "upgradeHistory": "Upgrade History",
+                    "userAdoption": "User Adoption Rate"
+                }
+            },
+            "recentTransactions": {
+                "title": "Recent Transaction Analysis",
+                "content": {
+                    "transactionFlow": "Transaction Flow",
+                    "valueTransferred": "Total Value Transferred",
+                    "feeAnalysis": "Fee Analysis",
+                    "transactionSizes": "Transaction Sizes",
+                    "confirmationTimes": "Confirmation Times",
+                    "networkEfficiency": "Network Efficiency",
+                    "congestionAnalysis": "Congestion Analysis",
+                    "userActivity": "User Activity",
+                    "peakHours": "Peak Activity Hours",
+                    "geographicDistribution": "Geographic Distribution",
+                    "transactionPatterns": "Transaction Patterns",
+                    "fraudDetection": "Fraud Detection Status"
+                }
+            }
+        },
+        "crypto": {
+            "totalKeys": {
+                "title": "Total Keys Details",
+                "content": {
+                    "keyInventory": "Key Inventory",
+                    "rsaKeys": "RSA Keys",
+                    "ecdsaKeys": "ECDSA Keys",
+                    "aesKeys": "AES Keys",
+                    "keyStrengths": "Key Strengths Distribution",
+                    "keys2048": "2048-bit Keys",
+                    "keys3072": "3072-bit Keys",
+                    "keys4096": "4096-bit Keys",
+                    "keyUsage": "Key Usage Statistics",
+                    "signingKeys": "Signing Keys",
+                    "encryptionKeys": "Encryption Keys",
+                    "keyExchangeKeys": "Key Exchange Keys",
+                    "keyGeneration": "Key Generation Timeline",
+                    "generatedToday": "Generated Today",
+                    "generatedWeek": "Generated This Week",
+                    "generatedMonth": "Generated This Month"
+                }
+            },
+            "activeKeys": {
+                "title": "Active Keys Details",
+                "content": {
+                    "activeKeyCount": "Active Key Count",
+                    "keyUtilization": "Key Utilization",
+                    "signingOperations": "Signing Operations",
+                    "encryptionOperations": "Encryption Operations",
+                    "keyPerformance": "Key Performance",
+                    "operationsPerSecond": "Operations per Second",
+                    "successRate": "Success Rate",
+                    "errorRate": "Error Rate",
+                    "keyHealth": "Key Health Status",
+                    "healthyKeys": "Healthy Keys",
+                    "warningKeys": "Keys with Warnings",
+                    "expiredKeys": "Expired Keys",
+                    "usagePatterns": "Usage Patterns",
+                    "peakUsage": "Peak Usage Times",
+                    "mostUsedKeys": "Most Used Keys"
+                }
+            },
+            "certificates": {
+                "title": "Certificates Details",
+                "content": {
+                    "totalCertificates": "Total Certificates",
+                    "validCertificates": "Valid Certificates",
+                    "expiredCertificates": "Expired Certificates",
+                    "certificateTypes": "Certificate Types",
+                    "x509Certificates": "X.509 Certificates",
+                    "tlsCertificates": "TLS Certificates",
+                    "caCertificates": "CA Certificates",
+                    "certificateAuthorities": "Certificate Authorities",
+                    "trustedCAs": "Trusted CAs",
+                    "intermediateCAs": "Intermediate CAs",
+                    "rootCAs": "Root CAs",
+                    "validationStatus": "Validation Status",
+                    "validatedCerts": "Validated Certificates",
+                    "pendingValidation": "Pending Validation",
+                    "revocationStatus": "Revocation Status",
+                    "revokedCertificates": "Revoked Certificates"
+                }
+            },
+            "expiringSoon": {
+                "title": "Expiring Soon Details",
+                "content": {
+                    "expirationAlert": "Expiration Alerts",
+                    "expiring7Days": "Expiring in 7 Days",
+                    "expiring30Days": "Expiring in 30 Days",
+                    "expiring90Days": "Expiring in 90 Days",
+                    "renewalRequired": "Renewal Required",
+                    "autoRenewal": "Auto-renewal Status",
+                    "manualRenewal": "Manual Renewal Required",
+                    "renewalSchedule": "Renewal Schedule",
+                    "criticalExpirations": "Critical Expirations",
+                    "highPriority": "High Priority Renewals",
+                    "mediumPriority": "Medium Priority Renewals",
+                    "lowPriority": "Low Priority Renewals",
+                    "renewalCosts": "Renewal Costs",
+                    "estimatedCosts": "Estimated Renewal Costs",
+                    "budgetPlanning": "Budget Planning"
+                }
+            },
+            "recentKeyActivity": {
+                "title": "Recent Key Activity",
+                "content": {
+                    "activityOverview": "Activity Overview",
+                    "keyOperations": "Key Operations",
+                    "signingActivity": "Signing Activity",
+                    "encryptionActivity": "Encryption Activity",
+                    "decryptionActivity": "Decryption Activity",
+                    "keyGeneration": "Key Generation Activity",
+                    "securityEvents": "Security Events",
+                    "accessAttempts": "Access Attempts",
+                    "unauthorizedAccess": "Unauthorized Access Attempts",
+                    "securityAlerts": "Security Alerts",
+                    "complianceEvents": "Compliance Events",
+                    "auditTrail": "Audit Trail",
+                    "userActivity": "User Activity",
+                    "systemActivity": "System Activity",
+                    "performanceMetrics": "Performance Metrics"
+                }
+            }
+        },
+        "common": {
+            "viewDetails": "Click for Details",
+            "close": "Close",
+            "refresh": "Refresh",
+            "export": "Export",
+            "print": "Print",
+            "share": "Share",
+            "settings": "Settings",
+            "help": "Help",
+            "moreInfo": "More Information",
+            "loading": "Loading...",
+            "noData": "No data available",
+            "error": "Error loading data",
+            "retry": "Retry",
+            "cancel": "Cancel",
+            "confirm": "Confirm",
+            "save": "Save",
+            "edit": "Edit",
+            "delete": "Delete",
+            "create": "Create",
+            "update": "Update"
         }
     }
 }

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
+    <!-- 统一CSS已包含homepage-button样式 -->
 </head>
 <body class="module-background min-h-screen flex items-center justify-center p-4">
     <!-- 导航栏 -->
@@ -42,14 +43,14 @@
                 <div class="form-group">
                     <label for="username" class="form-label" data-i18n="ai.login.username">用户名</label>
                     <input type="text" id="username" name="username" required class="input"
-                           placeholder="请输入您的用户名">
+                           placeholder="请输入您的用户名" data-i18n="ai.login.usernamePlaceholder">
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="form-label" data-i18n="ai.login.password">密码</label>
                     <div class="relative">
                         <input type="password" id="password" name="password" required class="input pr-10"
-                               placeholder="请输入您的密码">
+                               placeholder="请输入您的密码" data-i18n="ai.login.passwordPlaceholder">
                         <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -99,7 +100,7 @@
             <!-- 返回链接 -->
             <div class="mt-6 text-center">
                 <button onclick="goBack()" class="btn btn-secondary">
-                    ← 返回用户类型选择
+                    <span data-i18n="ai.login.backToUserType">← 返回用户类型选择</span>
                 </button>
             </div>
         </div>
@@ -111,15 +112,39 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn" onclick="
+        console.log('🏠 按钮被点击了');
+        try {
+            if (typeof goHome === 'function') {
+                console.log('✅ 使用goHome函数');
+                goHome();
+            } else {
+                console.log('❌ goHome函数不存在，使用直接跳转');
+                window.location.href = '../../homepage/index.html';
+            }
+        } catch (error) {
+            console.error('❌ 导航出错:', error);
+            window.location.href = '../../homepage/index.html';
+        }
+    " title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
     </button>
 
-    <script src="../../shared/js/theme-manager.js"></script>
+
+
+    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
+    <script src="../../shared/js/api-config.js"></script>
     <script>
+        // 确保goHome函数可用（备用实现）
+        window.goHome = window.goHome || function() {
+            console.log('🏠 备用goHome函数被调用');
+            window.location.href = '../../homepage/index.html';
+        };
+        
         // 快速登录功能
         function quickLogin(username, password) {
             document.getElementById('username').value = username;
@@ -203,21 +228,30 @@
             hideError();
 
             try {
-                // 模拟登录API调用
+                // 构建登录数据 - 符合后端API格式
                 const loginData = {
                     username: username,
                     password: password,
-                    user_type: userType,
-                    business_type: 'ai'
+                    userType: userType,
+                    businessType: 'ai',
+                    // 根据用户类型添加对应的地址字段
+                    clientAddress: userType === 'client' ? `http://${username}.ai.local` : undefined,
+                    serverAddress: userType === 'server' ? 'http://ai-server.local' : undefined,
+                    adminId: userType === 'server' ? username : undefined
                 };
 
-                // 模拟网络延迟和登录验证
-                const response = await simulateLogin(loginData);
+                console.log('正在调用后端登录API...', loginData);
+                
+                // 调用后端登录API
+                const response = await window.apiManager.login(loginData);
                 
                 if (response.success) {
+                    console.log('✅ 登录成功:', response);
+                    
                     // 保存登录信息
-                    localStorage.setItem('token', response.token);
-                    localStorage.setItem('user', JSON.stringify(response.user));
+                    localStorage.setItem('userData', JSON.stringify(response.user));
+                    localStorage.setItem('aiUserType', userType);
+                    localStorage.setItem('userType', userType);
                     localStorage.setItem('loginTime', new Date().toISOString());
                     
                     // 根据用户类型跳转到不同的界面
@@ -229,11 +263,15 @@
                         window.location.href = './client-dashboard.html';
                     }
                 } else {
-                    showError(response.message || '登录失败，请检查用户名和密码');
+                    showError(response.error || '登录失败');
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                showError('网络错误，请稍后重试');
+                console.error('❌ 登录错误:', error);
+                if (error.message.includes('Failed to fetch') || error.message.includes('fetch')) {
+                    showError('❌ 无法连接到后端服务器 (http://127.0.0.1:5001)，请确保后端服务正在运行');
+                } else {
+                    showError(error.message || '网络错误，请稍后重试');
+                }
             } finally {
                 showLoading(false);
             }
@@ -303,10 +341,10 @@
         function goBack() {
             window.location.href = './user-type-select.html';
         }
-
-        function goHome() {
-            window.location.href = '/frontend/homepage/index.html';
-        }
     </script>
+    
+    <!-- 统一主题和路由管理 -->
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/router-unified.js?v=20250826"></script>
 </body>
 </html>

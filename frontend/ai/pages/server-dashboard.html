@@ -6,1033 +6,365 @@
     <title>服务器控制台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system.css">
-    <style>
-        /* 模态框样式 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-overlay.show {
-            opacity: 1;
-        }
-        
-        .modal-overlay.hidden {
-            display: none;
-        }
-        
-        .modal-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
-            overflow: hidden;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        
-        .modal-overlay.show .modal-container {
-            transform: scale(1);
-        }
-        
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        }
-        
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        
-        .modal-close:hover {
-            background: rgba(107, 114, 128, 0.1);
-            color: #374151;
-        }
-        
-        .modal-body {
-            padding: 0;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .modal-content {
-            padding: 24px;
-        }
-        
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            background: #f9fafb;
-        }
-        
-        /* 详情内容样式 */
-        .detail-section {
-            color: #374151;
-        }
-        
-        .detail-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #f3f4f6;
-        }
-        
-        .detail-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0;
-        }
-        
-        .detail-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .detail-badge.success {
-            background: #dcfce7;
-            color: #166534;
-        }
-        
-        .detail-badge.warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        
-        .detail-badge.info {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .detail-badge.error {
-            background: #fecaca;
-            color: #dc2626;
-        }
-        
-        .detail-grid {
-            display: grid;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .detail-item {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .detail-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 4px;
-        }
-        
-        .detail-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-        
-        .detail-meta {
-            font-size: 12px;
-            color: #6b7280;
-        }
-        
-        .detail-summary {
-            background: #f1f5f9;
-            padding: 16px;
-            border-radius: 12px;
-            display: grid;
-            gap: 12px;
-        }
-        
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .summary-label {
-            font-size: 14px;
-            color: #6b7280;
-        }
-        
-        .summary-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        /* 统计卡片样式 */
-        .stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .stat-card {
-            padding: 16px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .stat-card.system {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 1px solid #a7f3d0;
-        }
-        
-        .stat-card.clients {
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            border: 1px solid #93c5fd;
-        }
-        
-        .stat-card.sessions {
-            background: linear-gradient(135deg, #fef7ff, #fae8ff);
-            border: 1px solid #d8b4fe;
-        }
-        
-        .stat-card.requests {
-            background: linear-gradient(135deg, #fffbeb, #fef3c7);
-            border: 1px solid #fcd34d;
-        }
-        
-        .stat-icon {
-            font-size: 24px;
-        }
-        
-        .stat-content {
-            flex: 1;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 4px;
-        }
-        
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 2px;
-        }
-        
-        .stat-desc {
-            font-size: 11px;
-            color: #6b7280;
-        }
-        
-        /* 进度条样式 */
-        .progress-container {
-            margin-bottom: 16px;
-        }
-        
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        /* 客户端列表样式 */
-        .client-list {
-            display: grid;
-            gap: 12px;
-        }
-        
-        .client-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .client-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .client-status {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .client-status.online {
-            background: #10b981;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-        }
-        
-        .client-status.idle {
-            background: #f59e0b;
-            box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
-        }
-        
-        .client-status.offline {
-            background: #6b7280;
-        }
-        
-        .client-details {
-            flex: 1;
-        }
-        
-        .client-name {
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 2px;
-        }
-        
-        .client-meta {
-            font-size: 12px;
-            color: #6b7280;
-        }
-        
-        .client-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn-mini {
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-mini.primary {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .btn-mini.primary:hover {
-            background: #2563eb;
-        }
-        
-        .btn-mini.secondary {
-            background: #6b7280;
-            color: white;
-        }
-        
-        .btn-mini.secondary:hover {
-            background: #4b5563;
-        }
-        
-        /* 请求列表样式 */
-        .request-list {
-            display: grid;
-            gap: 16px;
-        }
-        
-        .request-item {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .request-title {
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .request-details {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-        
-        .request-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        /* 主题适配 */
-        [data-theme="dark"] .modal-container {
-            background: #1f2937;
-        }
-        
-        [data-theme="dark"] .modal-header {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-            border-color: #374151;
-        }
-        
-        [data-theme="dark"] .modal-title {
-            color: #f9fafb;
-        }
-        
-        [data-theme="dark"] .modal-footer {
-            background: #111827;
-            border-color: #374151;
-        }
-        
-        [data-theme="dark"] .detail-section {
-            color: #d1d5db;
-        }
-        
-        [data-theme="dark"] .detail-title {
-            color: #f9fafb;
-        }
-        
-        [data-theme="dark"] .detail-item {
-            background: #374151;
-            border-color: #4b5563;
-        }
-        
-        [data-theme="dark"] .detail-summary {
-            background: #374151;
-        }
-        
-        [data-theme="dark"] .client-item,
-        [data-theme="dark"] .request-item {
-            background: #374151;
-            border-color: #4b5563;
-        }
-        
-        [data-theme="dark"] .client-name {
-            color: #f9fafb;
-        }
-        
-        [data-theme="dark"] .request-title {
-            color: #f9fafb;
-        }
-        
-        [data-theme="dark"] .detail-value {
-            color: #f9fafb;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 640px) {
-            .modal-container {
-                width: 95%;
-                margin: 20px;
-            }
-            
-            .modal-header, .modal-content, .modal-footer {
-                padding: 16px;
-            }
-            
-            .stats-overview {
-                grid-template-columns: 1fr;
-            }
-            
-            .client-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250827b">
+    <link rel="stylesheet" href="../assets/ai-styles.css?v=20250826">
+    <link rel="stylesheet" href="../assets/server-dashboard-styles.css?v=20250826">
 </head>
-<body class="module-background">
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
+<body class="module-background min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-40">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6">
             <div class="navbar-brand">
-                <span data-i18n="ai.dashboard.server.title">服务器控制面板</span>
+                <span data-i18n="ai.dashboard.server.title">服务器控制台</span>
             </div>
             
-            <div class="navbar-nav">
+            <div class="navbar-nav flex items-center gap-4">
                 <span id="userInfo" class="text-sm text-gray-600"></span>
                 <button class="theme-toggle" title="切换主题">
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="logout()" class="btn btn-secondary text-sm">
-                    <span data-i18n="common.logout">退出登录</span>
-                </button>
+                <button onclick="logout()" class="btn-secondary text-sm">退出登录</button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="max-w-4xl mx-auto px-6 py-8">
-        <!-- Welcome Section -->
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">
-                <span data-i18n="ai.dashboard.server.serverManagement">服务器管理控制台</span>
-            </h2>
-            <p class="text-gray-600" data-i18n="ai.dashboard.server.manageDesc">管理联邦学习网络和协调客户端训练</p>
-        </div>
-
-        <!-- Server Status Cards -->
-        <div class="grid md:grid-cols-4 gap-6 mb-8">
-            <!-- System Status -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewSystemStatus()">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500" data-i18n="ai.dashboard.server.systemStatus">系统状态</p>
-                        <p class="text-2xl font-bold text-gray-700" data-i18n="ai.dashboard.server.online">在线</p>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
-                    </div>
-                </div>
+    <!-- 主内容区 -->
+    <div class="pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- 页面标题 -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    <span data-i18n="ai.dashboard.server.title">服务器控制台</span>
+                </h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-2">
+                    <span data-i18n="ai.dashboard.server.subtitle">管理联邦学习服务器和客户端连接</span>
+                </p>
             </div>
 
-            <!-- Connected Clients -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewConnectedClients()">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500" data-i18n="ai.dashboard.server.connectedClients">连接客户端</p>
-                        <p class="text-2xl font-bold text-gray-700">8</p>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Active Sessions -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewActiveSessions()">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500" data-i18n="ai.dashboard.server.activeSessions">活跃会话</p>
-                        <p class="text-2xl font-bold text-gray-700">3</p>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pending Requests -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewPendingRequests()">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-500" data-i18n="ai.dashboard.server.pendingRequests">待审核申请</p>
-                        <p class="text-2xl font-bold text-gray-700">5</p>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Model Management Section -->
-        <div class="card p-6 mb-8 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewModelManagementDetails()">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.modelManagement">模型管理</h3>
-                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
-                </div>
-                <button onclick="event.stopPropagation(); openCreateModelModal()" class="btn btn-primary">
-                    <span data-i18n="ai.dashboard.server.createModel">创建模型</span>
-                </button>
-            </div>
-
-            <!-- Current Active Model -->
-            <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="font-semibold text-gray-900" data-i18n="ai.dashboard.server.currentModel">当前模型</h4>
-                        <div class="flex items-center mt-2">
-                            <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                            <span class="text-gray-700" id="currentModelName">CNN图像分类模型 v2.1</span>
-                            <span class="ml-3 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full" data-i18n="ai.dashboard.server.active">活跃</span>
+            <!-- 系统状态概览 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewSystemStatus()">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <span data-i18n="ai.dashboard.server.systemStatus">系统状态</span>
+                            </h3>
+                            <p class="text-2xl font-bold text-green-600">在线</p>
+                            <p class="text-sm text-gray-500">运行时间: 15天</p>
                         </div>
-                        <p class="text-sm text-gray-500 mt-1">ResNet-50 架构，适用于图像分类任务</p>
+                        <div class="text-4xl">💻</div>
                     </div>
-                    <button onclick="openModelSelectionModal()" class="btn btn-secondary">
-                        <span data-i18n="ai.dashboard.server.changeModel">切换模型</span>
-                    </button>
+                </div>
+
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewConnectedClients()">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <span data-i18n="ai.dashboard.server.connectedClients">连接客户端</span>
+                            </h3>
+                            <p class="text-2xl font-bold text-blue-600">8</p>
+                            <p class="text-sm text-gray-500">6在线, 1空闲, 1离线</p>
+                        </div>
+                        <div class="text-4xl">👥</div>
+                    </div>
+                </div>
+
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewActiveSessions()">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <span data-i18n="ai.dashboard.server.activeSessions">活跃会话</span>
+                            </h3>
+                            <p class="text-2xl font-bold text-purple-600">3</p>
+                            <p class="text-sm text-gray-500">1训练中, 1等待, 1MPC</p>
+                        </div>
+                        <div class="text-4xl">🔄</div>
+                    </div>
+                </div>
+
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewPendingRequests()">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <span data-i18n="ai.dashboard.server.pendingRequests">待审核申请</span>
+                            </h3>
+                            <p class="text-2xl font-bold text-orange-600">5</p>
+                            <p class="text-sm text-gray-500">需要审核处理</p>
+                        </div>
+                        <div class="text-4xl">📋</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Model List -->
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.imageClassificationModel">图像分类模型</h5>
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full" data-i18n="ai.dashboard.server.active">活跃</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">CNN | ResNet-50 架构 | v2.1</p>
-                    <div class="flex space-x-2">
-                        <button onclick="editModel('model1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.edit">编辑</span>
-                        </button>
-                        <button onclick="viewModelDetails('model1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.details">详情</span>
+            <!-- 主要功能区 -->
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                <!-- 模型管理 -->
+                <div class="module-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                            <span data-i18n="ai.dashboard.server.modelManagement">模型管理</span>
+                        </h2>
+                        <button onclick="viewModelManagementDetails()" class="btn-module-secondary text-sm">
+                            <span data-i18n="ai.dashboard.server.viewDetails">查看详情</span>
                         </button>
                     </div>
-                </div>
 
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.textAnalysisModel">文本分析模型</h5>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full" data-i18n="ai.dashboard.server.inactive">非活跃</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">LSTM | 情感分析 | v1.3</p>
-                    <div class="flex space-x-2">
-                        <button onclick="activateModel('model2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.activate">激活</span>
-                        </button>
-                        <button onclick="editModel('model2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.edit">编辑</span>
-                        </button>
-                        <button onclick="deleteModel('model2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.delete">删除</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.regressionModel">回归预测模型</h5>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full" data-i18n="ai.dashboard.server.inactive">非活跃</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">MLP | 多层感知机 | v1.0</p>
-                    <div class="flex space-x-2">
-                        <button onclick="activateModel('model3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.activate">激活</span>
-                        </button>
-                        <button onclick="editModel('model3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.edit">编辑</span>
-                        </button>
-                        <button onclick="deleteModel('model3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.delete">删除</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h5 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.recommendationModel">推荐系统模型</h5>
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full" data-i18n="ai.dashboard.server.draft">草稿</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-3">Transformer | 协同过滤 | v0.5</p>
-                    <div class="flex space-x-2">
-                        <button onclick="editModel('model4')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.edit">编辑</span>
-                        </button>
-                        <button onclick="deleteModel('model4')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                            <span data-i18n="ai.dashboard.server.delete">删除</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Training Requests Management -->
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <!-- Pending Requests -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewPendingTrainingRequests()">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.pendingTrainingRequests">待审核训练申请</h3>
-                    <div class="text-xs text-blue-600">点击查看详情</div>
-                </div>
-                <div class="space-y-4">
-                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.imageClassificationFederated">图像分类联邦训练</h4>
-                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full" data-i18n="ai.dashboard.server.pending">待审核</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-3"><span data-i18n="ai.dashboard.server.applicant">申请人</span>: client1 | <span data-i18n="ai.dashboard.server.expectedParticipants">预期参与方</span>: 5个 | <span data-i18n="ai.dashboard.server.trainingMode">训练模式</span>: <span data-i18n="ai.dashboard.server.standardFederated">标准联邦学习</span></p>
-                        <div class="flex space-x-2">
-                            <button onclick="approveRequest('req1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.approve">批准</span>
-                            </button>
-                            <button onclick="rejectRequest('req1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.reject">拒绝</span>
-                            </button>
-                            <button onclick="viewDetails('req1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.details">详情</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.textAnalysisMPC">文本分析MPC训练</h4>
-                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full" data-i18n="ai.dashboard.server.pending">待审核</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-3"><span data-i18n="ai.dashboard.server.applicant">申请人</span>: client2 | <span data-i18n="ai.dashboard.server.expectedParticipants">预期参与方</span>: 3个 | <span data-i18n="ai.dashboard.server.trainingMode">训练模式</span>: <span data-i18n="ai.dashboard.server.mpcFederated">MPC联邦学习</span></p>
-                        <div class="flex space-x-2">
-                            <button onclick="approveRequest('req2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.approve">批准</span>
-                            </button>
-                            <button onclick="rejectRequest('req2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.reject">拒绝</span>
-                            </button>
-                            <button onclick="viewDetails('req2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.details">详情</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.predictionModelJoint">预测模型联合训练</h4>
-                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full" data-i18n="ai.dashboard.server.pending">待审核</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-3"><span data-i18n="ai.dashboard.server.applicant">申请人</span>: client3 | <span data-i18n="ai.dashboard.server.expectedParticipants">预期参与方</span>: 4个 | <span data-i18n="ai.dashboard.server.trainingMode">训练模式</span>: <span data-i18n="ai.dashboard.server.standardFederated">标准联邦学习</span></p>
-                        <div class="flex space-x-2">
-                            <button onclick="approveRequest('req3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.approve">批准</span>
-                            </button>
-                            <button onclick="rejectRequest('req3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.reject">拒绝</span>
-                            </button>
-                            <button onclick="viewDetails('req3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.details">详情</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Active Sessions -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewActiveTrainingSessionsDetails()">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.activeTrainingSessions">活跃训练会话</h3>
-                    <div class="text-xs text-blue-600">点击查看详情</div>
-                </div>
-                <div class="space-y-4">
-                    <div class="border border-gray-200 bg-gray-50 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.cnnFaultDetection">CNN故障检测</h4>
-                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full" data-i18n="ai.dashboard.server.inTraining">训练中</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2"><span data-i18n="ai.dashboard.server.participants">参与方</span>: 5个 | <span data-i18n="ai.dashboard.server.currentRound">当前轮数</span>: 45/100 | <span data-i18n="ai.dashboard.server.trainingMode">模式</span>: <span data-i18n="ai.dashboard.server.standardFederated">标准联邦学习</span></p>
-                        <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-                            <div class="bg-gray-600 h-2 rounded-full" style="width: 45%"></div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="viewSession('session1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.monitor">监控</span>
-                            </button>
-                            <button onclick="pauseSession('session1')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.pause">暂停</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 bg-gray-50 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.lstmSentimentAnalysis">LSTM情感分析</h4>
-                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full" data-i18n="ai.dashboard.server.waitingParticipants">等待参与方</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2"><span data-i18n="ai.dashboard.server.participants">参与方</span>: 2/4个 | <span data-i18n="ai.dashboard.server.currentRound">当前轮数</span>: 0/50 | <span data-i18n="ai.dashboard.server.trainingMode">模式</span>: <span data-i18n="ai.dashboard.server.standardFederated">标准联邦学习</span></p>
-                        <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-                            <div class="bg-gray-600 h-2 rounded-full" style="width: 50%"></div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="viewSession('session2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.monitor">监控</span>
-                            </button>
-                            <button onclick="inviteParticipants('session2')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.inviteParticipants">邀请参与方</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 bg-gray-50 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.mpcDataMining">MPC数据挖掘</h4>
-                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full" data-i18n="ai.dashboard.server.mpcComputing">MPC计算中</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2"><span data-i18n="ai.dashboard.server.participants">参与方</span>: 3个 | <span data-i18n="ai.dashboard.server.currentRound">当前轮数</span>: 12/30 | <span data-i18n="ai.dashboard.server.trainingMode">模式</span>: <span data-i18n="ai.dashboard.server.mpcFederated">MPC联邦学习</span></p>
-                        <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-                            <div class="bg-gray-600 h-2 rounded-full" style="width: 40%"></div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="viewSession('session3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.monitor">监控</span>
-                            </button>
-                            <button onclick="checkMPCStatus('session3')" class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">
-                                <span data-i18n="ai.dashboard.server.mpcStatus">MPC状态</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Network Statistics -->
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <!-- Performance Chart -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewNetworkPerformanceDetails()">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.networkPerformanceMonitoring">网络性能监控</h3>
-                    <div class="text-xs text-blue-600">点击查看详情</div>
-                </div>
-                <div class="h-64">
-                    <canvas id="networkChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Client Management -->
-            <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewClientManagementDetails()">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.clientManagement">客户端管理</h3>
-                    <div class="text-xs text-blue-600">点击查看详情</div>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-gray-600 rounded-full mr-3"></div>
-                            <div>
-                                <p class="font-medium text-gray-900">client1</p>
-                                <p class="text-sm text-gray-500"><span data-i18n="ai.dashboard.server.online_status">在线</span> | <span data-i18n="ai.dashboard.server.lastActivity">最后活动</span>: 2<span data-i18n="ai.dashboard.server.minutesAgo">分钟前</span></p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button onclick="viewClient('client1')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.details">详情</span></button>
-                            <button onclick="kickClient('client1')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.kick">踢出</span></button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-gray-600 rounded-full mr-3"></div>
-                            <div>
-                                <p class="font-medium text-gray-900">client2</p>
-                                <p class="text-sm text-gray-500"><span data-i18n="ai.dashboard.server.online_status">在线</span> | <span data-i18n="ai.dashboard.server.lastActivity">最后活动</span>: 5<span data-i18n="ai.dashboard.server.minutesAgo">分钟前</span></p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button onclick="viewClient('client2')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.details">详情</span></button>
-                            <button onclick="kickClient('client2')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.kick">踢出</span></button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-gray-500 rounded-full mr-3"></div>
-                            <div>
-                                <p class="font-medium text-gray-900">client3</p>
-                                <p class="text-sm text-gray-500"><span data-i18n="ai.dashboard.server.idle">空闲</span> | <span data-i18n="ai.dashboard.server.lastActivity">最后活动</span>: 15<span data-i18n="ai.dashboard.server.minutesAgo">分钟前</span></p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button onclick="viewClient('client3')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.details">详情</span></button>
-                            <button onclick="kickClient('client3')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.kick">踢出</span></button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-gray-400 rounded-full mr-3"></div>
-                            <div>
-                                <p class="font-medium text-gray-900">client4</p>
-                                <p class="text-sm text-gray-500"><span data-i18n="ai.dashboard.server.offline">离线</span> | <span data-i18n="ai.dashboard.server.lastActivity">最后活动</span>: 2<span data-i18n="ai.dashboard.server.hoursAgo">小时前</span></p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-1">
-                            <button onclick="viewClient('client4')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.details">详情</span></button>
-                            <button onclick="removeClient('client4')" class="px-2 py-1 bg-gray-600 text-white text-xs rounded"><span data-i18n="ai.dashboard.server.remove">移除</span></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Logs -->
-        <div class="card p-6 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewSystemLogsDetails()">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.systemLogs">系统日志</h3>
-                <div class="text-xs text-blue-600">点击查看详情</div>
-            </div>
-            <div id="systemLogs" class="bg-black text-green-400 p-4 rounded-lg h-48 overflow-y-auto font-mono text-sm">
-                <div>[2024-08-22 10:30:15] 客户端 client1 连接成功</div>
-                <div>[2024-08-22 10:31:22] 训练申请 req1 待审核</div>
-                <div>[2024-08-22 10:32:10] 会话 session1 开始训练，参与方: 5</div>
-                <div>[2024-08-22 10:35:45] 会话 session1 完成第45轮训练</div>
-                <div>[2024-08-22 10:36:12] 客户端 client2 请求加入会话 session2</div>
-                <div>[2024-08-22 10:37:33] MPC计算 session3 状态正常</div>
-                <div>[2024-08-22 10:38:00] 系统性能监控: CPU 65%, 内存 72%</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 模型选择模态框 -->
-    <div id="modelSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-md w-full p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.selectModel">选择模型</h3>
-                    <button onclick="closeModelSelectionModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="space-y-3">
-                    <div class="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50" onclick="selectModel('model1')">
+                    <!-- 当前活跃模型 -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-4">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.imageClassificationModel">图像分类模型</h4>
-                                <p class="text-sm text-gray-600">CNN | ResNet-50 | v2.1</p>
+                                <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">当前活跃模型</p>
+                                <p class="font-semibold text-gray-900 dark:text-white" id="currentModelName">CNN图像分类模型 v2.1</p>
                             </div>
-                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <button onclick="openModelSelectionModal()" class="btn-module-primary text-sm">
+                                <span data-i18n="ai.dashboard.server.switchModel">切换模型</span>
+                            </button>
                         </div>
                     </div>
-                    <div class="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50" onclick="selectModel('model2')">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.textAnalysisModel">文本分析模型</h4>
-                                <p class="text-sm text-gray-600">LSTM | 情感分析 | v1.3</p>
+
+                    <!-- 模型列表 -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="font-medium text-gray-900 dark:text-white">CNN图像分类模型</span>
+                                <span class="text-sm px-2 py-1 bg-green-100 text-green-800 rounded">活跃</span>
                             </div>
-                            <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                            <div class="flex gap-2">
+                                <button onclick="viewModelDetails('model1')" class="btn-mini primary">详情</button>
+                                <button onclick="editModel('model1')" class="btn-mini secondary">编辑</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                                <span class="font-medium text-gray-900 dark:text-white">LSTM文本分析模型</span>
+                                <span class="text-sm px-2 py-1 bg-gray-100 text-gray-600 rounded">非活跃</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="activateModel('model2')" class="btn-mini primary">激活</button>
+                                <button onclick="editModel('model2')" class="btn-mini secondary">编辑</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                                <span class="font-medium text-gray-900 dark:text-white">MLP回归预测模型</span>
+                                <span class="text-sm px-2 py-1 bg-gray-100 text-gray-600 rounded">非活跃</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="activateModel('model3')" class="btn-mini primary">激活</button>
+                                <button onclick="deleteModel('model3')" class="btn-mini secondary">删除</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <span class="font-medium text-gray-900 dark:text-white">推荐系统模型</span>
+                                <span class="text-sm px-2 py-1 bg-yellow-100 text-yellow-800 rounded">草稿</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editModel('model4')" class="btn-mini primary">完善</button>
+                                <button onclick="deleteModel('model4')" class="btn-mini secondary">删除</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50" onclick="selectModel('model3')">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h4 class="font-medium text-gray-900" data-i18n="ai.dashboard.server.regressionModel">回归预测模型</h4>
-                                <p class="text-sm text-gray-600">MLP | 多层感知机 | v1.0</p>
-                            </div>
-                            <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                        <button onclick="openCreateModelModal()" class="btn-module-primary w-full">
+                            ➕ <span data-i18n="ai.dashboard.server.createNewModel">创建新模型</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 网络性能监控 -->
+                <div class="module-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                            <span data-i18n="ai.dashboard.server.networkPerformance">网络性能监控</span>
+                        </h2>
+                        <button onclick="viewNetworkPerformanceDetails()" class="btn-module-secondary text-sm">
+                            <span data-i18n="ai.dashboard.server.viewDetails">查看详情</span>
+                        </button>
+                    </div>
+
+                    <div class="relative h-64 mb-4">
+                        <canvas id="networkChart"></canvas>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <p class="text-sm text-blue-600 dark:text-blue-400">当前延迟</p>
+                            <p class="text-2xl font-bold text-blue-800 dark:text-blue-300">45ms</p>
                         </div>
+                        <div class="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <p class="text-sm text-green-600 dark:text-green-400">带宽使用率</p>
+                            <p class="text-2xl font-bold text-green-800 dark:text-green-300">65%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 管理功能区 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- 待审核训练申请 -->
+                <div class="module-card cursor-pointer" onclick="viewPendingTrainingRequests()">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            <span data-i18n="ai.dashboard.server.pendingRequests">待审核训练申请</span>
+                        </h3>
+                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-sm font-medium">3</span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <p class="font-medium text-gray-900 dark:text-white text-sm">图像分类联邦训练</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">client1 • 等待35分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="approveRequest('req1')" class="btn-mini primary">批准</button>
+                                <button onclick="rejectRequest('req1')" class="btn-mini secondary">拒绝</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <p class="font-medium text-gray-900 dark:text-white text-sm">文本分析MPC训练</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">client2 • 等待5分钟</p>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="approveRequest('req2')" class="btn-mini primary">批准</button>
+                                <button onclick="rejectRequest('req2')" class="btn-mini secondary">拒绝</button>
+                            </div>
+                        </div>
+
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">查看所有申请 →</button>
+                    </div>
+                </div>
+
+                <!-- 活跃训练会话 -->
+                <div class="module-card cursor-pointer" onclick="viewActiveTrainingSessionsDetails()">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            <span data-i18n="ai.dashboard.server.activeSessions">活跃训练会话</span>
+                        </h3>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">3</span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <p class="font-medium text-gray-900 dark:text-white text-sm">CNN故障检测</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">5个参与方 • 进度 45%</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="viewSession('session1')" class="btn-mini primary">查看</button>
+                                <button onclick="pauseSession('session1')" class="btn-mini secondary">暂停</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                            <p class="font-medium text-gray-900 dark:text-white text-sm">LSTM情感分析</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">2/4个参与方 • 等待中</p>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="inviteParticipants('session2')" class="btn-mini primary">邀请</button>
+                                <button onclick="viewSession('session2')" class="btn-mini secondary">查看</button>
+                            </div>
+                        </div>
+
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">查看所有会话 →</button>
+                    </div>
+                </div>
+
+                <!-- 客户端管理 -->
+                <div class="module-card cursor-pointer" onclick="viewClientManagementDetails()">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            <span data-i18n="ai.dashboard.server.clientManagement">客户端管理</span>
+                        </h3>
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">4</span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">client1</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">在线</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="viewClient('client1')" class="btn-mini primary">查看</button>
+                                <button onclick="kickClient('client1')" class="btn-mini secondary">踢出</button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">client2</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">在线</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="viewClient('client2')" class="btn-mini primary">查看</button>
+                                <button onclick="kickClient('client2')" class="btn-mini secondary">踢出</button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">client3</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">空闲</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="viewClient('client3')" class="btn-mini primary">查看</button>
+                                <button onclick="removeClient('client3')" class="btn-mini secondary">移除</button>
+                            </div>
+                        </div>
+
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">查看所有客户端 →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统日志 -->
+            <div class="mt-8">
+                <div class="module-card cursor-pointer" onclick="viewSystemLogsDetails()">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            <span data-i18n="ai.dashboard.server.systemLogs">系统日志</span>
+                        </h3>
+                        <span class="text-sm text-gray-500">实时更新</span>
+                    </div>
+                    
+                    <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-sm h-32 overflow-y-auto" id="systemLogs">
+                        <div>[08/22/2025, 9:15:30 AM] 客户端状态检查完成</div>
+                        <div>[08/22/2025, 9:16:45 AM] 训练会话性能正常</div>
+                        <div>[08/22/2025, 9:17:12 AM] 收到新的训练申请</div>
+                        <div>[08/22/2025, 9:18:01 AM] MPC计算完成一轮</div>
+                        <div>[08/22/2025, 9:18:33 AM] 网络连接稳定</div>
+                        <div>[08/22/2025, 9:19:15 AM] 数据同步完成</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 创建模型模态框 -->
-    <div id="createModelModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg max-w-lg w-full p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.server.createModel">创建模型</h3>
-                    <button onclick="closeCreateModelModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <form onsubmit="createModel(event)">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.dashboard.server.modelName">模型名称</label>
-                            <input type="text" id="modelName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.dashboard.server.modelType">模型类型</label>
-                            <select id="modelType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent">
-                                <option value="cnn" data-i18n="ai.dashboard.server.cnn">卷积神经网络</option>
-                                <option value="rnn" data-i18n="ai.dashboard.server.rnn">循环神经网络</option>
-                                <option value="transformer" data-i18n="ai.dashboard.server.transformer">Transformer</option>
-                                <option value="mlp" data-i18n="ai.dashboard.server.mlp">多层感知机</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="ai.dashboard.server.modelDescription">模型描述</label>
-                            <textarea id="modelDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"></textarea>
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" onclick="closeCreateModelModal()" class="btn btn-secondary">
-                            <span data-i18n="common.cancel">取消</span>
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <span data-i18n="common.create">创建</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- 详情模态框 -->
+    <!-- 模态框 -->
     <div id="detailModal" class="modal-overlay hidden">
         <div class="modal-container">
             <div class="modal-header">
-                <h3 id="modalTitle" class="modal-title">详情信息</h3>
+                <h3 id="modalTitle" class="modal-title">详情</h3>
                 <button class="modal-close" onclick="closeModal()">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             <div class="modal-body">
-                <div id="modalContent" class="modal-content">
-                    <!-- 动态内容将在这里加载 -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()" data-i18n="common.close">关闭</button>
+                <div id="modalContent" class="modal-content"></div>
             </div>
         </div>
     </div>
@@ -1044,1196 +376,11 @@
         </svg>
     </button>
 
-    <script src="../../shared/js/theme-manager.js"></script>
-    <script src="../../shared/js/i18n-manager.js"></script>
-    <script>
-        let networkChart;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeServerDashboard();
-            initializeNetworkChart();
-            startLogUpdates();
-        });
-
-        function initializeServerDashboard() {
-            // 检查登录状态
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const userInfo = document.getElementById('userInfo');
-            
-            if (user.name) {
-                userInfo.textContent = `欢迎，${user.name}`;
-            } else {
-                window.location.href = './login.html';
-                return;
-            }
-
-            // 检查用户类型
-            const userType = localStorage.getItem('aiUserType') || user.type;
-            if (userType !== 'server') {
-                alert('权限不足：需要服务器管理员权限');
-                window.location.href = './user-type-select.html';
-                return;
-            }
-        }
-
-        function initializeNetworkChart() {
-            const ctx = document.getElementById('networkChart').getContext('2d');
-            networkChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({length: 20}, (_, i) => i + 1),
-                    datasets: [{
-                        label: document.querySelector('[data-i18n="ai.dashboard.server.networkLatency"]')?.textContent || '网络延迟 (ms)',
-                        data: Array.from({length: 20}, () => 50 + Math.random() * 50),
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        yAxisID: 'y'
-                    }, {
-                        label: document.querySelector('[data-i18n="ai.dashboard.server.bandwidthUsage"]')?.textContent || '带宽使用率 (%)',
-                        data: Array.from({length: 20}, () => 30 + Math.random() * 40),
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: document.querySelector('[data-i18n="ai.dashboard.server.latency"]')?.textContent || '延迟 (ms)'
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: document.querySelector('[data-i18n="ai.dashboard.server.bandwidthUsageRate"]')?.textContent || '带宽使用率 (%)'
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                            },
-                        }
-                    }
-                }
-            });
-
-            // 定期更新网络数据
-            setInterval(updateNetworkChart, 5000);
-        }
-
-        function updateNetworkChart() {
-            // 添加新数据点
-            const newLatency = 50 + Math.random() * 50;
-            const newBandwidth = 30 + Math.random() * 40;
-            
-            networkChart.data.datasets[0].data.push(newLatency);
-            networkChart.data.datasets[1].data.push(newBandwidth);
-            networkChart.data.labels.push(networkChart.data.labels.length + 1);
-
-            // 限制数据点数量
-            if (networkChart.data.labels.length > 20) {
-                networkChart.data.datasets[0].data.shift();
-                networkChart.data.datasets[1].data.shift();
-                networkChart.data.labels.shift();
-            }
-
-            networkChart.update('none');
-        }
-
-        function startLogUpdates() {
-            // 模拟系统日志更新
-            setInterval(() => {
-                const logs = [
-                    '客户端状态检查完成',
-                    '训练会话性能正常',
-                    '收到新的训练申请',
-                    'MPC计算完成一轮',
-                    '网络连接稳定',
-                    '数据同步完成'
-                ];
-                
-                const randomLog = logs[Math.floor(Math.random() * logs.length)];
-                const timestamp = new Date().toLocaleString();
-                addSystemLog(`[${timestamp}] ${randomLog}`);
-            }, 15000);
-        }
-
-        function addSystemLog(message) {
-            const logsContainer = document.getElementById('systemLogs');
-            const logEntry = document.createElement('div');
-            logEntry.textContent = message;
-            logsContainer.appendChild(logEntry);
-            logsContainer.scrollTop = logsContainer.scrollHeight;
-
-            // 限制日志条数
-            const logs = logsContainer.children;
-            if (logs.length > 50) {
-                logsContainer.removeChild(logs[0]);
-            }
-        }
-
-        // 训练申请管理
-        function approveRequest(requestId) {
-            if (confirm('确定要批准这个训练申请吗？')) {
-                addSystemLog(`[${new Date().toLocaleString()}] 训练申请 ${requestId} 已批准`);
-                // 这里应该调用后端API
-                alert(`训练申请 ${requestId} 已批准`);
-            }
-        }
-
-        function rejectRequest(requestId) {
-            const reason = prompt('请输入拒绝原因：');
-            if (reason) {
-                addSystemLog(`[${new Date().toLocaleString()}] 训练申请 ${requestId} 已拒绝: ${reason}`);
-                alert(`训练申请 ${requestId} 已拒绝`);
-            }
-        }
-
-        function viewDetails(requestId) {
-            alert(`查看训练申请 ${requestId} 的详细信息`);
-        }
-
-        // 会话管理
-        function viewSession(sessionId) {
-            alert(`查看训练会话 ${sessionId} 的详细信息`);
-        }
-
-        function pauseSession(sessionId) {
-            if (confirm('确定要暂停这个训练会话吗？')) {
-                addSystemLog(`[${new Date().toLocaleString()}] 训练会话 ${sessionId} 已暂停`);
-                alert(`训练会话 ${sessionId} 已暂停`);
-            }
-        }
-
-        function inviteParticipants(sessionId) {
-            alert(`为会话 ${sessionId} 邀请更多参与方`);
-        }
-
-        function checkMPCStatus(sessionId) {
-            alert(`检查MPC会话 ${sessionId} 的计算状态`);
-        }
-
-        // 客户端管理
-        function viewClient(clientId) {
-            alert(`查看客户端 ${clientId} 的详细信息`);
-        }
-
-        function kickClient(clientId) {
-            if (confirm(`确定要踢出客户端 ${clientId} 吗？`)) {
-                addSystemLog(`[${new Date().toLocaleString()}] 客户端 ${clientId} 已被踢出`);
-                alert(`客户端 ${clientId} 已被踢出`);
-            }
-        }
-
-        function removeClient(clientId) {
-            if (confirm(`确定要移除客户端 ${clientId} 吗？`)) {
-                addSystemLog(`[${new Date().toLocaleString()}] 客户端 ${clientId} 已被移除`);
-                alert(`客户端 ${clientId} 已被移除`);
-            }
-        }
-
-        function logout() {
-            if (confirm('确定要退出登录吗？')) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                localStorage.removeItem('loginTime');
-                window.location.href = './login.html';
-            }
-        }
-
-        function goHome() {
-            window.location.href = '/frontend/homepage/index.html';
-        }
-
-        // 模型管理功能
-        function openModelSelectionModal() {
-            document.getElementById('modelSelectionModal').classList.remove('hidden');
-        }
-
-        function closeModelSelectionModal() {
-            document.getElementById('modelSelectionModal').classList.add('hidden');
-        }
-
-        function openCreateModelModal() {
-            document.getElementById('createModelModal').classList.remove('hidden');
-        }
-
-        function closeCreateModelModal() {
-            document.getElementById('createModelModal').classList.add('hidden');
-            // 重置表单
-            document.getElementById('modelName').value = '';
-            document.getElementById('modelDescription').value = '';
-            document.getElementById('modelType').selectedIndex = 0;
-        }
-
-        function selectModel(modelId) {
-            const modelNames = {
-                'model1': 'CNN图像分类模型 v2.1',
-                'model2': 'LSTM文本分析模型 v1.3',
-                'model3': 'MLP回归预测模型 v1.0'
-            };
-
-            if (confirm(`确定要切换到 ${modelNames[modelId]} 吗？`)) {
-                // 更新当前模型显示
-                document.getElementById('currentModelName').textContent = modelNames[modelId];
-                
-                // 添加系统日志
-                addSystemLog(`[${new Date().toLocaleString()}] 模型已切换到: ${modelNames[modelId]}`);
-                
-                closeModelSelectionModal();
-                alert(`已成功切换到 ${modelNames[modelId]}`);
-            }
-        }
-
-        function createModel(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('modelName').value;
-            const type = document.getElementById('modelType').value;
-            const description = document.getElementById('modelDescription').value;
-
-            // 模拟创建模型
-            addSystemLog(`[${new Date().toLocaleString()}] 新模型创建: ${name} (${type})`);
-            
-            closeCreateModelModal();
-            alert(`模型 "${name}" 创建成功！`);
-        }
-
-        function activateModel(modelId) {
-            const modelNames = {
-                'model1': 'CNN图像分类模型',
-                'model2': 'LSTM文本分析模型',
-                'model3': 'MLP回归预测模型',
-                'model4': '推荐系统模型'
-            };
-
-            if (confirm(`确定要激活 ${modelNames[modelId]} 吗？`)) {
-                addSystemLog(`[${new Date().toLocaleString()}] 模型 ${modelNames[modelId]} 已激活`);
-                alert(`${modelNames[modelId]} 已激活`);
-                
-                // 这里可以添加页面刷新或状态更新逻辑
-                location.reload();
-            }
-        }
-
-        function editModel(modelId) {
-            alert(`编辑模型 ${modelId} 的配置`);
-        }
-
-        function deleteModel(modelId) {
-            const modelNames = {
-                'model1': 'CNN图像分类模型',
-                'model2': 'LSTM文本分析模型',
-                'model3': 'MLP回归预测模型',
-                'model4': '推荐系统模型'
-            };
-
-            if (confirm(`确定要删除 ${modelNames[modelId]} 吗？此操作不可撤销。`)) {
-                addSystemLog(`[${new Date().toLocaleString()}] 模型 ${modelNames[modelId]} 已删除`);
-                alert(`${modelNames[modelId]} 已删除`);
-                
-                // 这里可以添加页面刷新或状态更新逻辑
-                location.reload();
-            }
-        }
-
-        function viewModelDetails(modelId) {
-            alert(`查看模型 ${modelId} 的详细信息`);
-        }
-
-        // 模态框控制函数
-        function showModal(title, content) {
-            // 检查当前语言
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            document.getElementById('modalTitle').textContent = isEnglish ? translateTitle(title) : title;
-            document.getElementById('modalContent').innerHTML = content;
-            const modal = document.getElementById('detailModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.add('show'), 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('detailModal');
-            modal.classList.remove('show');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // 点击背景关闭模态框
-        document.getElementById('detailModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // ESC键关闭模态框
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // 简单的标题翻译函数
-        function translateTitle(chineseTitle) {
-            const translations = {
-                '系统状态详情': 'System Status Details',
-                '连接客户端详情': 'Connected Clients Details', 
-                '活跃会话详情': 'Active Sessions Details',
-                '待审核申请详情': 'Pending Requests Details'
-            };
-            return translations[chineseTitle] || chineseTitle;
-        }
-
-        // 服务器状态概览点击功能
-        function viewSystemStatus() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'System Status' : '系统状态'}</h4>
-                        <span class="detail-badge success">${isEnglish ? 'Online' : '在线'}</span>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card system">
-                            <div class="stat-icon">💻</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'CPU Usage' : 'CPU使用率'}</div>
-                                <div class="stat-value">65%</div>
-                                <div class="stat-desc">${isEnglish ? 'Normal' : '正常'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">🧠</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Memory Usage' : '内存使用率'}</div>
-                                <div class="stat-value">72%</div>
-                                <div class="stat-desc">${isEnglish ? 'Normal' : '正常'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">💽</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Disk Usage' : '磁盘使用率'}</div>
-                                <div class="stat-value">45%</div>
-                                <div class="stat-desc">${isEnglish ? 'Healthy' : '健康'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">🌡️</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Temperature' : '系统温度'}</div>
-                                <div class="stat-value">${isEnglish ? 'Normal' : '正常'}</div>
-                                <div class="stat-desc">52°C</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-summary">
-                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">${isEnglish ? '📊 System Information' : '📊 系统信息'}</h5>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '🔌 Network Status' : '🔌 网络连接'}</span>
-                            <span class="summary-value">${isEnglish ? 'Normal' : '正常'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '⚡ Power Status' : '⚡ 电源状态'}</span>
-                            <span class="summary-value">${isEnglish ? 'Stable' : '稳定'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '⏱️ Uptime' : '⏱️ 运行时间'}</span>
-                            <span class="summary-value">${isEnglish ? '15d 3h 42m' : '15天 3小时 42分钟'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '🔄 Last Restart' : '🔄 最近重启'}</span>
-                            <span class="summary-value">2024-08-07 08:30:15</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'System Status Details' : '系统状态详情', content);
-        }
-
-        function viewConnectedClients() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Connected Clients' : '连接客户端'}</h4>
-                        <span class="detail-badge info">8 ${isEnglish ? 'clients' : '个客户端'}</span>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card clients">
-                            <div class="stat-icon">🟢</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Online' : '在线'}</div>
-                                <div class="stat-value">6</div>
-                                <div class="stat-desc">${isEnglish ? 'Active clients' : '活跃客户端'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card clients">
-                            <div class="stat-icon">🟡</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Idle' : '空闲'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Idle clients' : '空闲客户端'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card clients">
-                            <div class="stat-icon">🔴</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Offline' : '离线'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Offline clients' : '离线客户端'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="client-list">
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status online"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client1</div>
-                                    <div class="client-meta">IP: 192.168.1.101 | ${isEnglish ? 'Online: 2h' : '在线: 2小时'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Details' : '详情'}</button>
-                            </div>
-                        </div>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status online"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client2</div>
-                                    <div class="client-meta">IP: 192.168.1.102 | ${isEnglish ? 'Online: 1h 30m' : '在线: 1小时30分'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Details' : '详情'}</button>
-                            </div>
-                        </div>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status idle"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client4</div>
-                                    <div class="client-meta">IP: 192.168.1.104 | ${isEnglish ? 'Idle: 15m' : '空闲: 15分钟'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini secondary">${isEnglish ? 'Wake' : '唤醒'}</button>
-                            </div>
-                        </div>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status offline"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client6</div>
-                                    <div class="client-meta">IP: 192.168.1.106 | ${isEnglish ? 'Offline: 2h' : '离线: 2小时'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini secondary">${isEnglish ? 'Remove' : '移除'}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Connected Clients Details' : '连接客户端详情', content);
-        }
-
-        function viewActiveSessions() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Active Training Sessions' : '活跃训练会话'}</h4>
-                        <span class="detail-badge info">3 ${isEnglish ? 'sessions' : '个会话'}</span>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card sessions">
-                            <div class="stat-icon">🔄</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Training' : '训练中'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Active training' : '正在训练'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card sessions">
-                            <div class="stat-icon">⏳</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Waiting' : '等待中'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Waiting participants' : '等待参与方'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card sessions">
-                            <div class="stat-icon">🔐</div>
-                            <div class="stat-content">
-                                <div class="stat-label">MPC</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Secure computing' : '安全计算'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="request-list">
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'CNN Fault Detection' : 'CNN故障检测'}</div>
-                                <span class="detail-badge info">${isEnglish ? 'Training' : '训练中'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Participants: 5 clients | Current round: 45/100' : '参与方: 5个客户端 | 当前轮数: 45/100'}
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-header">
-                                    <span style="font-size: 12px; color: #6b7280;">${isEnglish ? 'Progress' : '进度'}</span>
-                                    <span style="font-size: 12px; font-weight: 600;">45%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 45%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'LSTM Sentiment Analysis' : 'LSTM情感分析'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Waiting' : '等待参与方'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Participants: 2/4 clients | Waiting time: 25 minutes' : '参与方: 2/4个客户端 | 等待时间: 25分钟'}
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-header">
-                                    <span style="font-size: 12px; color: #6b7280;">${isEnglish ? 'Participants' : '参与方'}</span>
-                                    <span style="font-size: 12px; font-weight: 600;">50%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 50%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'MPC Data Mining' : 'MPC数据挖掘'}</div>
-                                <span class="detail-badge success">MPC</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Participants: 3 clients | Current round: 12/30 | Security level: High' : '参与方: 3个客户端 | 当前轮数: 12/30 | 安全等级: 高'}
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-header">
-                                    <span style="font-size: 12px; color: #6b7280;">${isEnglish ? 'Progress' : '进度'}</span>
-                                    <span style="font-size: 12px; font-weight: 600;">40%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 40%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Active Sessions Details' : '活跃会话详情', content);
-        }
-
-        // 大模块详情查看函数
-        function viewModelManagementDetails() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Model Management System' : '模型管理系统'}</h4>
-                        <span class="detail-badge info">${isEnglish ? '4 models' : '4个模型'}</span>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card system">
-                            <div class="stat-icon">🤖</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Active Models' : '活跃模型'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'CNN v2.1 running' : 'CNN v2.1 运行中'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Total Models' : '总模型数'}</div>
-                                <div class="stat-value">4</div>
-                                <div class="stat-desc">${isEnglish ? 'Across all types' : '各种类型'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">🔄</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Model Switching' : '模型切换'}</div>
-                                <div class="stat-value">Quick</div>
-                                <div class="stat-desc">${isEnglish ? 'Hot swapping' : '热切换'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-summary">
-                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">${isEnglish ? '🎯 Model Status Overview' : '🎯 模型状态概览'}</h5>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '✅ CNN Image Classification v2.1' : '✅ CNN图像分类模型 v2.1'}</span>
-                            <span class="summary-value">${isEnglish ? 'Active' : '活跃'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '⏸️ LSTM Text Analysis v1.3' : '⏸️ LSTM文本分析模型 v1.3'}</span>
-                            <span class="summary-value">${isEnglish ? 'Inactive' : '非活跃'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '⏸️ MLP Regression v1.0' : '⏸️ MLP回归预测模型 v1.0'}</span>
-                            <span class="summary-value">${isEnglish ? 'Inactive' : '非活跃'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? '📝 Recommendation System v0.5' : '📝 推荐系统模型 v0.5'}</span>
-                            <span class="summary-value">${isEnglish ? 'Draft' : '草稿'}</span>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #f0f9ff; padding: 16px; border-radius: 12px; margin-top: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <div style="font-size: 16px;">🚀</div>
-                            <strong style="color: #1e40af;">${isEnglish ? 'Management Features' : '管理功能'}</strong>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: #374151;">${isEnglish ? 'Create, edit, activate, and delete models | Hot model switching | Performance monitoring | Version control' : '创建、编辑、激活和删除模型 | 热切换模型 | 性能监控 | 版本控制'}</p>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Model Management Details' : '模型管理详情', content);
-        }
-
-        function viewPendingTrainingRequests() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Pending Training Requests' : '待审核训练申请'}</h4>
-                        <span class="detail-badge warning">3 ${isEnglish ? 'pending' : '个待审核'}</span>
-                    </div>
-                    
-                    <div class="request-list">
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'Image Classification Federated Training' : '图像分类联邦训练'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Pending 35min' : '等待35分钟'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Applicant: client1 | Expected participants: 5 | Mode: Standard Federated Learning' : '申请人: client1 | 预期参与方: 5个 | 模式: 标准联邦学习'}<br>
-                                ${isEnglish ? 'Dataset: Custom images | Architecture: ResNet-50' : '数据集: 自定义图像 | 架构: ResNet-50'}
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Approve' : '批准'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Reject' : '拒绝'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'More Info' : '更多信息'}</button>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'Text Analysis MPC Training' : '文本分析MPC训练'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Pending 5min' : '等待5分钟'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Applicant: client2 | Expected participants: 3 | Mode: MPC Federated Learning' : '申请人: client2 | 预期参与方: 3个 | 模式: MPC联邦学习'}<br>
-                                ${isEnglish ? 'Dataset: Sentiment data | Security: High encryption' : '数据集: 情感数据 | 安全性: 高加密'}
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Approve' : '批准'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Reject' : '拒绝'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'More Info' : '更多信息'}</button>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'Prediction Model Joint Training' : '预测模型联合训练'}</div>
-                                <span class="detail-badge error">${isEnglish ? 'Pending 1h 20m' : '等待1小时20分钟'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Applicant: client3 | Expected participants: 4 | Mode: Standard Federated Learning' : '申请人: client3 | 预期参与方: 4个 | 模式: 标准联邦学习'}<br>
-                                ${isEnglish ? 'Dataset: Financial data | Urgent priority request' : '数据集: 金融数据 | 紧急优先申请'}
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Approve' : '批准'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Reject' : '拒绝'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'More Info' : '更多信息'}</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #fef3c7; padding: 16px; border-radius: 12px; margin-top: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <div style="font-size: 16px;">⚠️</div>
-                            <strong style="color: #92400e;">${isEnglish ? 'Review Guidelines' : '审核指导'}</strong>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: #374151;">${isEnglish ? 'Review dataset quality, participant requirements, security protocols, and resource allocation before approval.' : '审核前请检查数据集质量、参与方需求、安全协议和资源分配。'}</p>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Pending Training Requests Details' : '待审核训练申请详情', content);
-        }
-
-        function viewActiveTrainingSessionsDetails() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Active Training Sessions' : '活跃训练会话'}</h4>
-                        <span class="detail-badge success">3 ${isEnglish ? 'active' : '个活跃'}</span>
-                    </div>
-                    
-                    <div class="request-list">
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'CNN Fault Detection' : 'CNN故障检测'}</div>
-                                <span class="detail-badge success">${isEnglish ? 'Training 45%' : '训练中 45%'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Participants: 5 clients | Current round: 45/100 | Mode: Standard Federated' : '参与方: 5个客户端 | 当前轮数: 45/100 | 模式: 标准联邦'}
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-header">
-                                    <span style="font-size: 12px; color: #6b7280;">${isEnglish ? 'Training Progress' : '训练进度'}</span>
-                                    <span style="font-size: 12px; font-weight: 600;">45%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 45%"></div>
-                                </div>
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Monitor' : '监控'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Pause' : '暂停'}</button>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'LSTM Sentiment Analysis' : 'LSTM情感分析'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Waiting 50%' : '等待参与方 50%'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Participants: 2/4 clients | Waiting time: 25 minutes | Mode: Standard Federated' : '参与方: 2/4个客户端 | 等待时间: 25分钟 | 模式: 标准联邦'}
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-header">
-                                    <span style="font-size: 12px; color: #6b7280;">${isEnglish ? 'Participants' : '参与方进度'}</span>
-                                    <span style="font-size: 12px; font-weight: 600;">50%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 50%"></div>
-                                </div>
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Invite' : '邀请参与方'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Monitor' : '监控'}</button>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'MPC Data Mining' : 'MPC数据挖掘'}</div>
-                                <span class="detail-badge info">${isEnglish ? 'MPC Computing 40%' : 'MPC计算中 40%'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Participants: 3 clients | Current round: 12/30 | Security: High | Mode: MPC Federated' : '参与方: 3个客户端 | 当前轮数: 12/30 | 安全级别: 高 | 模式: MPC联邦'}
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-header">
-                                    <span style="font-size: 12px; color: #6b7280;">${isEnglish ? 'MPC Progress' : 'MPC计算进度'}</span>
-                                    <span style="font-size: 12px; font-weight: 600;">40%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 40%"></div>
-                                </div>
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'MPC Status' : 'MPC状态'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Monitor' : '监控'}</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #ecfdf5; padding: 16px; border-radius: 12px; margin-top: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <div style="font-size: 16px;">📊</div>
-                            <strong style="color: #166534;">${isEnglish ? 'Session Management' : '会话管理'}</strong>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: #374151;">${isEnglish ? 'Monitor training progress, manage participants, pause/resume sessions, and access real-time performance metrics.' : '监控训练进度、管理参与方、暂停/恢复会话，并访问实时性能指标。'}</p>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Active Training Sessions Details' : '活跃训练会话详情', content);
-        }
-
-        function viewNetworkPerformanceDetails() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Network Performance Monitoring' : '网络性能监控'}</h4>
-                        <span class="detail-badge success">${isEnglish ? 'Healthy' : '健康'}</span>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card system">
-                            <div class="stat-icon">⚡</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Current Latency' : '当前延迟'}</div>
-                                <div class="stat-value">45ms</div>
-                                <div class="stat-desc">${isEnglish ? 'Excellent' : '优秀'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Bandwidth Usage' : '带宽使用'}</div>
-                                <div class="stat-value">65%</div>
-                                <div class="stat-desc">${isEnglish ? 'Normal load' : '正常负载'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">🌐</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Network Quality' : '网络质量'}</div>
-                                <div class="stat-value">95%</div>
-                                <div class="stat-desc">${isEnglish ? 'Stable connection' : '连接稳定'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-summary">
-                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">${isEnglish ? '📈 Performance Metrics (Last 20 Points)' : '📈 性能指标（最近20个数据点）'}</h5>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Average Latency' : '平均延迟'}</span>
-                            <span class="summary-value">52ms</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Peak Latency' : '峰值延迟'}</span>
-                            <span class="summary-value">89ms</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Minimum Latency' : '最低延迟'}</span>
-                            <span class="summary-value">31ms</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Average Bandwidth' : '平均带宽使用'}</span>
-                            <span class="summary-value">58%</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Peak Bandwidth' : '峰值带宽使用'}</span>
-                            <span class="summary-value">78%</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Connection Stability' : '连接稳定性'}</span>
-                            <span class="summary-value">99.2%</span>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #f0f9ff; padding: 16px; border-radius: 12px; margin-top: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <div style="font-size: 16px;">🔍</div>
-                            <strong style="color: #1e40af;">${isEnglish ? 'Monitoring Features' : '监控功能'}</strong>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: #374151;">${isEnglish ? 'Real-time network latency tracking | Bandwidth utilization monitoring | Connection quality assessment | Performance trend analysis' : '实时网络延迟跟踪 | 带宽利用率监控 | 连接质量评估 | 性能趋势分析'}</p>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Network Performance Details' : '网络性能监控详情', content);
-        }
-
-        function viewClientManagementDetails() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Client Management System' : '客户端管理系统'}</h4>
-                        <span class="detail-badge info">4 ${isEnglish ? 'clients' : '个客户端'}</span>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card clients">
-                            <div class="stat-icon">🟢</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Online' : '在线'}</div>
-                                <div class="stat-value">2</div>
-                                <div class="stat-desc">${isEnglish ? 'Active clients' : '活跃客户端'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card clients">
-                            <div class="stat-icon">🟡</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Idle' : '空闲'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Idle clients' : '空闲客户端'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card clients">
-                            <div class="stat-icon">🔴</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Offline' : '离线'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Offline clients' : '离线客户端'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="client-list">
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status online"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client1</div>
-                                    <div class="client-meta">${isEnglish ? 'Online | Last activity: 2 minutes ago' : '在线 | 最后活动: 2分钟前'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Details' : '详情'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Kick' : '踢出'}</button>
-                            </div>
-                        </div>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status online"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client2</div>
-                                    <div class="client-meta">${isEnglish ? 'Online | Last activity: 5 minutes ago' : '在线 | 最后活动: 5分钟前'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Details' : '详情'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Kick' : '踢出'}</button>
-                            </div>
-                        </div>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status idle"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client3</div>
-                                    <div class="client-meta">${isEnglish ? 'Idle | Last activity: 15 minutes ago' : '空闲 | 最后活动: 15分钟前'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Details' : '详情'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Wake' : '唤醒'}</button>
-                            </div>
-                        </div>
-                        <div class="client-item">
-                            <div class="client-info">
-                                <div class="client-status offline"></div>
-                                <div class="client-details">
-                                    <div class="client-name">client4</div>
-                                    <div class="client-meta">${isEnglish ? 'Offline | Last activity: 2 hours ago' : '离线 | 最后活动: 2小时前'}</div>
-                                </div>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Details' : '详情'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Remove' : '移除'}</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #f3f4f6; padding: 16px; border-radius: 12px; margin-top: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <div style="font-size: 16px;">⚙️</div>
-                            <strong style="color: #374151;">${isEnglish ? 'Management Tools' : '管理工具'}</strong>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: #374151;">${isEnglish ? 'View client details and activity | Kick or remove clients | Monitor connection status | Manage client permissions' : '查看客户端详情和活动 | 踢出或移除客户端 | 监控连接状态 | 管理客户端权限'}</p>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Client Management Details' : '客户端管理详情', content);
-        }
-
-        function viewSystemLogsDetails() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'System Logs Monitor' : '系统日志监控'}</h4>
-                        <span class="detail-badge success">${isEnglish ? 'Live' : '实时'}</span>
-                    </div>
-                    
-                    <div style="background: #000; color: #00ff00; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 12px; line-height: 1.4; max-height: 300px; overflow-y: auto; margin-bottom: 16px;">
-                        <div>[08/25/2025, 9:18:31 AM] ${isEnglish ? 'Training session status normal' : '训练会话状态正常'}</div>
-                        <div>[08/25/2025, 9:18:46 AM] ${isEnglish ? 'Data synchronization completed' : '数据同步完成'}</div>
-                        <div>[08/25/2025, 9:19:01 AM] ${isEnglish ? 'MPC computation completed one round' : 'MPC计算完成一轮'}</div>
-                        <div>[08/25/2025, 9:19:16 AM] ${isEnglish ? 'MPC computation completed one round' : 'MPC计算完成一轮'}</div>
-                        <div>[08/25/2025, 9:19:31 AM] ${isEnglish ? 'Data synchronization completed' : '数据同步完成'}</div>
-                        <div>[08/25/2025, 9:19:46 AM] ${isEnglish ? 'Received new training application' : '收到新的训练申请'}</div>
-                        <div>[08/25/2025, 9:20:01 AM] ${isEnglish ? 'Client status check completed' : '客户端状态检查完成'}</div>
-                        <div>[08/25/2025, 9:20:16 AM] ${isEnglish ? 'Network connection stable' : '网络连接稳定'}</div>
-                        <div>[08/25/2025, 9:20:31 AM] ${isEnglish ? 'Data synchronization completed' : '数据同步完成'}</div>
-                        <div>[08/25/2025, 9:20:46 AM] ${isEnglish ? 'System performance monitoring normal' : '系统性能监控正常'}</div>
-                        <div style="color: #ffff00;">[08/25/2025, 9:21:01 AM] ${isEnglish ? 'WARNING: High CPU usage detected' : '警告: 检测到高CPU使用率'}</div>
-                        <div>[08/25/2025, 9:21:16 AM] ${isEnglish ? 'CPU usage normalized' : 'CPU使用率已正常化'}</div>
-                        <div style="color: #ff0000;">[08/25/2025, 9:21:31 AM] ${isEnglish ? 'ERROR: Training session timeout for client5' : '错误: 客户端5训练会话超时'}</div>
-                        <div>[08/25/2025, 9:21:46 AM] ${isEnglish ? 'Session recovery initiated' : '会话恢复已启动'}</div>
-                        <div>[08/25/2025, 9:22:01 AM] ${isEnglish ? 'All systems operational' : '所有系统运行正常'}</div>
-                    </div>
-                    
-                    <div class="stats-overview">
-                        <div class="stat-card system">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Log Entries' : '日志条目'}</div>
-                                <div class="stat-value">2,847</div>
-                                <div class="stat-desc">${isEnglish ? 'Today' : '今天'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">⚠️</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Warnings' : '警告'}</div>
-                                <div class="stat-value">3</div>
-                                <div class="stat-desc">${isEnglish ? 'Last 24h' : '过去24小时'}</div>
-                            </div>
-                        </div>
-                        <div class="stat-card system">
-                            <div class="stat-icon">❌</div>
-                            <div class="stat-content">
-                                <div class="stat-label">${isEnglish ? 'Errors' : '错误'}</div>
-                                <div class="stat-value">1</div>
-                                <div class="stat-desc">${isEnglish ? 'Last 24h' : '过去24小时'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-summary">
-                        <h5 style="margin-bottom: 16px; font-weight: 600; color: #374151;">${isEnglish ? '🔍 Log Categories' : '🔍 日志分类'}</h5>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'System Operations' : '系统操作'}</span>
-                            <span class="summary-value">2,543 ${isEnglish ? 'entries' : '条'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Client Activities' : '客户端活动'}</span>
-                            <span class="summary-value">234 ${isEnglish ? 'entries' : '条'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Training Sessions' : '训练会话'}</span>
-                            <span class="summary-value">67 ${isEnglish ? 'entries' : '条'}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">${isEnglish ? 'Network Events' : '网络事件'}</span>
-                            <span class="summary-value">3 ${isEnglish ? 'entries' : '条'}</span>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #f9fafb; padding: 16px; border-radius: 12px; margin-top: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <div style="font-size: 16px;">🛠️</div>
-                            <strong style="color: #374151;">${isEnglish ? 'Log Management' : '日志管理'}</strong>
-                        </div>
-                        <p style="margin: 0; font-size: 14px; color: #374151;">${isEnglish ? 'Real-time log monitoring | Filter by severity level | Export logs | Search and analysis tools | Automatic log rotation' : '实时日志监控 | 按严重程度过滤 | 日志导出 | 搜索分析工具 | 自动日志轮换'}</p>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'System Logs Details' : '系统日志详情', content);
-        }
-
-        function viewPendingRequests() {
-            const currentLang = document.documentElement.lang || 'zh-CN';
-            const isEnglish = currentLang === 'en';
-            
-            const content = `
-                <div class="detail-section">
-                    <div class="detail-header">
-                        <h4 class="detail-title">${isEnglish ? 'Pending Training Requests' : '待审核训练申请'}</h4>
-                        <span class="detail-badge warning">5 ${isEnglish ? 'requests' : '个申请'}</span>
-                    </div>
-                    
-                    <div class="request-list">
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'Image Classification Federated Training' : '图像分类联邦训练'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Pending' : '待审核'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Applicant: client1 | Expected participants: 5 | Mode: Standard Federated Learning' : '申请人: client1 | 预期参与方: 5个 | 模式: 标准联邦学习'}<br>
-                                ${isEnglish ? 'Applied: 2024-08-22 09:15:30 | Waiting: 35 minutes' : '申请时间: 2024-08-22 09:15:30 | 等待: 35分钟'}
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Approve' : '批准'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Reject' : '拒绝'}</button>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'Text Analysis MPC Training' : '文本分析MPC训练'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Pending' : '待审核'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Applicant: client2 | Expected participants: 3 | Mode: MPC Federated Learning' : '申请人: client2 | 预期参与方: 3个 | 模式: MPC联邦学习'}<br>
-                                ${isEnglish ? 'Applied: 2024-08-22 09:45:12 | Waiting: 5 minutes' : '申请时间: 2024-08-22 09:45:12 | 等待: 5分钟'}
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Approve' : '批准'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Reject' : '拒绝'}</button>
-                            </div>
-                        </div>
-                        
-                        <div class="request-item">
-                            <div class="request-header">
-                                <div class="request-title">${isEnglish ? 'Prediction Model Joint Training' : '预测模型联合训练'}</div>
-                                <span class="detail-badge warning">${isEnglish ? 'Pending' : '待审核'}</span>
-                            </div>
-                            <div class="request-details">
-                                ${isEnglish ? 'Applicant: client3 | Expected participants: 4 | Mode: Standard Federated Learning' : '申请人: client3 | 预期参与方: 4个 | 模式: 标准联邦学习'}<br>
-                                ${isEnglish ? 'Applied: 2024-08-22 08:30:45 | Waiting: 1 hour 20 minutes' : '申请时间: 2024-08-22 08:30:45 | 等待: 1小时20分钟'}
-                            </div>
-                            <div class="request-actions">
-                                <button class="btn-mini primary">${isEnglish ? 'Approve' : '批准'}</button>
-                                <button class="btn-mini secondary">${isEnglish ? 'Reject' : '拒绝'}</button>
-                            </div>
-                        </div>
-                        
-                        <div style="text-align: center; padding: 16px; color: #6b7280; font-size: 14px;">
-                            ${isEnglish ? '+2 more requests...' : '+2个更多申请...'}
-                        </div>
-                    </div>
-                </div>
-            `;
-            showModal(isEnglish ? 'Pending Requests Details' : '待审核申请详情', content);
-        }
-    </script>
+    <!-- 脚本引用 -->
+    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/router-unified.js?v=20250826"></script>
+    <script src="../../shared/js/i18n-manager.js?v=20250826"></script>
+    <script src="../assets/server-dashboard-scripts.js?v=20250826"></script>
 </body>
 </html>

@@ -59,6 +59,8 @@ class DevelopmentConfig(Config):
     """开发环境配置"""
     DEBUG = True
     LOG_LEVEL = 'DEBUG'
+    # 使用SQLite进行开发测试
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///fed_mpc_dev.db'
 
 class ProductionConfig(Config):
     """生产环境配置"""

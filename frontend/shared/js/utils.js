@@ -1,10 +1,10 @@
 /**
- * 联邦学习平台 - 工具函数库
- * 提供通用的工具函数和帮助方法
+ * 联邦学习平台 - 统一工具函数库
+ * 合并通用工具函数和加密模块专用工具函数
  */
 
-// 工具函数命名空间
-const FedUtils = {
+// 统一工具函数命名空间
+const UnifiedUtils = {
     
     /**
      * 时间和日期工具
@@ -135,6 +135,27 @@ const FedUtils = {
          */
         currency(amount, currency = '¥') {
             return `${currency}${this.number(amount.toFixed(2))}`;
+        },
+        
+        /**
+         * 格式化密钥指纹
+         * @param {string} fingerprint - 密钥指纹
+         * @returns {string} 格式化后的指纹
+         */
+        fingerprint(fingerprint) {
+            if (!fingerprint) return '';
+            // 每4个字符添加一个空格
+            return fingerprint.toUpperCase().replace(/(.{4})/g, '$1 ').trim();
+        },
+        
+        /**
+         * 格式化JSON显示
+         * @param {any} obj - 要格式化的对象
+         * @param {number} indent - 缩进空格数
+         * @returns {string} 格式化后的JSON字符串
+         */
+        json(obj, indent = 2) {
+            return JSON.stringify(obj, null, indent);
         }
     },
     
@@ -439,11 +460,310 @@ const FedUtils = {
             if (typeof value === 'string') return value.trim().length > 0;
             if (Array.isArray(value)) return value.length > 0;
             return true;
+        },
+        
+        /**
+         * 验证密钥名称
+         * @param {string} name - 密钥名称
+         * @returns {Object} 验证结果
+         */
+        keyName(name) {
+            const MIN_LENGTH = 1;
+            const MAX_LENGTH = 100;
+            const PATTERN = /^[a-zA-Z0-9\u4e00-\u9fa5_\s-]+$/;
+            
+            if (!name || name.length < MIN_LENGTH) {
+                return { valid: false, message: `密钥名称不能少于${MIN_LENGTH}个字符` };
+            }
+            
+            if (name.length > MAX_LENGTH) {
+                return { valid: false, message: `密钥名称不能超过${MAX_LENGTH}个字符` };
+            }
+            
+            if (!PATTERN.test(name)) {
+                return { valid: false, message: '密钥名称只能包含字母、数字、中文、下划线、空格和连字符' };
+            }
+            
+            return { valid: true };
+        },
+        
+        /**
+         * 验证密码强度
+         * @param {string} passphrase - 密码
+         * @returns {Object} 验证结果
+         */
+        passphrase(passphrase) {
+            if (!passphrase) {
+                return { valid: true, strength: 0 }; // 密码可选
+            }
+            
+            const MIN_LENGTH = 8;
+            const MAX_LENGTH = 128;
+            let strength = 0;
+            const messages = [];
+            
+            if (passphrase.length < MIN_LENGTH) {
+                messages.push(`密码长度不能少于${MIN_LENGTH}个字符`);
+            } else {
+                strength += 1;
+            }
+            
+            if (passphrase.length > MAX_LENGTH) {
+                messages.push(`密码长度不能超过${MAX_LENGTH}个字符`);
+            }
+            
+            // 检查复杂度
+            const patterns = [
+                /[a-z]/,    // 小写字母
+                /[A-Z]/,    // 大写字母
+                /[0-9]/,    // 数字
+                /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/ // 特殊字符
+            ];
+            let complexityScore = 0;
+            
+            patterns.forEach(pattern => {
+                if (pattern.test(passphrase)) complexityScore++;
+            });
+            
+            strength += complexityScore;
+            
+            let strengthText = '';
+            if (strength <= 2) {
+                strengthText = '弱';
+            } else if (strength <= 3) {
+                strengthText = '中等';
+            } else if (strength <= 4) {
+                strengthText = '强';
+            } else {
+                strengthText = '很强';
+            }
+            
+            return {
+                valid: messages.length === 0 && complexityScore >= 3,
+                strength: strength,
+                strengthText: strengthText,
+                messages: messages
+            };
+        },
+        
+        /**
+         * 验证表单
+         * @param {Element} formElement - 表单元素
+         * @returns {Object} 验证结果
+         */
+        form(formElement) {
+            const inputs = formElement.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+            const errors = [];
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    errors.push(`${input.dataset.label || '字段'}不能为空`);
+                    input.classList.add('border-red-500');
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+            
+            return { isValid, errors };
         }
     },
     
     /**
-     * 防抖和节流工具
+     * 文件处理工具
+     */
+    file: {
+        /**
+         * 读取文件内容
+         * @param {File} file - 文件对象
+         * @returns {Promise} 文件内容Promise
+         */
+        readContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    resolve(e.target.result);
+                };
+                
+                reader.onerror = function(e) {
+                    reject(new Error('文件读取失败'));
+                };
+                
+                reader.readAsArrayBuffer(file);
+            });
+        },
+        
+        /**
+         * 验证文件类型
+         * @param {File} file - 文件对象
+         * @param {Array} allowedTypes - 允许的文件类型
+         * @returns {boolean} 是否有效
+         */
+        validateType(file, allowedTypes) {
+            const extension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+            return allowedTypes.includes(extension);
+        },
+        
+        /**
+         * 验证文件大小
+         * @param {File} file - 文件对象
+         * @param {number} maxSize - 最大大小（字节）
+         * @returns {boolean} 是否有效
+         */
+        validateSize(file, maxSize) {
+            return file.size <= maxSize;
+        },
+        
+        /**
+         * 下载文件
+         * @param {string} content - 文件内容
+         * @param {string} filename - 文件名
+         * @param {string} contentType - 内容类型
+         */
+        download(content, filename, contentType = 'text/plain') {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            window.URL.revokeObjectURL(url);
+        }
+    },
+    
+    /**
+     * 通知工具
+     */
+    notify: {
+        /**
+         * 显示通知消息
+         * @param {string} message - 消息内容
+         * @param {string} type - 消息类型
+         * @param {number} duration - 显示时长
+         */
+        show(message, type = 'info', duration = 3000) {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
+            
+            // 设置样式
+            const colors = {
+                'success': 'bg-green-500 text-white',
+                'error': 'bg-red-500 text-white',
+                'warning': 'bg-yellow-500 text-white',
+                'info': 'bg-blue-500 text-white'
+            };
+            
+            notification.className += ` ${colors[type] || colors.info}`;
+            notification.textContent = message;
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // 自动隐藏
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, duration);
+        },
+        
+        success(message, duration = 3000) {
+            this.show(message, 'success', duration);
+        },
+        
+        error(message, duration = 3000) {
+            this.show(message, 'error', duration);
+        },
+        
+        warning(message, duration = 3000) {
+            this.show(message, 'warning', duration);
+        },
+        
+        info(message, duration = 3000) {
+            this.show(message, 'info', duration);
+        }
+    },
+    
+    /**
+     * UI工具
+     */
+    ui: {
+        /**
+         * 设置加载状态
+         * @param {Element} element - 目标元素
+         * @param {boolean} loading - 是否加载中
+         */
+        setLoading(element, loading = true) {
+            if (loading) {
+                element.disabled = true;
+                element.dataset.originalText = element.textContent;
+                element.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    处理中...
+                `;
+            } else {
+                element.disabled = false;
+                element.textContent = element.dataset.originalText || '提交';
+            }
+        },
+        
+        /**
+         * 获取状态颜色
+         * @param {string} status - 状态
+         * @param {string} module - 模块类型
+         * @returns {string} 颜色值
+         */
+        getStatusColor(status, module = 'general') {
+            const statusColors = {
+                general: {
+                    'active': '#10b981',
+                    'inactive': '#6b7280',
+                    'success': '#10b981',
+                    'error': '#ef4444',
+                    'warning': '#f59e0b',
+                    'info': '#3b82f6'
+                },
+                crypto: {
+                    'active': '#10b981',
+                    'expired': '#f59e0b',
+                    'revoked': '#ef4444',
+                    'archived': '#6b7280'
+                }
+            };
+            
+            return statusColors[module]?.[status.toLowerCase()] || '#6b7280';
+        }
+    },
+    
+    /**
+     * 工具函数
+     */
+    
+    /**
+     * 防抖函数
+     * @param {Function} func - 要防抖的函数
+     * @param {number} wait - 等待时间（毫秒）
+     * @returns {Function} 防抖后的函数
      */
     debounce(func, wait) {
         let timeout;
@@ -457,6 +777,12 @@ const FedUtils = {
         };
     },
     
+    /**
+     * 节流函数
+     * @param {Function} func - 要节流的函数
+     * @param {number} limit - 限制时间（毫秒）
+     * @returns {Function} 节流后的函数
+     */
     throttle(func, limit) {
         let lastFunc;
         let lastRan;
@@ -510,21 +836,94 @@ const FedUtils = {
     },
     
     /**
+     * 生成随机字符串
+     * @param {number} length - 字符串长度
+     * @returns {string} 随机字符串
+     */
+    generateRandomString(length = 16) {
+        const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        
+        for (let i = 0; i < length; i++) {
+            result += charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        
+        return result;
+    },
+    
+    /**
      * 等待指定时间
      * @param {number} ms - 毫秒数
      * @returns {Promise} Promise对象
      */
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    
+    /**
+     * 复制文本到剪贴板
+     * @param {string} text - 要复制的文本
+     * @returns {Promise} 复制结果
+     */
+    async copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            this.notify.success('已复制到剪贴板');
+            return true;
+        } catch (error) {
+            console.error('复制失败:', error);
+            this.notify.error('复制失败');
+            return false;
+        }
+    },
+    
+    /**
+     * 安全地解析JSON
+     * @param {string} str - JSON字符串
+     * @param {any} defaultValue - 默认值
+     * @returns {any} 解析结果
+     */
+    safeParseJSON(str, defaultValue = null) {
+        try {
+            return JSON.parse(str);
+        } catch (error) {
+            console.warn('JSON解析失败:', error);
+            return defaultValue;
+        }
     }
 };
 
+// 冻结工具对象，防止修改
+Object.freeze(UnifiedUtils);
+
 // 导出到全局
 if (typeof window !== 'undefined') {
-    window.FedUtils = FedUtils;
+    window.UnifiedUtils = UnifiedUtils;
+    // 保持向后兼容
+    window.FedUtils = UnifiedUtils;
+    window.CryptoUtils = {
+        // 映射到统一工具函数
+        formatFileSize: UnifiedUtils.format.fileSize,
+        formatDateTime: UnifiedUtils.time.format,
+        validateKeyName: UnifiedUtils.validate.keyName,
+        validatePassphrase: UnifiedUtils.validate.passphrase,
+        formatFingerprint: UnifiedUtils.format.fingerprint,
+        downloadFile: UnifiedUtils.file.download,
+        showNotification: UnifiedUtils.notify.show,
+        readFileContent: UnifiedUtils.file.readContent,
+        validateFileType: UnifiedUtils.file.validateType,
+        validateFileSize: UnifiedUtils.file.validateSize,
+        copyToClipboard: UnifiedUtils.copyToClipboard,
+        generateRandomString: UnifiedUtils.generateRandomString,
+        debounce: UnifiedUtils.debounce,
+        setLoading: UnifiedUtils.ui.setLoading,
+        validateForm: UnifiedUtils.validate.form,
+        formatJSON: UnifiedUtils.format.json,
+        safeParseJSON: UnifiedUtils.safeParseJSON
+    };
 }
 
 // 模块化导出
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = FedUtils;
+    module.exports = UnifiedUtils;
 }

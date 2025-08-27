@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>选择联邦训练模式</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
 </head>
 <body class="module-background min-h-screen">
     <!-- Navigation -->
@@ -247,10 +247,18 @@
         </svg>
     </button>
 
-    <script src="../../shared/js/theme-manager.js"></script>
+
+
+    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
-        function selectMode(mode) {
+        // 确保goHome函数可用（备用实现）
+        window.goHome = window.goHome || function() {
+            console.log("🏠 备用goHome函数被调用");
+            window.location.href = "../../homepage/index.html";
+        };
+                function selectMode(mode) {
             // 保存选择的模式
             localStorage.setItem('federatedMode', mode);
             
@@ -264,10 +272,6 @@
 
         function goBack() {
             window.location.href = './client-dashboard.html';
-        }
-
-        function goHome() {
-            window.location.href = '/frontend/homepage/index.html';
         }
 
         // 页面加载动画

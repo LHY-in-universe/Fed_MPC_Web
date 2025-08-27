@@ -6,7 +6,7 @@
     <title>MPC联邦学习训练</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
 </head>
 <body class="module-background">
     <!-- Navigation -->
@@ -272,20 +272,24 @@
         </svg>
     </button>
 
-    <script src="../../shared/js/theme-manager.js"></script>
+
+
+    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
-        let trainingInterval;
+        // 确保goHome函数可用（备用实现）
+        window.goHome = window.goHome || function() {
+            console.log("🏠 备用goHome函数被调用");
+            window.location.href = "../../homepage/index.html";
+        };
+                let trainingInterval;
         let trainingStartTime;
         let currentTrainingStatus = 'not-started';
         let trainingChart;
 
         function goBack() {
             window.location.href = './federated-training-select.html';
-        }
-
-        function goHome() {
-            window.location.href = '/frontend/homepage/index.html';
         }
 
         function logout() {

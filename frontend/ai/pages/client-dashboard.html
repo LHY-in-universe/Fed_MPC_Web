@@ -6,7 +6,7 @@
     <title>客户端控制台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250827b">
     <style>
         /* 模态框样式 */
         .modal-overlay {
@@ -539,17 +539,17 @@
                 <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewCompletedTraining()">
                     <div class="text-2xl font-bold text-gray-700">3</div>
                     <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.completedTraining">已完成训练</div>
-                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                 </div>
                 <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewOngoingTraining()">
                     <div class="text-2xl font-bold text-gray-700">1</div>
                     <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.ongoingTraining">进行中训练</div>
-                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                 </div>
                 <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewAccuracyStats()">
                     <div class="text-2xl font-bold text-gray-700">92.5%</div>
-                    <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.averageAccuracy">平均准确率</div>
-                    <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                    <div class="text-sm text-gray-500" data-i18n="ai.dashboard.client.averageAccuracy"><span data-i18n="ai.dashboard.client.averageAccuracyStat">平均准确率</span></div>
+                    <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                 </div>
             </div>
         </div>
@@ -559,7 +559,7 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.client.recentHistory">最近训练记录</h3>
                 <button class="text-blue-600 hover:text-blue-800 text-sm font-medium" onclick="viewAllTrainingHistory()">
-                    查看全部 →
+                    <span data-i18n="ai.dashboard.client.viewAll">查看全部 →</span>
                 </button>
             </div>
             <div class="space-y-4">
@@ -569,9 +569,9 @@
                         <div class="text-sm text-gray-500">2024-01-15 14:30</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-sm font-medium text-gray-700">准确率: 94.2%</div>
+                        <div class="text-sm font-medium text-gray-700"><span data-i18n="ai.dashboard.client.accuracy">准确率</span>: 94.2%</div>
                         <div class="text-xs text-gray-500" data-i18n="ai.dashboard.client.localTraining">本地训练</div>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                        <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                     </div>
                 </div>
                 
@@ -581,9 +581,9 @@
                         <div class="text-sm text-gray-500">2024-01-14 10:15</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-sm font-medium text-gray-700">准确率: 91.8%</div>
+                        <div class="text-sm font-medium text-gray-700"><span data-i18n="ai.dashboard.client.accuracy">准确率</span>: 91.8%</div>
                         <div class="text-xs text-gray-500" data-i18n="ai.dashboard.client.federatedTraining">联邦训练</div>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                        <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                     </div>
                 </div>
                 
@@ -595,7 +595,7 @@
                     <div class="text-right">
                         <div class="text-sm font-medium text-gray-700">RMSE: 0.023</div>
                         <div class="text-xs text-gray-500" data-i18n="ai.dashboard.client.localTraining">本地训练</div>
-                        <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                        <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                     </div>
                 </div>
             </div>
@@ -603,7 +603,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn" onclick="handleGoHome()" title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
@@ -631,7 +631,7 @@
         </div>
     </div>
 
-    <script src="../../shared/js/theme-manager.js"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         function selectTrainingMode(mode) {
@@ -649,9 +649,6 @@
             window.location.href = './login.html';
         }
 
-        function goHome() {
-            window.location.href = '/frontend/homepage/index.html';
-        }
 
         // 模态框控制函数
         function showModal(title, content) {
@@ -695,7 +692,7 @@
                         <div class="stat-card best">
                             <div class="stat-icon">🎯</div>
                             <div class="stat-content">
-                                <div class="stat-label">最高准确率</div>
+                                <div class="stat-label"><span data-i18n="ai.dashboard.client.highestAccuracy">最高准确率</span></div>
                                 <div class="stat-value">94.2%</div>
                                 <div class="stat-desc">图像分类模型</div>
                             </div>
@@ -722,11 +719,11 @@
                         <h5 style="margin-bottom: 12px; font-weight: 600; color: #374151;">完成的训练任务</h5>
                         <div class="summary-item">
                             <span class="summary-label">📸 图像分类模型</span>
-                            <span class="summary-value">准确率: 94.2%</span>
+                            <span class="summary-value"><span data-i18n="ai.dashboard.client.accuracy">准确率</span>: 94.2%</span>
                         </div>
                         <div class="summary-item">
                             <span class="summary-label">📝 文本分类模型</span>
-                            <span class="summary-value">准确率: 91.8%</span>
+                            <span class="summary-value"><span data-i18n="ai.dashboard.client.accuracy">准确率</span>: 91.8%</span>
                         </div>
                         <div class="summary-item">
                             <span class="summary-label">📈 回归预测模型</span>
@@ -768,7 +765,7 @@
                                 <span style="font-weight: 600;">1.2 小时</span>
                             </div>
                             <div class="detail-row">
-                                <span>当前准确率</span>
+                                <span><span data-i18n="ai.dashboard.client.currentAccuracyStat">当前准确率</span></span>
                                 <span style="font-weight: 600; color: #3b82f6;">89.3%</span>
                             </div>
                         </div>
@@ -812,7 +809,7 @@
                         <div class="stat-card best">
                             <div class="stat-icon">🏆</div>
                             <div class="stat-content">
-                                <div class="stat-label">最高准确率</div>
+                                <div class="stat-label"><span data-i18n="ai.dashboard.client.highestAccuracy">最高准确率</span></div>
                                 <div class="stat-value">94.2%</div>
                                 <div class="stat-desc">图像分类</div>
                             </div>
@@ -820,7 +817,7 @@
                         <div class="stat-card average">
                             <div class="stat-icon">📊</div>
                             <div class="stat-content">
-                                <div class="stat-label">平均准确率</div>
+                                <div class="stat-label"><span data-i18n="ai.dashboard.client.averageAccuracyStat">平均准确率</span></div>
                                 <div class="stat-value">92.5%</div>
                                 <div class="stat-desc">全部模型</div>
                             </div>
@@ -828,7 +825,7 @@
                         <div class="stat-card low">
                             <div class="stat-icon">📉</div>
                             <div class="stat-content">
-                                <div class="stat-label">最低准确率</div>
+                                <div class="stat-label"><span data-i18n="ai.dashboard.client.lowestAccuracy">最低准确率</span></div>
                                 <div class="stat-value">91.8%</div>
                                 <div class="stat-desc">文本分类</div>
                             </div>
@@ -1027,6 +1024,23 @@
             showModal('全部训练历史', content);
         }
 
+        // 返回主页处理函数
+        function handleGoHome() {
+            console.log('handleGoHome 被调用');
+            try {
+                if (typeof goHome === 'function') {
+                    console.log('调用 goHome 函数');
+                    goHome();
+                } else {
+                    console.log('goHome 函数不存在，使用备用导航');
+                    window.location.href = '../../homepage/index.html';
+                }
+            } catch (error) {
+                console.error('导航出错:', error);
+                window.location.href = '../../homepage/index.html';
+            }
+        }
+
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -1036,5 +1050,6 @@
             }
         });
     </script>
+    <script src="../../shared/js/router-unified.js?v=20250826"></script>
 </body>
 </html>

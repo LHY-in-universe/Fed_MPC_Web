@@ -58,43 +58,7 @@
     background: linear-gradient(90deg, #d1fae5 0%, white 100%);
 }
 
-/* 状态指示器 */
-.status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.status-active {
-    background-color: var(--blockchain-success);
-    animation: pulse 2s infinite;
-}
-
-.status-pending {
-    background-color: var(--blockchain-warning);
-    animation: pulse 2s infinite;
-}
-
-.status-confirmed {
-    background-color: var(--blockchain-success);
-}
-
-.status-failed {
-    background-color: var(--blockchain-error);
-}
-
-.status-mining {
-    background-color: var(--blockchain-info);
-    animation: pulse 1.5s infinite;
-}
-
-/* 脉冲动画 */
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
+/* 状态指示器样式已移至 shared/css/module-shared-styles.css 以避免重复 */
 
 /* 区块链按钮样式 */
 .blockchain-btn {

@@ -8,6 +8,10 @@ class I18nManager {
         this.currentLanguage = this.getStoredLanguage() || this.getBrowserLanguage();
         this.translations = {};
         this.originalTexts = {}; // 存储原始HTML中的中文文本
+        
+        // 设置HTML lang属性
+        document.documentElement.lang = this.currentLanguage === 'zh' ? 'zh-CN' : 'en';
+        
         this.saveOriginalTexts(); // 保存原始文本
         this.loadTranslations();
         this.setupEventListeners();
@@ -63,10 +67,19 @@ class I18nManager {
                 ? '../../shared/i18n/'
                 : window.location.pathname.includes('/crypto/pages/')
                 ? '../../shared/i18n/'
+                : window.location.pathname.includes('/homepage/')
+                ? '../shared/i18n/'
                 : './shared/i18n/';
             
-            const response = await fetch(`${basePath}${this.currentLanguage}.json`);
+            console.log(`Loading translations from: ${basePath}${this.currentLanguage}.json`);
+            const response = await fetch(`${basePath}${this.currentLanguage}.json?v=2025`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
             this.translations = await response.json();
+            console.log('Translations loaded successfully:', this.translations);
         } catch (error) {
             console.warn('Failed to load translations, using default Chinese texts');
             this.translations = this.getDefaultTranslations();
@@ -193,6 +206,10 @@ class I18nManager {
         
         this.currentLanguage = language;
         localStorage.setItem('language', language);
+        
+        // 更新HTML lang属性
+        document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+        
         await this.loadTranslations();
         
         // 触发语言变更事件
@@ -203,6 +220,9 @@ class I18nManager {
 
     // 应用翻译
     applyTranslations() {
+        console.log(`Applying translations for language: ${this.currentLanguage}`);
+        let translatedCount = 0;
+        
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             let text;
@@ -212,6 +232,10 @@ class I18nManager {
                 text = this.originalTexts[key];
             } else {
                 text = this.getTranslation(key);
+                if (text) {
+                    console.log(`Translated ${key}: ${text}`);
+                    translatedCount++;
+                }
             }
             
             if (text) {
@@ -224,8 +248,12 @@ class I18nManager {
                 } else {
                     element.textContent = text;
                 }
+            } else {
+                console.warn(`No translation found for key: ${key}`);
             }
         });
+        
+        console.log(`Total translations applied: ${translatedCount}`);
 
         // 更新页面标题
         const titleKey = document.documentElement.getAttribute('data-i18n-title');

@@ -1,22 +1,183 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
+# 联邦学习与多方计算平台 - Git忽略文件
+
+# ============== Python ==============
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django/Flask
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+instance/
+.webassets-cache
+
+# virtualenv
+backend/venv/
+backend/env/
+backend/ENV/
+backend/env.bak/
+backend/venv.bak/
+
+# ============== Database ==============
+*.db
+*.sqlite
+*.sqlite3
+fed_mpc_dev.db
+backend/fed_mpc_dev.db
+*.db-journal
+
+# ============== Node.js ==============
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============== Frontend Build ==============
+dist/
+dist-ssr/
+build/
+*.local
+
+# ============== Editor & IDE ==============
 .vscode/
-#Cache folder
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ============== OS Generated Files ==============
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============== Logs ==============
+logs/
+*.log
+backend/*.log
+frontend/*.log
+
+# ============== Uploads & User Data ==============
+backend/uploads/
+frontend/uploads/
+user_data/
+
+# ============== Temporary Files ==============
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.#*
+#*#
+
+# ============== Test Files ==============
+test_connection.html
+
+# ============== Security ==============
+*.key
+*.pem
+*.crt
+*.p12
+config/secrets.json
+.secrets/
+
+# ============== Development Tools ==============
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============== AL Project (Legacy) ==============
+# 保留原有AL项目配置以防需要
 .alcache/
-#Symbols folder
 .alpackages/
-#Snapshots folder
 .snapshots/
-#Testing Output folder
 .output/
-#Extension App-file
 *.app
-#Rapid Application Development File
 rad.json
-#Translation Base-file
 *.g.xlf
-#License-file
 *.flf
-#Test results file
 TestResults.xml

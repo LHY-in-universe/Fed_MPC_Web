@@ -6,7 +6,7 @@
     <title>密钥加密</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
 </head>
 <body class="module-background">
     <!-- Navigation -->
@@ -60,7 +60,7 @@
                                 <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="crypto.stats.totalKeys">总密钥数量</dt>
                                 <dd class="text-lg font-medium text-gray-900">24</dd>
                             </dl>
-                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                            <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                                 <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="crypto.stats.activeKeys">活跃密钥</dt>
                                 <dd class="text-lg font-medium text-gray-900">18</dd>
                             </dl>
-                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                            <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                                 <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="crypto.stats.certificates">证书数量</dt>
                                 <dd class="text-lg font-medium text-gray-900">12</dd>
                             </dl>
-                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                            <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                         </div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                                 <dt class="text-sm font-medium text-gray-500 truncate" data-i18n="crypto.stats.expiringSoon">即将过期</dt>
                                 <dd class="text-lg font-medium text-gray-900">3</dd>
                             </dl>
-                            <div class="text-xs text-blue-600 mt-1">点击查看详情</div>
+                            <div class="text-xs text-blue-600 mt-1" data-i18n="modals.common.viewDetails">点击查看详情</div>
                         </div>
                     </div>
                 </div>
@@ -130,12 +130,12 @@
                             <div class="flex items-center">
                                 <div class="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">联邦学习主密钥</p>
+                                    <p class="text-sm font-medium text-gray-900"><span data-i18n="crypto.keys.federatedLearningMainKey">联邦学习主密钥</span></p>
                                     <p class="text-sm text-gray-500">RSA-2048 • 签名+加密 • 创建于2天前</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm font-medium text-gray-900">活跃</p>
+                                <p class="text-sm font-medium text-gray-900" data-i18n="crypto.keys.active">活跃</p>
                                 <p class="text-sm text-gray-500">使用156次</p>
                             </div>
                         </div>
@@ -145,12 +145,12 @@
                             <div class="flex items-center">
                                 <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">数据传输加密密钥</p>
+                                    <p class="text-sm font-medium text-gray-900"><span data-i18n="crypto.keys.dataTransmissionEncryptionKey">数据传输加密密钥</span></p>
                                     <p class="text-sm text-gray-500">AES-256 • 仅加密 • 创建于1周前</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm font-medium text-gray-900">活跃</p>
+                                <p class="text-sm font-medium text-gray-900" data-i18n="crypto.keys.active">活跃</p>
                                 <p class="text-sm text-gray-500">使用1,024次</p>
                             </div>
                         </div>
@@ -160,13 +160,13 @@
                             <div class="flex items-center">
                                 <div class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">临时签名密钥</p>
+                                    <p class="text-sm font-medium text-gray-900"><span data-i18n="crypto.keys.temporarySigningKey">临时签名密钥</span></p>
                                     <p class="text-sm text-gray-500">ECDSA-P256 • 仅签名 • 30天前过期</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm font-medium text-yellow-600">已过期</p>
-                                <p class="text-sm text-gray-500">需要续期</p>
+                                <p class="text-sm font-medium text-yellow-600" data-i18n="crypto.keys.expired">已过期</p>
+                                <p class="text-sm text-gray-500" data-i18n="crypto.keys.needsRenewal">需要续期</p>
                             </div>
                         </div>
                     </li>
@@ -244,15 +244,38 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn" onclick="
+        console.log('🏠 密码学仪表板：按钮被点击了');
+        try {
+            if (typeof goHome === 'function') {
+                console.log('✅ 使用goHome函数');
+                goHome();
+            } else {
+                console.log('❌ goHome函数不存在，使用直接跳转');
+                window.location.href = '../../homepage/index.html';
+            }
+        } catch (error) {
+            console.error('❌ 导航出错:', error);
+            window.location.href = '../../homepage/index.html';
+        }
+    " title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
     </button>
 
-    <script src="../../shared/js/theme-manager.js"></script>
+
+
+    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
+        // 确保goHome函数可用（备用实现）
+        window.goHome = window.goHome || function() {
+            console.log('🏠 备用goHome函数被调用');
+            window.location.href = '../../homepage/index.html';
+        };
+        
         // Navigation functions
         function showSection(sectionName) {
             // Hide all sections
@@ -271,10 +294,6 @@
             });
             event.target.classList.remove('border-transparent');
             event.target.classList.add('border-gray-600');
-        }
-
-        function goHome() {
-            window.location.href = '/frontend/homepage/index.html';
         }
 
         // Initialize key usage chart
@@ -407,15 +426,15 @@
                             </div>
                             <div class="detail-card-content">
                                 <div class="detail-item">
-                                    <span>联邦学习主密钥</span>
+                                    <span><span data-i18n="crypto.keys.federatedLearningMainKey">联邦学习主密钥</span></span>
                                     <span class="detail-time">156次/天</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span>数据传输加密密钥</span>
+                                    <span><span data-i18n="crypto.keys.dataTransmissionEncryptionKey">数据传输加密密钥</span></span>
                                     <span class="detail-time">1,024次/天</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span>临时签名密钥</span>
+                                    <span><span data-i18n="crypto.keys.temporarySigningKey">临时签名密钥</span></span>
                                     <span class="detail-time">过期</span>
                                 </div>
                             </div>
@@ -481,7 +500,7 @@
                                     <span class="detail-time">7天后到期</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span>临时签名密钥</span>
+                                    <span><span data-i18n="crypto.keys.temporarySigningKey">临时签名密钥</span></span>
                                     <span class="detail-time">15天后到期</span>
                                 </div>
                             </div>
@@ -506,7 +525,7 @@
                             </div>
                             <div class="detail-card-content">
                                 <div class="detail-item">
-                                    <span>联邦学习主密钥创建</span>
+                                    <span><span data-i18n="crypto.keys.federatedLearningMainKey">联邦学习主密钥</span>创建</span>
                                     <span class="detail-time">2天前</span>
                                 </div>
                                 <div class="detail-item">
@@ -710,5 +729,6 @@
             </div>
         </div>
     </div>
+    <script src="../../shared/js/router-unified.js?v=20250826"></script>
 </body>
 </html>

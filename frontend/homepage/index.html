@@ -3,46 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>联邦学习与多方计算平台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../shared/css/theme-system.css">
+    <link rel="stylesheet" href="../shared/css/theme-system-unified.css?v=20250827b">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
-        body {
+        html, body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow-x: hidden;
             overflow-y: auto;
         }
         
-        /* 高级渐变背景 */
+        /* 让统一CSS接管主题管理 */
         .hero-gradient {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 50%, var(--bg-tertiary) 100%);
+            background: var(--bg-gradient);
             position: relative;
             min-height: 100vh;
         }
-        
-        /* 动态几何背景 */
-        .hero-gradient::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(115, 115, 115, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(82, 82, 82, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 40% 60%, rgba(64, 64, 64, 0.02) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-            z-index: -1;
+
+        /* 确保组件有正确的背景 */
+        .premium-module-card {
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-primary) !important;
         }
+
+        /* 导航栏样式由统一CSS处理 */
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-10px) rotate(1deg); }
-            66% { transform: translateY(5px) rotate(-1deg); }
-        }
+        /* 移除背景装饰 */
+        
         
         /* 企业级logo区域 */
         .enterprise-logo {
@@ -82,7 +75,6 @@
         }
         
         .premium-module-card:hover {
-            transform: translateY(-12px);
             box-shadow: 
                 0 32px 64px -8px rgba(82, 82, 82, 0.25),
                 0 16px 32px -8px rgba(82, 82, 82, 0.15),
@@ -109,7 +101,6 @@
         
         .premium-module-card:hover .premium-icon-container {
             background: linear-gradient(135deg, var(--gray-600) 0%, var(--gray-700) 100%);
-            transform: scale(1.1) rotate(5deg);
             box-shadow: 
                 0 16px 32px -8px rgba(82, 82, 82, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -117,17 +108,28 @@
         
         .premium-module-card:hover .premium-icon-container svg {
             color: var(--gray-100);
-            transform: scale(1.1);
         }
         
-        /* 标题动画 */
+        /* 标题样式 - 使用主题变量 */
         .hero-title {
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--gray-600) 100%);
+            color: var(--text-primary) !important;
+            font-weight: 900 !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        [data-theme="dark"] .hero-title {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--gray-400) 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: titleShine 3s ease-in-out infinite alternate;
         }
+
+        .hero-subtitle {
+            color: var(--text-secondary) !important;
+        }
+
+        /* 移除硬编码的颜色，统一使用主题变量 */
         
         @keyframes titleShine {
             0% { background-position: 0% 50%; }
@@ -251,13 +253,79 @@
             color: var(--text-secondary) !important;
         }
 
-        /* 底部特性区域的图标背景 */
-        [data-theme="dark"] .w-16.h-16.bg-gradient-to-br {
+        /* 底部特性区域样式 */
+        .feature-icon-bg {
+            background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .feature-icon-bg {
             background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+        }
+
+        .feature-icon-color {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .feature-icon-color {
+            color: var(--text-secondary) !important;
+        }
+
+        .feature-title {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .feature-title {
+            color: var(--text-primary) !important;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .feature-description {
+            color: var(--text-secondary) !important;
+        }
+
+        /* 额外的强制覆盖规则 - 确保没有白色元素 */
+        [data-theme="dark"] .text-gray-900,
+        [data-theme="dark"] .text-gray-800 {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .text-gray-600,
+        [data-theme="dark"] .text-gray-700 {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="dark"] .text-gray-500 {
+            color: var(--text-tertiary) !important;
+        }
+
+        [data-theme="dark"] .bg-gradient-to-r {
+            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
+        }
+
+        /* 模块卡片强制修复 */
+        [data-theme="dark"] .premium-module-card {
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-primary) !important;
+        }
+
+        [data-theme="dark"] .premium-module-card * {
+            color: inherit !important;
+        }
+
+        [data-theme="dark"] .premium-module-card h3 {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .premium-module-card p {
+            color: var(--text-secondary) !important;
         }
     </style>
 </head>
-<body class="hero-gradient">
+<body>
     <!-- 高级导航栏 -->
     <nav class="navbar backdrop-blur-xl bg-opacity-80 border-b border-gray-200/20">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
@@ -273,8 +341,8 @@
             </div>
             
             <div class="navbar-nav">
-                <button class="theme-toggle" title="切换主题">
-                    <span>🌙</span>
+                <button class="theme-toggle" title="切换主题" aria-label="切换主题">
+                    <span data-theme-icon>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
             </div>
@@ -289,8 +357,8 @@
                 <h1 class="hero-title text-5xl md:text-7xl font-extrabold mb-8 leading-tight" data-i18n="homepage.title">
                     联邦学习与多方计算平台
                 </h1>
-                <p class="hero-subtitle text-xl md:text-2xl text-gray-600 font-medium max-w-3xl mx-auto leading-relaxed">
-                    Enterprise-Grade Federated Learning & Multi-Party Computation
+                <p class="hero-subtitle text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed" style="color: var(--text-secondary) !important; font-weight: 600 !important;" data-i18n="homepage.subtitle">
+                    安全、高效的分布式机器学习解决方案
                 </p>
                 <div class="mt-8 flex justify-center">
                     <div class="w-24 h-1 bg-gradient-to-r from-transparent via-gray-500 to-transparent rounded-full"></div>
@@ -312,7 +380,7 @@
                             联邦学习与多方计算训练
                         </p>
                         <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
-                            进入模块
+                            <span data-i18n="homepage.enterModule">进入模块</span>
                             <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -333,7 +401,7 @@
                             去中心化金融应用
                         </p>
                         <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
-                            进入模块
+                            <span data-i18n="homepage.enterModule">进入模块</span>
                             <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -354,7 +422,7 @@
                             安全密码学工具
                         </p>
                         <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
-                            进入模块
+                            <span data-i18n="homepage.enterModule">进入模块</span>
                             <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -367,31 +435,31 @@
             <div class="mt-20 text-center fade-in-up delay-4">
                 <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                     <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="feature-icon-bg w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 feature-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                             </svg>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-800 mb-2">企业级安全</h4>
-                        <p class="text-gray-600 text-sm">银行级别的数据安全保护</p>
+                        <h4 class="feature-title text-lg font-semibold mb-2" data-i18n="homepage.features.security.title">企业级安全</h4>
+                        <p class="feature-description text-sm" data-i18n="homepage.features.security.description">银行级别的数据安全保护</p>
                     </div>
                     <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="feature-icon-bg w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 feature-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-800 mb-2">高性能计算</h4>
-                        <p class="text-gray-600 text-sm">分布式架构，极致性能优化</p>
+                        <h4 class="feature-title text-lg font-semibold mb-2" data-i18n="homepage.features.performance.title">高性能计算</h4>
+                        <p class="feature-description text-sm" data-i18n="homepage.features.performance.description">分布式架构，极致性能优化</p>
                     </div>
                     <div class="flex flex-col items-center">
-                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="feature-icon-bg w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 feature-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                             </svg>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-800 mb-2">易于集成</h4>
-                        <p class="text-gray-600 text-sm">标准化API，快速业务集成</p>
+                        <h4 class="feature-title text-lg font-semibold mb-2" data-i18n="homepage.features.integration.title">易于集成</h4>
+                        <p class="feature-description text-sm" data-i18n="homepage.features.integration.description">标准化API，快速业务集成</p>
                     </div>
                 </div>
             </div>
@@ -399,8 +467,10 @@
     </div>
 
     <!-- 脚本文件 -->
-    <script src="../shared/js/theme-manager.js"></script>
-    <script src="../shared/js/i18n-manager.js"></script>
+    <script src="../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../shared/js/router-unified.js?v=20250826"></script>
+    <script src="../shared/js/i18n-manager.js?v=20250826"></script>
     <script>
         function selectBusinessType(type) {
             localStorage.setItem('businessType', type);
@@ -418,6 +488,33 @@
         window.onload = function() {
             localStorage.removeItem('userType');
             localStorage.removeItem('userData');
+            
+            // 确保主题管理器已初始化
+            setTimeout(() => {
+                if (window.unifiedThemeManager) {
+                    console.log('主题管理器已初始化，当前主题:', window.unifiedThemeManager.getCurrentTheme());
+                    console.log('HTML data-theme 属性:', document.documentElement.getAttribute('data-theme'));
+                    
+                    // 测试主题切换功能
+                    window.testThemeSwitch = () => {
+                        const current = window.unifiedThemeManager.getCurrentTheme();
+                        const newTheme = current === 'light' ? 'dark' : 'light';
+                        console.log(`切换主题: ${current} → ${newTheme}`);
+                        window.unifiedThemeManager.setTheme(newTheme);
+                    };
+                    
+                    console.log('可以在控制台运行 testThemeSwitch() 来测试主题切换');
+                } else {
+                    console.warn('主题管理器未正确初始化');
+                    
+                    // 尝试手动创建实例
+                    if (typeof UnifiedThemeManager !== 'undefined') {
+                        console.log('尝试手动创建主题管理器实例...');
+                        window.unifiedThemeManager = new UnifiedThemeManager();
+                        window.themeManager = window.unifiedThemeManager;
+                    }
+                }
+            }, 500);
         };
     </script>
 </body>
