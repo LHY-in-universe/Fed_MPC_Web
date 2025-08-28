@@ -6,8 +6,174 @@
     <title>客户端控制台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250827b">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
     <style>
+        /* 强制深色模式测试 - 最高优先级 */
+        [data-theme="dark"] * {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] body {
+            background: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .navbar {
+            background: #1f2937 !important;
+            border-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, [data-theme="dark"] h4 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] p, [data-theme="dark"] span, [data-theme="dark"] div {
+            color: #d1d5db !important;
+        }
+        
+        /* 修复训练状态概览和训练记录的深色模式样式 */
+        [data-theme="dark"] .cursor-pointer:hover {
+            background: rgba(75, 85, 99, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .text-blue-600 {
+            color: #93c5fd !important;
+        }
+        
+        [data-theme="dark"] .text-blue-800:hover {
+            color: #bfdbfe !important;
+        }
+        
+        [data-theme="dark"] .text-gray-700 {
+            color: #f3f4f6 !important;
+        }
+        
+        [data-theme="dark"] .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        /* 修复训练记录卡片的深色模式背景 */
+        [data-theme="dark"] .bg-gray-50 {
+            background: rgba(55, 65, 81, 0.5) !important;
+        }
+        
+        [data-theme="dark"] .hover\:bg-gray-100:hover,
+        [data-theme="dark"] .hover\:bg-gray-50:hover {
+            background: rgba(75, 85, 99, 0.6) !important;
+        }
+        
+        [data-theme="dark"] .text-gray-900 {
+            color: #f3f4f6 !important;
+        }
+        
+        /* 修复模态框的深色模式样式 */
+        [data-theme="dark"] .modal-container {
+            background: #1f2937 !important;
+            border: 1px solid #4b5563;
+        }
+        
+        [data-theme="dark"] .modal-header {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+            border-bottom: 1px solid #6b7280 !important;
+        }
+        
+        [data-theme="dark"] .modal-title {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .modal-close {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .modal-close:hover {
+            background: rgba(156, 163, 175, 0.2) !important;
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .modal-footer {
+            border-top: 1px solid #6b7280 !important;
+            background: #374151 !important;
+        }
+        
+        /* 修复模态框内容的深色模式样式 */
+        [data-theme="dark"] .detail-section {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .detail-header {
+            border-bottom: 2px solid #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .detail-title {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .summary-label {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .summary-value {
+            color: #f3f4f6 !important;
+        }
+        
+        /* 修复模态框中的统计卡片深色模式背景 */
+        [data-theme="dark"] .stat-card.best {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)) !important;
+            border: 1px solid rgba(34, 197, 94, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .stat-card.average {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1)) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .stat-card.low {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)) !important;
+            border: 1px solid rgba(168, 85, 247, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .stat-card:not(.best):not(.average):not(.low) {
+            background: linear-gradient(135deg, rgba(75, 85, 99, 0.3), rgba(55, 65, 81, 0.2)) !important;
+            border: 1px solid rgba(107, 114, 128, 0.4) !important;
+        }
+        
+        /* 修复detail-summary区域的深色模式背景 */
+        [data-theme="dark"] .detail-summary {
+            background: rgba(55, 65, 81, 0.5) !important;
+        }
+        
+        /* 确保所有卡片类型都有深色模式样式 */
+        [data-theme="dark"] .card {
+            background: #1f2937 !important;
+            border-color: #4b5563 !important;
+        }
+        
+        /* 修复其他可能的浅色背景 */
+        [data-theme="dark"] .bg-white {
+            background: #1f2937 !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-100 {
+            background: rgba(75, 85, 99, 0.4) !important;
+        }
+        
+        /* 修复徽章的深色模式样式 */
+        [data-theme="dark"] .detail-badge.success {
+            background: rgba(34, 197, 94, 0.2) !important;
+            color: #86efac !important;
+        }
+        
+        [data-theme="dark"] .detail-badge.warning {
+            background: rgba(245, 158, 11, 0.2) !important;
+            color: #fbbf24 !important;
+        }
+        
+        [data-theme="dark"] .detail-badge.info {
+            background: rgba(59, 130, 246, 0.2) !important;
+            color: #93c5fd !important;
+        }
+        
         /* 模态框样式 */
         .modal-overlay {
             position: fixed;
@@ -430,9 +596,9 @@
         }
     </style>
 </head>
-<body class="module-background">
+<body class="module-background theme-transition">
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <span data-i18n="ai.dashboard.client.title">客户端控制面板</span>
@@ -444,7 +610,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="logout()" class="btn btn-secondary text-sm">
+                <button onclick="logout()" class="btn btn-secondary text-sm btn-click">
                     <span data-i18n="common.logout">退出登录</span>
                 </button>
             </div>
@@ -452,9 +618,9 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-6 py-8 content-area">
         <!-- Welcome Section -->
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 fade-in-up delay-1">
             <h2 class="text-3xl font-bold text-gray-900 mb-4">
                 <span data-i18n="ai.dashboard.client.welcome">欢迎回来！</span>
             </h2>
@@ -464,7 +630,7 @@
         <!-- Training Options -->
         <div class="grid md:grid-cols-2 gap-8 mb-8">
             <!-- Local Training -->
-            <div class="card cursor-pointer transition-all duration-300 hover:scale-105" onclick="selectTrainingMode('local')">
+            <div class="card cursor-pointer card-hover btn-click fade-in-up delay-2" onclick="selectTrainingMode('local')">
                 <div class="text-center">
                     <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -498,7 +664,7 @@
             </div>
 
             <!-- Federated Training -->
-            <div class="card cursor-pointer transition-all duration-300 hover:scale-105" onclick="selectTrainingMode('federated')">
+            <div class="card cursor-pointer card-hover btn-click fade-in-up delay-3" onclick="selectTrainingMode('federated')">
                 <div class="text-center">
                     <div class="w-16 h-16 bg-gray-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -533,7 +699,7 @@
         </div>
 
         <!-- Status Overview -->
-        <div class="card mb-8">
+        <div class="card mb-8 fade-in-up delay-4">
             <h3 class="text-lg font-semibold text-gray-900 mb-6" data-i18n="ai.dashboard.client.status">训练状态概览</h3>
             <div class="grid md:grid-cols-3 gap-6">
                 <div class="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors" onclick="viewCompletedTraining()">
@@ -555,7 +721,7 @@
         </div>
 
         <!-- Recent Training History -->
-        <div class="card">
+        <div class="card fade-in-up delay-5">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900" data-i18n="ai.dashboard.client.recentHistory">最近训练记录</h3>
                 <button class="text-blue-600 hover:text-blue-800 text-sm font-medium" onclick="viewAllTrainingHistory()">
@@ -603,7 +769,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="handleGoHome()" title="返回主页">
+    <button class="homepage-return-btn btn-click" onclick="handleGoHome()" title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
@@ -626,12 +792,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+                <button class="btn btn-secondary btn-click" onclick="closeModal()">关闭</button>
             </div>
         </div>
     </div>
 
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         function selectTrainingMode(mode) {
@@ -689,7 +855,7 @@
                     </div>
                     
                     <div class="stats-overview">
-                        <div class="stat-card best">
+                        <div class="stat-card best fade-in-up delay-1">
                             <div class="stat-icon">🎯</div>
                             <div class="stat-content">
                                 <div class="stat-label"><span data-i18n="ai.dashboard.client.highestAccuracy">最高准确率</span></div>
@@ -697,7 +863,7 @@
                                 <div class="stat-desc">图像分类模型</div>
                             </div>
                         </div>
-                        <div class="stat-card average">
+                        <div class="stat-card average fade-in-up delay-2">
                             <div class="stat-icon">📊</div>
                             <div class="stat-content">
                                 <div class="stat-label">平均时长</div>
@@ -705,7 +871,7 @@
                                 <div class="stat-desc">小时</div>
                             </div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card fade-in-up delay-3">
                             <div class="stat-icon">✅</div>
                             <div class="stat-content">
                                 <div class="stat-label">成功率</div>
@@ -806,7 +972,7 @@
                     </div>
                     
                     <div class="stats-overview">
-                        <div class="stat-card best">
+                        <div class="stat-card best fade-in-up delay-1">
                             <div class="stat-icon">🏆</div>
                             <div class="stat-content">
                                 <div class="stat-label"><span data-i18n="ai.dashboard.client.highestAccuracy">最高准确率</span></div>
@@ -814,7 +980,7 @@
                                 <div class="stat-desc">图像分类</div>
                             </div>
                         </div>
-                        <div class="stat-card average">
+                        <div class="stat-card average fade-in-up delay-2">
                             <div class="stat-icon">📊</div>
                             <div class="stat-content">
                                 <div class="stat-label"><span data-i18n="ai.dashboard.client.averageAccuracyStat">平均准确率</span></div>
@@ -822,7 +988,7 @@
                                 <div class="stat-desc">全部模型</div>
                             </div>
                         </div>
-                        <div class="stat-card low">
+                        <div class="stat-card low fade-in-up delay-6">
                             <div class="stat-icon">📉</div>
                             <div class="stat-content">
                                 <div class="stat-label"><span data-i18n="ai.dashboard.client.lowestAccuracy">最低准确率</span></div>
@@ -849,7 +1015,7 @@
                     </div>
                     
                     <div class="trend-info">
-                        <div class="trend-card">
+                        <div class="trend-card fade-in-up delay-6">
                             <div class="trend-arrow">📈</div>
                             <div class="trend-text">
                                 <span class="trend-desc">趋势分析：相比上月提升</span>
@@ -957,7 +1123,7 @@
                         </div>
                         
                         <div class="trend-info">
-                            <div class="trend-card">
+                            <div class="trend-card fade-in-up delay-6">
                                 <div class="trend-arrow">📊</div>
                                 <div class="trend-text">
                                     <span class="trend-desc">训练已完成，可查看详细性能曲线图和模型评估报告</span>
@@ -1003,7 +1169,7 @@
                     </div>
                     
                     <div class="trend-info">
-                        <div class="trend-card">
+                        <div class="trend-card fade-in-up delay-6">
                             <div class="trend-arrow">🔗</div>
                             <div class="trend-text">
                                 <span class="trend-desc">点击下方按钮跳转到详细的训练历史页面</span>
@@ -1012,7 +1178,7 @@
                     </div>
                     
                     <div style="text-align: center; margin-top: 20px;">
-                        <button class="btn btn-primary" onclick="closeModal(); /* window.location.href = './training-history.html'; */">
+                        <button class="btn btn-primary btn-click" onclick="closeModal(); /* window.location.href = './training-history.html'; */">
                             🚀 跳转到训练历史页面
                         </button>
                         <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
@@ -1050,6 +1216,6 @@
             }
         });
     </script>
-    <script src="../../shared/js/router-unified.js?v=20250826"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
 </body>
 </html>

@@ -289,41 +289,7 @@ body {
 }
 
 /* 按钮组件 */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: var(--text-inverse);
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-}
-
-.btn-secondary {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-primary);
-}
-
-.btn-secondary:hover {
-    background: var(--bg-primary);
-    border-color: var(--primary);
-}
+/* 按钮样式定义移至后面的"基础按钮样式"部分，避免重复和冲突 */
 
 /* 输入框组件 */
 .input {
@@ -399,29 +365,45 @@ body {
     gap: 12px;
 }
 
-/* 主题切换按钮 */
+/* 主题切换按钮 - 对抗 Tailwind CSS 重置 */
+button.theme-toggle,
+.navbar button.theme-toggle,
 .theme-toggle {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    padding: 10px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: all 0.2s ease;
-    font-size: 16px;
-    position: relative;
-    overflow: visible;
-    height: 40px;
-    min-width: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    background: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    padding: 10px 12px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    color: #374151 !important;
+    transition: all 0.2s ease !important;
+    font-size: 16px !important;
+    position: relative !important;
+    overflow: visible !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
 }
 
 .theme-toggle:hover {
-    background: var(--bg-primary);
-    color: var(--primary);
-    border-color: var(--primary);
+    background: #e5e7eb !important;
+    color: #1f2937 !important;
+    border-color: #9ca3af !important;
+}
+
+/* 深色模式下的主题切换按钮 */
+[data-theme="dark"] .theme-toggle {
+    background: #374151 !important;
+    color: #f9fafb !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+    background: #4b5563 !important;
+    color: #ffffff !important;
+    border-color: #9ca3af !important;
 }
 
 /* 切换按钮动画 */
@@ -458,27 +440,43 @@ body {
     backdrop-filter: blur(8px);
 }
 
-/* 语言切换按钮 */
+/* 语言切换按钮 - 对抗 Tailwind CSS 重置 */
+button.language-toggle,
+.navbar button.language-toggle,
 .language-toggle {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    padding: 10px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    background: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    padding: 10px 12px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    color: #374151 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    height: 40px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
 }
 
 .language-toggle:hover {
-    background: var(--bg-primary);
-    color: var(--primary);
-    border-color: var(--primary);
+    background: #e5e7eb !important;
+    color: #1f2937 !important;
+    border-color: #9ca3af !important;
+}
+
+/* 深色模式下的语言切换按钮 */
+[data-theme="dark"] .language-toggle {
+    background: #374151 !important;
+    color: #f9fafb !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] .language-toggle:hover {
+    background: #4b5563 !important;
+    color: #ffffff !important;
+    border-color: #9ca3af !important;
 }
 
 /* 导航栏统一按钮样式 */
@@ -499,6 +497,101 @@ body {
     font-size: 12px;
     padding: 10px 14px;
     border-radius: 6px;
+}
+
+/* ====================== 基础按钮样式 ====================== */
+
+/* 基础按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--primary);
+    color: white;
+    user-select: none;
+}
+
+.btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* 通用按钮样式 - 对抗 Tailwind CSS 重置 */
+button.btn-secondary,
+.navbar button.btn-secondary,
+button.btn,
+.navbar button.btn,
+.btn-secondary,
+.btn {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    user-select: none !important;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb !important;
+    color: #111827 !important;
+    border-color: #9ca3af !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 深色模式下的按钮样式 */
+[data-theme="dark"] .btn-secondary {
+    background: #374151 !important;
+    color: #f9fafb !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background: #4b5563 !important;
+    color: #ffffff !important;
+    border-color: #9ca3af !important;
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* 按钮尺寸变体 */
+.btn.text-sm {
+    padding: 10px 16px;
+    font-size: 13px;
+}
+
+/* 按钮点击效果 */
+.btn-click:active {
+    transform: scale(0.98);
 }
 
 /* ====================== 返回主页按钮样式 ====================== */

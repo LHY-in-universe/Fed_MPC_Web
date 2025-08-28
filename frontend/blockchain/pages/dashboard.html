@@ -6,11 +6,12 @@
     <title>区块链金融</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
 </head>
-<body class="module-background">
+<body class="module-background theme-transition">
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <span data-i18n="blockchain.title">区块链金融</span>
@@ -21,7 +22,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="goHome()" class="btn btn-secondary">
+                <button onclick="goHome()" class="btn btn-secondary btn-click">
                     <span data-i18n="common.home">返回模块选择</span>
                 </button>
             </div>
@@ -48,7 +49,7 @@
         <div id="overview-section">
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewSmartContractsDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-1 card-hover btn-click" onclick="viewSmartContractsDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +66,7 @@
                     </div>
                 </div>
 
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewActiveTransactionsDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-2 card-hover btn-click" onclick="viewActiveTransactionsDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewMPCTasksDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-3 card-hover btn-click" onclick="viewMPCTasksDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewNetworkTPSDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-4 card-hover btn-click" onclick="viewNetworkTPSDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +121,7 @@
             <!-- Recent Activity -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Smart Contracts -->
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewRecentContractsDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-5 card-hover btn-click" onclick="viewRecentContractsDetails()">
                     <div class="mb-4">
                         <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="blockchain.recentContracts.title">最新合约</h3>
                         <p class="mt-1 text-sm text-gray-500" data-i18n="blockchain.recentContracts.subtitle">最近部署的智能合约</p>
@@ -176,7 +177,7 @@
                 </div>
 
                 <!-- Recent Transactions -->
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewRecentTransactionsDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-6 card-hover btn-click" onclick="viewRecentTransactionsDetails()">
                     <div class="mb-4">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">最新交易</h3>
                         <p class="mt-1 text-sm text-gray-500">区块链交易记录</p>
@@ -224,7 +225,7 @@
             </div>
 
             <!-- Network Performance Chart -->
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="blockchain.networkPerformance.title">网络性能监控</h3>
                     <p class="mt-1 text-sm text-gray-500" data-i18n="blockchain.networkPerformance.subtitle">区块链网络 TPS 和延迟监控</p>
@@ -237,13 +238,13 @@
 
         <!-- Smart Contracts Section -->
         <div id="contracts-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="blockchain.contractManagement.title">智能合约管理</h3>
                         <p class="mt-1 text-sm text-gray-500" data-i18n="blockchain.contractManagement.subtitle">部署和管理区块链智能合约</p>
                     </div>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary btn-click">
                         <span data-i18n="blockchain.contractManagement.deployContract">部署合约</span>
                     </button>
                 </div>
@@ -255,7 +256,7 @@
 
         <!-- Transactions Section -->
         <div id="transactions-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">交易管理</h3>
                     <p class="mt-1 text-sm text-gray-500">查看和管理区块链交易</p>
@@ -268,7 +269,7 @@
 
         <!-- MPC Section -->
         <div id="mpc-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">多方安全计算</h3>
                     <p class="mt-1 text-sm text-gray-500">隐私保护的多方计算任务</p>
@@ -281,7 +282,7 @@
 
         <!-- Consensus Section -->
         <div id="consensus-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">共识机制</h3>
                     <p class="mt-1 text-sm text-gray-500">区块链共识算法监控</p>
@@ -294,7 +295,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="
+    <button class="homepage-return-btn btn-click" onclick="
         console.log('🏠 区块链仪表板：按钮被点击了');
         try {
             if (typeof goHome === 'function') {
@@ -317,7 +318,7 @@
 
 
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）
@@ -445,11 +446,11 @@
                         <span class="detail-badge success">12个合约</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>合约状态</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>ERC-20代币合约</span>
                                     <span class="detail-status-indicator active"></span>
@@ -478,11 +479,11 @@
                         <span class="detail-badge success">2,847笔交易</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>交易类型分布</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>普通转账</span>
                                     <span class="detail-time">1,845笔</span>
@@ -511,11 +512,11 @@
                         <span class="detail-badge warning">8个任务</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>计算任务</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>多方签名</span>
                                     <span class="detail-status-indicator active"></span>
@@ -544,11 +545,11 @@
                         <span class="detail-badge info">1,256 TPS</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>网络性能</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>当前TPS</span>
                                     <span class="detail-time">1,256</span>
@@ -577,11 +578,11 @@
                         <span class="detail-badge info">最新活动</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>合约活动</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>银行间信用评级学习</span>
                                     <span class="detail-time">2天前部署</span>
@@ -610,11 +611,11 @@
                         <span class="detail-badge info">最新记录</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>交易记录</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>模型更新提交</span>
                                     <span class="detail-time">2分钟前</span>
@@ -810,7 +811,7 @@
 
     <!-- Detail Modal -->
     <div id="detailModal" class="modal-overlay hidden">
-        <div class="modal-container">
+        <div class="modal-container content-area">
             <div class="modal-header">
                 <h3 id="modalTitle" class="modal-title"></h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -820,6 +821,6 @@
             </div>
         </div>
     </div>
-    <script src="../../shared/js/router-unified.js?v=20250826"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
 </body>
 </html>

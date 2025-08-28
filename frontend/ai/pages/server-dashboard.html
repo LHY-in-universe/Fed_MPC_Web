@@ -6,13 +6,14 @@
     <title>服务器控制台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250827b">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
     <link rel="stylesheet" href="../assets/ai-styles.css?v=20250826">
     <link rel="stylesheet" href="../assets/server-dashboard-styles.css?v=20250826">
 </head>
-<body class="module-background min-h-screen">
+<body class="module-background min-h-screen theme-transition">
     <!-- 导航栏 -->
-    <nav class="navbar fixed top-0 left-0 right-0 z-40">
+    <nav class="navbar fixed top-0 left-0 right-0 z-40 fade-in-up">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-6">
             <div class="navbar-brand">
                 <span data-i18n="ai.dashboard.server.title">服务器控制台</span>
@@ -24,7 +25,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="logout()" class="btn-secondary text-sm">退出登录</button>
+                <button onclick="logout()" class="btn-secondary text-sm btn-click">退出登录</button>
             </div>
         </div>
     </nav>
@@ -44,7 +45,7 @@
 
             <!-- 系统状态概览 -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewSystemStatus()">
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform fade-in-up delay-1 card-hover btn-click" onclick="viewSystemStatus()">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -57,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewConnectedClients()">
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform fade-in-up delay-2 card-hover btn-click" onclick="viewConnectedClients()">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -70,7 +71,7 @@
                     </div>
                 </div>
 
-                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewActiveSessions()">
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform fade-in-up delay-3 card-hover btn-click" onclick="viewActiveSessions()">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -83,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="module-card cursor-pointer hover:scale-105 transition-transform" onclick="viewPendingRequests()">
+                <div class="module-card cursor-pointer hover:scale-105 transition-transform fade-in-up delay-4 card-hover btn-click" onclick="viewPendingRequests()">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -100,12 +101,12 @@
             <!-- 主要功能区 -->
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
                 <!-- 模型管理 -->
-                <div class="module-card">
+                <div class="module-card fade-in-up delay-5">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.modelManagement">模型管理</span>
                         </h2>
-                        <button onclick="viewModelManagementDetails()" class="btn-module-secondary text-sm">
+                        <button onclick="viewModelManagementDetails()" class="btn-module-secondary text-sm btn-click">
                             <span data-i18n="ai.dashboard.server.viewDetails">查看详情</span>
                         </button>
                     </div>
@@ -117,7 +118,7 @@
                                 <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">当前活跃模型</p>
                                 <p class="font-semibold text-gray-900 dark:text-white" id="currentModelName">CNN图像分类模型 v2.1</p>
                             </div>
-                            <button onclick="openModelSelectionModal()" class="btn-module-primary text-sm">
+                            <button onclick="openModelSelectionModal()" class="btn-module-primary text-sm btn-click">
                                 <span data-i18n="ai.dashboard.server.switchModel">切换模型</span>
                             </button>
                         </div>
@@ -132,8 +133,8 @@
                                 <span class="text-sm px-2 py-1 bg-green-100 text-green-800 rounded">活跃</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="viewModelDetails('model1')" class="btn-mini primary">详情</button>
-                                <button onclick="editModel('model1')" class="btn-mini secondary">编辑</button>
+                                <button onclick="viewModelDetails('model1')" class="btn-mini primary btn-click">详情</button>
+                                <button onclick="editModel('model1')" class="btn-mini secondary btn-click">编辑</button>
                             </div>
                         </div>
 
@@ -144,8 +145,8 @@
                                 <span class="text-sm px-2 py-1 bg-gray-100 text-gray-600 rounded">非活跃</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="activateModel('model2')" class="btn-mini primary">激活</button>
-                                <button onclick="editModel('model2')" class="btn-mini secondary">编辑</button>
+                                <button onclick="activateModel('model2')" class="btn-mini primary btn-click">激活</button>
+                                <button onclick="editModel('model2')" class="btn-mini secondary btn-click">编辑</button>
                             </div>
                         </div>
 
@@ -156,8 +157,8 @@
                                 <span class="text-sm px-2 py-1 bg-gray-100 text-gray-600 rounded">非活跃</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="activateModel('model3')" class="btn-mini primary">激活</button>
-                                <button onclick="deleteModel('model3')" class="btn-mini secondary">删除</button>
+                                <button onclick="activateModel('model3')" class="btn-mini primary btn-click">激活</button>
+                                <button onclick="deleteModel('model3')" class="btn-mini secondary btn-click">删除</button>
                             </div>
                         </div>
 
@@ -168,26 +169,26 @@
                                 <span class="text-sm px-2 py-1 bg-yellow-100 text-yellow-800 rounded">草稿</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="editModel('model4')" class="btn-mini primary">完善</button>
-                                <button onclick="deleteModel('model4')" class="btn-mini secondary">删除</button>
+                                <button onclick="editModel('model4')" class="btn-mini primary btn-click">完善</button>
+                                <button onclick="deleteModel('model4')" class="btn-mini secondary btn-click">删除</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                        <button onclick="openCreateModelModal()" class="btn-module-primary w-full">
+                        <button onclick="openCreateModelModal()" class="btn-module-primary w-full btn-click">
                             ➕ <span data-i18n="ai.dashboard.server.createNewModel">创建新模型</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- 网络性能监控 -->
-                <div class="module-card">
+                <div class="module-card fade-in-up delay-5">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.networkPerformance">网络性能监控</span>
                         </h2>
-                        <button onclick="viewNetworkPerformanceDetails()" class="btn-module-secondary text-sm">
+                        <button onclick="viewNetworkPerformanceDetails()" class="btn-module-secondary text-sm btn-click">
                             <span data-i18n="ai.dashboard.server.viewDetails">查看详情</span>
                         </button>
                     </div>
@@ -212,7 +213,7 @@
             <!-- 管理功能区 -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- 待审核训练申请 -->
-                <div class="module-card cursor-pointer" onclick="viewPendingTrainingRequests()">
+                <div class="module-card cursor-pointer fade-in-up delay-6 card-hover btn-click" onclick="viewPendingTrainingRequests()">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.pendingRequests">待审核训练申请</span>
@@ -225,8 +226,8 @@
                             <p class="font-medium text-gray-900 dark:text-white text-sm">图像分类联邦训练</p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">client1 • 等待35分钟</p>
                             <div class="flex gap-2 mt-2">
-                                <button onclick="approveRequest('req1')" class="btn-mini primary">批准</button>
-                                <button onclick="rejectRequest('req1')" class="btn-mini secondary">拒绝</button>
+                                <button onclick="approveRequest('req1')" class="btn-mini primary btn-click">批准</button>
+                                <button onclick="rejectRequest('req1')" class="btn-mini secondary btn-click">拒绝</button>
                             </div>
                         </div>
                         
@@ -234,8 +235,8 @@
                             <p class="font-medium text-gray-900 dark:text-white text-sm">文本分析MPC训练</p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">client2 • 等待5分钟</p>
                             <div class="flex gap-2 mt-2">
-                                <button onclick="approveRequest('req2')" class="btn-mini primary">批准</button>
-                                <button onclick="rejectRequest('req2')" class="btn-mini secondary">拒绝</button>
+                                <button onclick="approveRequest('req2')" class="btn-mini primary btn-click">批准</button>
+                                <button onclick="rejectRequest('req2')" class="btn-mini secondary btn-click">拒绝</button>
                             </div>
                         </div>
 
@@ -244,7 +245,7 @@
                 </div>
 
                 <!-- 活跃训练会话 -->
-                <div class="module-card cursor-pointer" onclick="viewActiveTrainingSessionsDetails()">
+                <div class="module-card cursor-pointer fade-in-up delay-6 card-hover btn-click" onclick="viewActiveTrainingSessionsDetails()">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.activeSessions">活跃训练会话</span>
@@ -260,8 +261,8 @@
                                 <div class="bg-green-600 h-2 rounded-full" style="width: 45%"></div>
                             </div>
                             <div class="flex gap-2 mt-2">
-                                <button onclick="viewSession('session1')" class="btn-mini primary">查看</button>
-                                <button onclick="pauseSession('session1')" class="btn-mini secondary">暂停</button>
+                                <button onclick="viewSession('session1')" class="btn-mini primary btn-click">查看</button>
+                                <button onclick="pauseSession('session1')" class="btn-mini secondary btn-click">暂停</button>
                             </div>
                         </div>
                         
@@ -269,8 +270,8 @@
                             <p class="font-medium text-gray-900 dark:text-white text-sm">LSTM情感分析</p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">2/4个参与方 • 等待中</p>
                             <div class="flex gap-2 mt-2">
-                                <button onclick="inviteParticipants('session2')" class="btn-mini primary">邀请</button>
-                                <button onclick="viewSession('session2')" class="btn-mini secondary">查看</button>
+                                <button onclick="inviteParticipants('session2')" class="btn-mini primary btn-click">邀请</button>
+                                <button onclick="viewSession('session2')" class="btn-mini secondary btn-click">查看</button>
                             </div>
                         </div>
 
@@ -279,7 +280,7 @@
                 </div>
 
                 <!-- 客户端管理 -->
-                <div class="module-card cursor-pointer" onclick="viewClientManagementDetails()">
+                <div class="module-card cursor-pointer fade-in-up delay-6 card-hover btn-click" onclick="viewClientManagementDetails()">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.clientManagement">客户端管理</span>
@@ -295,8 +296,8 @@
                                 <span class="text-xs text-gray-600 dark:text-gray-400">在线</span>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="viewClient('client1')" class="btn-mini primary">查看</button>
-                                <button onclick="kickClient('client1')" class="btn-mini secondary">踢出</button>
+                                <button onclick="viewClient('client1')" class="btn-mini primary btn-click">查看</button>
+                                <button onclick="kickClient('client1')" class="btn-mini secondary btn-click">踢出</button>
                             </div>
                         </div>
                         
@@ -307,8 +308,8 @@
                                 <span class="text-xs text-gray-600 dark:text-gray-400">在线</span>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="viewClient('client2')" class="btn-mini primary">查看</button>
-                                <button onclick="kickClient('client2')" class="btn-mini secondary">踢出</button>
+                                <button onclick="viewClient('client2')" class="btn-mini primary btn-click">查看</button>
+                                <button onclick="kickClient('client2')" class="btn-mini secondary btn-click">踢出</button>
                             </div>
                         </div>
                         
@@ -319,8 +320,8 @@
                                 <span class="text-xs text-gray-600 dark:text-gray-400">空闲</span>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="viewClient('client3')" class="btn-mini primary">查看</button>
-                                <button onclick="removeClient('client3')" class="btn-mini secondary">移除</button>
+                                <button onclick="viewClient('client3')" class="btn-mini primary btn-click">查看</button>
+                                <button onclick="removeClient('client3')" class="btn-mini secondary btn-click">移除</button>
                             </div>
                         </div>
 
@@ -331,7 +332,7 @@
 
             <!-- 系统日志 -->
             <div class="mt-8">
-                <div class="module-card cursor-pointer" onclick="viewSystemLogsDetails()">
+                <div class="module-card cursor-pointer fade-in-up delay-6 card-hover btn-click" onclick="viewSystemLogsDetails()">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.systemLogs">系统日志</span>
@@ -354,7 +355,7 @@
 
     <!-- 模态框 -->
     <div id="detailModal" class="modal-overlay hidden">
-        <div class="modal-container">
+        <div class="modal-container content-area">
             <div class="modal-header">
                 <h3 id="modalTitle" class="modal-title">详情</h3>
                 <button class="modal-close" onclick="closeModal()">
@@ -370,7 +371,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn btn-click" onclick="goHome()" title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
@@ -378,9 +379,9 @@
 
     <!-- 脚本引用 -->
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
-    <script src="../../shared/js/router-unified.js?v=20250826"></script>
-    <script src="../../shared/js/i18n-manager.js?v=20250826"></script>
-    <script src="../assets/server-dashboard-scripts.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <script src="../../shared/js/i18n-manager.js?v=20250827"></script>
+    <script src="../assets/server-dashboard-scripts.js?v=20250827"></script>
 </body>
 </html>

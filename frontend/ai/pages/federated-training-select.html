@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>选择联邦训练模式</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
 </head>
-<body class="module-background min-h-screen">
+<body class="module-background min-h-screen theme-transition">
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
@@ -25,14 +26,14 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="goHome()" class="btn btn-secondary text-sm">
+                <button onclick="goHome()" class="btn btn-secondary text-sm btn-click">
                     <span data-i18n="common.home">返回主页</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-6 py-8 content-area">
         <!-- Header -->
         <div class="text-center mb-12">
             <div class="flex items-center justify-center mb-6">
@@ -51,7 +52,7 @@
         <!-- Training Mode Cards -->
         <div class="grid md:grid-cols-2 gap-8 mb-12">
             <!-- Standard Federated Learning -->
-            <div class="card p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg" onclick="selectMode('federated')">
+            <div class="card p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg fade-in-up delay-1 card-hover btn-click" onclick="selectMode('federated')">
                 <div class="text-center">
                     <div class="w-20 h-20 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +113,7 @@
             </div>
 
             <!-- MPC Federated Learning -->
-            <div class="card p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg" onclick="selectMode('mpc')">
+            <div class="card p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg fade-in-up delay-2 card-hover btn-click" onclick="selectMode('mpc')">
                 <div class="text-center">
                     <div class="w-20 h-20 bg-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,39 +175,39 @@
         </div>
 
         <!-- Comparison Table -->
-        <div class="card p-8 mb-8">
+        <div class="card p-8 mb-8 fade-in-up delay-3">
             <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center" data-i18n="ai.training.federated.detailedComparison">详细对比</h3>
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
-                        <tr class="border-b border-gray-200">
+                        <tr class="border-b border-gray-200 table-row">
                             <th class="text-left py-3 px-4 font-semibold text-gray-900" data-i18n="ai.training.federated.feature">特性</th>
                             <th class="text-center py-3 px-4 font-semibold text-gray-600" data-i18n="ai.training.federated.standard">标准联邦学习</th>
                             <th class="text-center py-3 px-4 font-semibold text-gray-600" data-i18n="ai.training.federated.mpc">MPC联邦学习</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
-                        <tr class="border-b border-gray-100">
+                        <tr class="border-b border-gray-100 table-row">
                             <td class="py-3 px-4 font-medium text-gray-900" data-i18n="ai.training.federated.globalVisibility">全局进度可见性</td>
                             <td class="py-3 px-4 text-center text-gray-600">✓ <span data-i18n="ai.training.federated.fullyVisible">完全可见</span></td>
                             <td class="py-3 px-4 text-center text-gray-400">✗ <span data-i18n="ai.training.federated.notVisible">不可见</span></td>
                         </tr>
-                        <tr class="border-b border-gray-100">
+                        <tr class="border-b border-gray-100 table-row">
                             <td class="py-3 px-4 font-medium text-gray-900" data-i18n="ai.training.federated.participantInfo">参与方信息</td>
                             <td class="py-3 px-4 text-center text-gray-600">✓ <span data-i18n="ai.training.federated.viewable">可查看</span></td>
                             <td class="py-3 px-4 text-center text-gray-400">✗ <span data-i18n="ai.training.federated.anonymous">匿名</span></td>
                         </tr>
-                        <tr class="border-b border-gray-100">
+                        <tr class="border-b border-gray-100 table-row">
                             <td class="py-3 px-4 font-medium text-gray-900" data-i18n="ai.training.federated.dataPrivacy">数据隐私保护</td>
                             <td class="py-3 px-4 text-center text-gray-600">★★★☆☆</td>
                             <td class="py-3 px-4 text-center text-gray-600">★★★★★</td>
                         </tr>
-                        <tr class="border-b border-gray-100">
+                        <tr class="border-b border-gray-100 table-row">
                             <td class="py-3 px-4 font-medium text-gray-900" data-i18n="ai.training.federated.trainingEfficiency">训练效率</td>
                             <td class="py-3 px-4 text-center text-gray-600">★★★★☆</td>
                             <td class="py-3 px-4 text-center text-gray-600">★★★☆☆</td>
                         </tr>
-                        <tr class="border-b border-gray-100">
+                        <tr class="border-b border-gray-100 table-row">
                             <td class="py-3 px-4 font-medium text-gray-900" data-i18n="ai.training.federated.computationalComplexity">计算复杂度</td>
                             <td class="py-3 px-4 text-center text-gray-600">★★☆☆☆</td>
                             <td class="py-3 px-4 text-center text-gray-600">★★★★☆</td>
@@ -241,7 +242,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn btn-click" onclick="goHome()" title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
@@ -250,7 +251,7 @@
 
 
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）

@@ -6,11 +6,12 @@
     <title>本地模型训练</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
 </head>
-<body class="module-background">
+<body class="module-background theme-transition">
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
@@ -27,7 +28,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="logout()" class="btn btn-secondary text-sm">
+                <button onclick="logout()" class="btn btn-secondary text-sm btn-click">
                     <span data-i18n="common.logout">退出登录</span>
                 </button>
             </div>
@@ -35,10 +36,10 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-6 py-8 content-area">
         <!-- Training Configuration -->
         <div class="mb-8">
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-1">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6" data-i18n="ai.training.local.trainingConfig">训练配置</h2>
                 
                 <div class="grid md:grid-cols-2 gap-6">
@@ -146,7 +147,7 @@
         <!-- Training Progress -->
         <div class="grid md:grid-cols-2 gap-8 mb-8">
             <!-- Training Metrics Chart -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-1">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingMetrics">训练指标</h3>
                 <div class="h-64">
                     <canvas id="metricsChart"></canvas>
@@ -154,7 +155,7 @@
             </div>
 
             <!-- Loss Chart -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-1">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.lossFunction">损失函数</h3>
                 <div class="h-64">
                     <canvas id="lossChart"></canvas>
@@ -165,7 +166,7 @@
         <!-- Training Status -->
         <div class="grid md:grid-cols-3 gap-6 mb-8">
             <!-- Current Status -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-1">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingStatus">训练状态</h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
@@ -195,7 +196,7 @@
             </div>
 
             <!-- Performance Metrics -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-1">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.performanceMetrics">性能指标</h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
@@ -214,7 +215,7 @@
             </div>
 
             <!-- Resource Usage -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-1">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.resourceUsage">资源使用</h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
@@ -234,7 +235,7 @@
         </div>
 
         <!-- Training Logs -->
-        <div class="card p-6">
+        <div class="card p-6 fade-in-up delay-1">
             <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.local.trainingLogs">训练日志</h3>
             <div id="trainingLogs" class="bg-black text-green-400 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm">
                 <div data-i18n="ai.training.local.waitingToStart">等待开始训练...</div>
@@ -243,7 +244,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn btn-click" onclick="goHome()" title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
@@ -252,7 +253,7 @@
 
 
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）

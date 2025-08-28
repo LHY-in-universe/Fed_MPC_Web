@@ -51,7 +51,8 @@ def create_app(config_name=None):
                 
                 # 初始化默认数据
                 from database import DatabaseManager
-                db_manager = DatabaseManager(app)
+                db_manager = DatabaseManager()  # 不传递app参数避免重复初始化
+                db_manager.app = app
                 db_manager.init_default_data()
             except Exception as e:
                 app.logger.error(f"数据库初始化失败: {str(e)}")

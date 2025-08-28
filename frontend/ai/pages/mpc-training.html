@@ -6,11 +6,12 @@
     <title>MPC联邦学习训练</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
 </head>
-<body class="module-background">
+<body class="module-background theme-transition">
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
@@ -27,7 +28,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="logout()" class="btn btn-secondary text-sm">
+                <button onclick="logout()" class="btn btn-secondary text-sm btn-click">
                     <span data-i18n="common.logout">退出登录</span>
                 </button>
             </div>
@@ -35,10 +36,10 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto px-6 py-8 content-area">
         <!-- Training Mode Info -->
         <div class="mb-8">
-            <div class="card p-6 bg-gray-50">
+            <div class="card p-6 bg-gray-50 fade-in-up delay-1">
                 <div class="flex items-start">
                     <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +60,7 @@
 
         <!-- Privacy Notice -->
         <div class="mb-8">
-            <div class="card p-4 bg-yellow-50 border border-yellow-200">
+            <div class="card p-4 bg-yellow-50 border border-yellow-200 fade-in-up delay-2">
                 <div class="flex items-start">
                     <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
@@ -74,7 +75,7 @@
 
         <!-- Training Configuration -->
         <div class="mb-8">
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-3">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6" data-i18n="ai.training.local.trainingConfig">训练配置</h2>
                 
                 <div class="grid md:grid-cols-2 gap-6">
@@ -150,17 +151,17 @@
                 <!-- Action Buttons -->
                 <div class="flex justify-between items-center mt-8">
                     <div class="flex space-x-4">
-                        <button id="startTrainingBtn" onclick="startTraining()" class="btn btn-primary">
+                        <button id="startTrainingBtn" onclick="startTraining()" class="btn btn-primary btn-click">
                             <span data-i18n="ai.training.local.startTraining">开始训练</span>
                         </button>
-                        <button id="pauseTrainingBtn" onclick="pauseTraining()" class="btn btn-secondary hidden">
+                        <button id="pauseTrainingBtn" onclick="pauseTraining()" class="btn btn-secondary hidden btn-click">
                             <span data-i18n="ai.training.local.pauseTraining">暂停训练</span>
                         </button>
-                        <button id="stopTrainingBtn" onclick="stopTraining()" class="btn btn-secondary hidden">
+                        <button id="stopTrainingBtn" onclick="stopTraining()" class="btn btn-secondary hidden btn-click">
                             <span data-i18n="ai.training.local.stopTraining">停止训练</span>
                         </button>
                     </div>
-                    <button onclick="resetConfig()" class="btn btn-secondary">
+                    <button onclick="resetConfig()" class="btn btn-secondary btn-click">
                         <span data-i18n="ai.training.federated.resetConfig">重置配置</span>
                     </button>
                 </div>
@@ -170,7 +171,7 @@
         <!-- Training Status -->
         <div class="grid lg:grid-cols-2 gap-8 mb-8">
             <!-- Personal Training Progress -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-3">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.mpc.personalStatus">个人训练状态</h3>
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
@@ -202,7 +203,7 @@
             </div>
 
             <!-- Personal Performance Metrics -->
-            <div class="card p-6">
+            <div class="card p-6 fade-in-up delay-3">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.mpc.personalMetrics">个人性能指标</h3>
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
@@ -226,7 +227,7 @@
         </div>
 
         <!-- Personal Training Chart -->
-        <div class="card p-6 mb-8">
+        <div class="card p-6 mb-8 fade-in-up delay-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.mpc.personalTrainingMetrics">个人训练指标</h3>
             <div class="h-80">
                 <canvas id="trainingChart"></canvas>
@@ -234,7 +235,7 @@
         </div>
 
         <!-- MPC Security Information -->
-        <div class="card p-6">
+        <div class="card p-6 fade-in-up delay-3">
             <h3 class="text-lg font-semibold text-gray-900 mb-4" data-i18n="ai.training.mpc.securityInfo">MPC安全信息</h3>
             <div class="grid md:grid-cols-3 gap-6">
                 <div class="text-center p-4 bg-gray-50 rounded-lg">
@@ -266,7 +267,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="goHome()" title="返回主页">
+    <button class="homepage-return-btn btn-click" onclick="goHome()" title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
@@ -275,7 +276,7 @@
 
 
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）

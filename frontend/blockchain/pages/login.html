@@ -5,11 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>区块链金融登录</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250827b">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    <style>
+        /* 眼睛按钮样式 - 平时状态就是深色 */
+        #togglePassword {
+            color: #6b7280 !important;
+            background: rgba(0, 0, 0, 0.03) !important;
+            padding: 4px !important;
+            border-radius: 4px !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        #togglePassword:hover {
+            color: #4b5563 !important;
+            background: rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        [data-theme="dark"] #togglePassword {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+        
+        [data-theme="dark"] #togglePassword:hover {
+            color: #f3f4f6 !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+    </style>
 </head>
-<body class="module-background min-h-screen flex items-center justify-center p-4">
+<body class="module-background min-h-screen flex items-center justify-center p-4 theme-transition">
     <!-- 导航栏 -->
-    <nav class="navbar fixed top-0 left-0 right-0">
+    <nav class="navbar fixed top-0 left-0 right-0 fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <span data-i18n="blockchain.title">区块链金融</span>
@@ -37,7 +62,7 @@
         </div>
 
         <!-- 登录表单 -->
-        <div class="card">
+        <div class="card fade-in-up delay-1">
             <form id="loginForm" class="space-y-6">
                 <div class="form-group">
                     <label for="username" class="form-label" data-i18n="blockchain.login.username">用户名</label>
@@ -52,7 +77,7 @@
                         <input type="password" id="password" name="password" required class="input pr-10"
                                data-i18n-placeholder="blockchain.login.passwordPlaceholder"
                                placeholder="请输入您的密码">
-                        <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 z-10" style="color: #6b7280; right: 12px; top: 50%; transform: translateY(-50%); position: absolute; z-index: 10;">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -68,7 +93,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-full">
+                <button type="submit" class="btn btn-primary w-full btn-click">
                     <span id="loginButtonText" data-i18n="blockchain.login.loginBtn">登录</span>
                     <div id="loginSpinner" class="hidden inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
                 </button>
@@ -78,10 +103,10 @@
             <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <h4 class="text-sm font-semibold text-gray-700 mb-3" data-i18n="blockchain.login.quickAccess">快速进入：</h4>
                 <div class="space-y-2">
-                    <button onclick="quickLogin('user', 'user123')" class="btn btn-secondary w-full text-sm">
+                    <button onclick="quickLogin('user', 'user123')" class="btn btn-secondary w-full text-sm btn-click">
                         <span data-i18n="blockchain.login.quickUser">普通用户登录</span>
                     </button>
-                    <button onclick="quickLogin('admin', 'admin123')" class="btn btn-secondary w-full text-sm">
+                    <button onclick="quickLogin('admin', 'admin123')" class="btn btn-secondary w-full text-sm btn-click">
                         <span data-i18n="blockchain.login.quickAdmin">管理员登录</span>
                     </button>
                 </div>
@@ -100,7 +125,7 @@
 
             <!-- 返回链接 -->
             <div class="mt-6 text-center">
-                <button onclick="goHome()" class="btn btn-secondary">
+                <button onclick="goHome()" class="btn btn-secondary btn-click">
                     <span data-i18n="common.home">← 返回主页</span>
                 </button>
             </div>
@@ -113,7 +138,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="
+    <button class="homepage-return-btn btn-click" onclick="
         console.log('🏠 区块链登录页：按钮被点击了');
         try {
             if (typeof goHome === 'function') {
@@ -136,8 +161,8 @@
 
 
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
-    <script src="../../shared/js/router-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）

@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>联邦学习与多方计算平台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../shared/css/theme-system-unified.css?v=20250827b">
+    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756353026">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
@@ -209,51 +209,7 @@
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
 
-        /* 深色模式适配 */
-        [data-theme="dark"] .hero-subtitle {
-            color: var(--text-secondary) !important;
-        }
-
-        [data-theme="dark"] .navbar-brand {
-            color: var(--text-primary) !important;
-        }
-
-        /* 修复硬编码的灰色背景和文字 */
-        [data-theme="dark"] .w-16.h-16.bg-gradient-to-br.from-gray-100.to-gray-200 {
-            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
-        }
-
-        [data-theme="dark"] .text-gray-800 {
-            color: var(--text-primary) !important;
-        }
-
-        [data-theme="dark"] .text-gray-600 {
-            color: var(--text-secondary) !important;
-        }
-
-        [data-theme="dark"] .text-gray-500 {
-            color: var(--text-tertiary) !important;
-        }
-
-        [data-theme="dark"] .bg-gradient-to-r.from-transparent.via-gray-500.to-transparent {
-            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
-        }
-
-        /* 特性卡片深色模式 */
-        [data-theme="dark"] .text-lg.font-semibold.text-gray-800 {
-            color: var(--text-primary) !important;
-        }
-
-        [data-theme="dark"] .text-sm.text-gray-600 {
-            color: var(--text-secondary) !important;
-        }
-
-        /* SVG图标深色模式 */
-        [data-theme="dark"] .text-gray-600 svg {
-            color: var(--text-secondary) !important;
-        }
-
-        /* 底部特性区域样式 */
+        /* 保留特殊的主页样式，其他深色模式样式已移至unified-styles.css */
         .feature-icon-bg {
             background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
             transition: all 0.3s ease;
@@ -267,61 +223,14 @@
             color: var(--text-secondary);
         }
 
-        [data-theme="dark"] .feature-icon-color {
-            color: var(--text-secondary) !important;
-        }
-
-        .feature-title {
-            color: var(--text-primary);
-        }
-
-        [data-theme="dark"] .feature-title {
-            color: var(--text-primary) !important;
-        }
-
-        .feature-description {
-            color: var(--text-secondary);
-        }
-
-        [data-theme="dark"] .feature-description {
-            color: var(--text-secondary) !important;
-        }
-
-        /* 额外的强制覆盖规则 - 确保没有白色元素 */
-        [data-theme="dark"] .text-gray-900,
-        [data-theme="dark"] .text-gray-800 {
-            color: var(--text-primary) !important;
-        }
-
-        [data-theme="dark"] .text-gray-600,
-        [data-theme="dark"] .text-gray-700 {
-            color: var(--text-secondary) !important;
-        }
-
-        [data-theme="dark"] .text-gray-500 {
-            color: var(--text-tertiary) !important;
-        }
-
-        [data-theme="dark"] .bg-gradient-to-r {
-            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
-        }
-
-        /* 模块卡片强制修复 */
+        /* 模块卡片特殊样式 */
         [data-theme="dark"] .premium-module-card {
             background: var(--bg-primary) !important;
             border: 1px solid var(--border-primary) !important;
         }
 
-        [data-theme="dark"] .premium-module-card * {
-            color: inherit !important;
-        }
-
-        [data-theme="dark"] .premium-module-card h3 {
-            color: var(--text-primary) !important;
-        }
-
-        [data-theme="dark"] .premium-module-card p {
-            color: var(--text-secondary) !important;
+        [data-theme="dark"] .bg-gradient-to-r {
+            background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
         }
     </style>
 </head>
@@ -431,6 +340,7 @@
                 </div>
             </div>
 
+
             <!-- 底部特性展示 -->
             <div class="mt-20 text-center fade-in-up delay-4">
                 <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -468,9 +378,9 @@
 
     <!-- 脚本文件 -->
     <script src="../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../shared/js/theme-manager-unified.js?v=20250826"></script>
-    <script src="../shared/js/router-unified.js?v=20250826"></script>
-    <script src="../shared/js/i18n-manager.js?v=20250826"></script>
+    <script src="../shared/js/theme-manager-unified.js?v=20250827"></script>
+    <script src="../shared/js/router-unified.js?v=20250827"></script>
+    <script src="../shared/js/i18n-manager.js?v=20250827"></script>
     <script>
         function selectBusinessType(type) {
             localStorage.setItem('businessType', type);
@@ -484,6 +394,7 @@
                 window.location.href = '../crypto/pages/login.html';
             }
         }
+
 
         window.onload = function() {
             localStorage.removeItem('userType');

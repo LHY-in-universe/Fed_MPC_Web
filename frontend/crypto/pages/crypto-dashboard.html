@@ -6,11 +6,12 @@
     <title>密钥加密</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css?v=20250826">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
 </head>
-<body class="module-background">
+<body class="module-background theme-transition">
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar fade-in-up">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
             <div class="navbar-brand">
                 <span data-i18n="crypto.title">密钥加密</span>
@@ -21,7 +22,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="goHome()" class="btn btn-secondary">
+                <button onclick="goHome()" class="btn btn-secondary btn-click">
                     <span data-i18n="common.home">返回模块选择</span>
                 </button>
             </div>
@@ -48,7 +49,7 @@
         <div id="overview-section">
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewTotalKeysDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-1 card-hover btn-click" onclick="viewTotalKeysDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +66,7 @@
                     </div>
                 </div>
 
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewActiveKeysDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-2 card-hover btn-click" onclick="viewActiveKeysDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewCertificatesDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-3 card-hover btn-click" onclick="viewCertificatesDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +100,7 @@
                     </div>
                 </div>
 
-                <div class="card cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewExpiringSoonDetails()">
+                <div class="card cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-4 card-hover btn-click" onclick="viewExpiringSoonDetails()">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +119,7 @@
             </div>
 
             <!-- Recent Keys -->
-            <div class="card mb-8 cursor-pointer hover:bg-gray-50 transition-colors" onclick="viewRecentKeysDetails()">
+            <div class="card mb-8 cursor-pointer hover:bg-gray-50 transition-colors fade-in-up delay-5 card-hover btn-click" onclick="viewRecentKeysDetails()">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="crypto.recentKeys.title">最近密钥</h3>
                     <p class="mt-1 text-sm text-gray-500" data-i18n="crypto.recentKeys.subtitle">最近创建和使用的密钥对</p>
@@ -174,7 +175,7 @@
             </div>
 
             <!-- Key Usage Chart -->
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="crypto.keyUsageStats.title">密钥使用统计</h3>
                     <p class="mt-1 text-sm text-gray-500" data-i18n="crypto.keyUsageStats.subtitle">最近30天的密钥使用情况</p>
@@ -187,13 +188,13 @@
 
         <!-- Keys Management Section -->
         <div id="keys-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h3 class="text-lg leading-6 font-medium text-gray-900" data-i18n="crypto.keyManagement.title">密钥管理</h3>
                         <p class="mt-1 text-sm text-gray-500" data-i18n="crypto.keyManagement.subtitle">创建、管理和监控您的密钥对</p>
                     </div>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary btn-click">
                         生成新密钥
                     </button>
                 </div>
@@ -205,7 +206,7 @@
 
         <!-- Certificates Section -->
         <div id="certificates-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">证书管理</h3>
                     <p class="mt-1 text-sm text-gray-500">管理数字证书和CA证书</p>
@@ -218,7 +219,7 @@
 
         <!-- Operations Section -->
         <div id="operations-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">加密操作</h3>
                     <p class="mt-1 text-sm text-gray-500">执行加密、解密和签名操作</p>
@@ -231,7 +232,7 @@
 
         <!-- Audit Section -->
         <div id="audit-section" class="hidden">
-            <div class="card">
+            <div class="card fade-in-up delay-6">
                 <div class="mb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">审计日志</h3>
                     <p class="mt-1 text-sm text-gray-500">查看密钥和证书操作的审计记录</p>
@@ -244,7 +245,7 @@
     </div>
 
     <!-- 返回主页按钮 -->
-    <button class="homepage-return-btn" onclick="
+    <button class="homepage-return-btn btn-click" onclick="
         console.log('🏠 密码学仪表板：按钮被点击了');
         try {
             if (typeof goHome === 'function') {
@@ -267,7 +268,7 @@
 
 
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
-    <script src="../../shared/js/theme-manager-unified.js?v=20250826"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）
@@ -387,11 +388,11 @@
                         <span class="detail-badge success">24个密钥</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>密钥类型分布</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>RSA密钥</span>
                                     <span class="detail-time">12个</span>
@@ -420,11 +421,11 @@
                         <span class="detail-badge success">18个活跃</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>使用频率</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span><span data-i18n="crypto.keys.federatedLearningMainKey">联邦学习主密钥</span></span>
                                     <span class="detail-time">156次/天</span>
@@ -453,11 +454,11 @@
                         <span class="detail-badge warning">12个证书</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>证书状态</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>SSL证书</span>
                                     <span class="detail-status-indicator active"></span>
@@ -486,11 +487,11 @@
                         <span class="detail-badge danger">3个即将过期</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>过期警告</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span>SSL服务器证书</span>
                                     <span class="detail-time">2天后到期</span>
@@ -519,11 +520,11 @@
                         <span class="detail-badge info">最新活动</span>
                     </div>
                     <div class="detail-grid">
-                        <div class="detail-card">
-                            <div class="detail-card-header">
+                        <div class="detail-card fade-in-up delay-6">
+                            <div class="detail-card-header fade-in-up delay-6">
                                 <h5>密钥活动</h5>
                             </div>
-                            <div class="detail-card-content">
+                            <div class="detail-card-content fade-in-up delay-6">
                                 <div class="detail-item">
                                     <span><span data-i18n="crypto.keys.federatedLearningMainKey">联邦学习主密钥</span>创建</span>
                                     <span class="detail-time">2天前</span>
@@ -719,7 +720,7 @@
 
     <!-- Detail Modal -->
     <div id="detailModal" class="modal-overlay hidden">
-        <div class="modal-container">
+        <div class="modal-container content-area">
             <div class="modal-header">
                 <h3 id="modalTitle" class="modal-title"></h3>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -729,6 +730,6 @@
             </div>
         </div>
     </div>
-    <script src="../../shared/js/router-unified.js?v=20250826"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
 </body>
 </html>
