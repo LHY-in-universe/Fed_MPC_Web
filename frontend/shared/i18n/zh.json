@@ -22,9 +22,9 @@
         "title": "联邦学习与多方计算平台",
         "subtitle": "安全、高效的分布式机器学习解决方案",
         "modules": {
-            "ai": {
-                "title": "AI模型训练",
-                "description": "联邦学习与多方计算训练"
+            "p2pai": {
+                "title": "P2P AI训练",
+                "description": "点对点联邦学习与多方计算"
             },
             "blockchain": {
                 "title": "区块链金融",
@@ -37,8 +37,8 @@
         }
     },
 
-    "ai": {
-        "title": "AI模型训练",
+    "p2pai": {
+        "title": "P2P AI训练",
         "userType": {
             "title": "选择用户类型",
             "client": "客户端",

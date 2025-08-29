@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="edgeai.login.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdgeAI登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
+    <style>
+        /* 修复眼睛按钮在深色模式下的颜色和位置 */
+        #togglePassword {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            background: rgba(0, 0, 0, 0.03);
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        #togglePassword:hover {
+            color: #4b5563;
+            background: rgba(0, 0, 0, 0.08);
+        }
+        
+        [data-theme="dark"] #togglePassword {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        [data-theme="dark"] #togglePassword:hover {
+            color: #f3f4f6;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        /* EdgeAI专用样式 */
+        .edgeai-icon-bg {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .edgeai-card-accent {
+            border-left: 4px solid #10b981;
+        }
+    </style>
+</head>
+<body class="module-background min-h-screen flex items-center justify-center p-4 theme-transition">
+    <!-- 导航栏 -->
+    <nav class="navbar fixed top-0 left-0 right-0 fade-in-up">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="edgeai.title">EdgeAI管理</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-md w-full mt-16">
+        <!-- 标题区域 -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 edgeai-icon-bg rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold mb-2" data-i18n="edgeai.login.title">EdgeAI管理登录</h1>
+            <p class="text-lg font-medium text-gray-600" data-i18n="edgeai.login.subtitle">边缘人工智能节点管理平台</p>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="card fade-in-up delay-1">
+            <form id="loginForm" class="space-y-6">
+                <div class="form-group">
+                    <label for="username" class="form-label" data-i18n="edgeai.login.username">用户名</label>
+                    <input type="text" id="username" name="username" required class="input"
+                           data-i18n-placeholder="edgeai.login.usernamePlaceholder"
+                           placeholder="请输入您的用户名">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label" data-i18n="edgeai.login.password">密码</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required class="input pr-10"
+                               data-i18n-placeholder="edgeai.login.passwordPlaceholder"
+                               placeholder="请输入您的密码">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 z-10" style="color: #6b7280; right: 12px; top: 50%; transform: translateY(-50%); position: absolute; z-index: 10;">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="rememberMe" class="h-4 w-4 border-gray-300 rounded focus:border-gray-500">
+                        <span class="ml-2 text-sm text-gray-600" data-i18n="edgeai.login.rememberMe">记住我</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full btn-click">
+                    <span id="loginButtonText" data-i18n="edgeai.login.loginBtn">登录</span>
+                    <div id="loginSpinner" class="hidden inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                </button>
+            </form>
+
+            <!-- 快速进入按钮 -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 edgeai-card-accent">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3" data-i18n="edgeai.login.quickAccess">快速进入：</h4>
+                <div class="space-y-2">
+                    <button onclick="quickLogin('admin', 'admin123')" class="btn btn-secondary w-full text-sm btn-click">
+                        <span data-i18n="edgeai.login.quickAdmin">管理员登录</span>
+                    </button>
+                    <button onclick="quickLogin('operator', 'operator123')" class="btn btn-secondary w-full text-sm btn-click">
+                        <span data-i18n="edgeai.login.quickOperator">操作员登录</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模拟账号提示 -->
+            <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-700 mb-2" data-i18n="edgeai.login.testAccounts">测试账号：</h4>
+                <div class="text-xs text-gray-600 space-y-1">
+                    <div data-i18n="edgeai.login.adminAccount">管理员: admin / admin123</div>
+                    <div data-i18n="edgeai.login.operatorAccount">操作员: operator / operator123</div>
+                    <div data-i18n="edgeai.login.viewerAccount">观察员: viewer / viewer123</div>
+                </div>
+            </div>
+
+            <!-- 返回链接 -->
+            <div class="mt-6 text-center">
+                <button onclick="goHome()" class="btn btn-secondary btn-click">
+                    <span data-i18n="common.home">← 返回主页</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 错误消息 -->
+        <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-red-600 text-sm"></p>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn btn-click" onclick="
+        console.log('🏠 EdgeAI登录页：按钮被点击了');
+        try {
+            if (typeof goHome === 'function') {
+                console.log('✅ 使用goHome函数');
+                goHome();
+            } else {
+                console.log('❌ goHome函数不存在，使用直接跳转');
+                window.location.href = '../../homepage/index.html';
+            }
+        } catch (error) {
+            console.error('❌ 导航出错:', error);
+            window.location.href = '../../homepage/index.html';
+        }
+    " title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        // 确保goHome函数可用（备用实现）
+        window.goHome = window.goHome || function() {
+            console.log('🏠 备用goHome函数被调用');
+            window.location.href = '../../homepage/index.html';
+        };
+        
+        // 模拟账号数据
+        const mockAccounts = {
+            'admin': { password: 'admin123', role: 'administrator', name: '系统管理员' },
+            'operator': { password: 'operator123', role: 'operator', name: '系统操作员' },
+            'viewer': { password: 'viewer123', role: 'viewer', name: '系统观察员' }
+        };
+
+        // 密码可见性切换
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('svg');
+            if (type === 'text') {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+            }
+        });
+
+        // 快速登录功能
+        function quickLogin(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            handleLogin();
+        }
+
+        // 登录表单处理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButtonText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!username || !password) {
+                showError('请填写完整的登录信息');
+                return;
+            }
+
+            // 显示加载状态
+            loginButton.textContent = '登录中...';
+            loginSpinner.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            
+            // 模拟加载延迟
+            setTimeout(() => {
+                console.log('跳过验证，直接登录成功');
+                
+                // 模拟用户数据
+                const account = mockAccounts[username];
+                const mockUser = {
+                    id: Date.now(),
+                    username: username,
+                    name: account ? account.name : `EdgeAI用户-${username}`,
+                    role: account ? account.role : 'user',
+                    business_type: 'edgeai'
+                };
+                
+                // 保存登录信息
+                localStorage.setItem('userData', JSON.stringify(mockUser));
+                localStorage.setItem('edgeaiUserType', mockUser.role);
+                localStorage.setItem('userType', mockUser.role);
+                localStorage.setItem('loginTime', new Date().toISOString());
+                localStorage.setItem('token', 'mock-token-' + Date.now());
+                
+                console.log('✅ 登录成功，跳转中...');
+                
+                // 跳转到控制台
+                window.location.href = './dashboard.html';
+            }, 1000);
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.querySelector('p').textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // 页面初始化时应用翻译
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用翻译到placeholder
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            
+            // 监听语言变更事件来更新placeholder
+            window.addEventListener('languageChanged', function(e) {
+                const lang = e.detail.language;
+                if (lang === 'en') {
+                    usernameInput.placeholder = 'Enter your username';
+                    passwordInput.placeholder = 'Enter your password';
+                } else {
+                    usernameInput.placeholder = '请输入您的用户名';
+                    passwordInput.placeholder = '请输入您的密码';
+                }
+            });
+            
+            // 确保goHome函数可用
+            setTimeout(() => {
+                if (typeof window.goHome !== 'function') {
+                    console.log('⚠️ goHome函数不存在，创建备用函数');
+                    window.goHome = function() {
+                        const currentPath = window.location.pathname;
+                        const currentParts = currentPath.replace(/^\/+/, '').split('/').filter(part => part);
+                        let depth = 0;
+                        
+                        if (currentParts.includes('pages')) {
+                            const pagesIndex = currentParts.indexOf('pages');
+                            depth = pagesIndex + 1;
+                        } else if (currentParts.length > 1) {
+                            if (currentParts[0] === 'homepage') {
+                                depth = 1;
+                            } else {
+                                depth = currentParts.length - 1;
+                            }
+                        }
+                        
+                        let relativePath = '';
+                        for (let i = 0; i < depth; i++) {
+                            relativePath += '../';
+                        }
+                        relativePath += 'homepage/index.html';
+                        
+                        console.log('备用goHome: 跳转到', relativePath);
+                        window.location.href = relativePath;
+                    };
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

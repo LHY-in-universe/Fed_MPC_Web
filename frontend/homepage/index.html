@@ -275,18 +275,18 @@
             </div>
 
             <!-- 模块选择区域 -->
-            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <!-- AI模块 -->
-                <div class="premium-module-card cursor-pointer fade-in-up delay-1" onclick="selectBusinessType('ai')">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- P2P AI模块 -->
+                <div class="premium-module-card cursor-pointer fade-in-up delay-1" onclick="selectBusinessType('p2pai')">
                     <div class="text-center">
                         <div class="premium-icon-container">
                             <svg class="w-10 h-10 text-gray-700 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.ai.title">AI模型训练</h3>
-                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.ai.description">
-                            联邦学习与多方计算训练
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.p2pai.title">P2P AI训练</h3>
+                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.p2pai.description">
+                            点对点联邦学习与多方计算
                         </p>
                         <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
                             <span data-i18n="homepage.enterModule">进入模块</span>
@@ -297,38 +297,17 @@
                     </div>
                 </div>
 
-                <!-- 区块链模块 -->
-                <div class="premium-module-card cursor-pointer fade-in-up delay-2" onclick="selectBusinessType('blockchain')">
+                <!-- EdgeAI模块 -->
+                <div class="premium-module-card cursor-pointer fade-in-up delay-2" onclick="selectBusinessType('edgeai')">
                     <div class="text-center">
                         <div class="premium-icon-container">
                             <svg class="w-10 h-10 text-gray-700 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.blockchain.title">区块链金融</h3>
-                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.blockchain.description">
-                            去中心化金融应用
-                        </p>
-                        <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
-                            <span data-i18n="homepage.enterModule">进入模块</span>
-                            <svg class="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 密钥加密模块 -->
-                <div class="premium-module-card cursor-pointer fade-in-up delay-3" onclick="selectBusinessType('crypto')">
-                    <div class="text-center">
-                        <div class="premium-icon-container">
-                            <svg class="w-10 h-10 text-gray-700 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.crypto.title">密钥加密</h3>
-                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.crypto.description">
-                            安全密码学工具
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900" data-i18n="homepage.modules.edgeai.title">边缘AI智能</h3>
+                        <p class="module-description text-gray-600 font-medium leading-relaxed" data-i18n="homepage.modules.edgeai.description">
+                            边缘设备智能训练与可视化管理
                         </p>
                         <div class="mt-6 inline-flex items-center text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-gray-700">
                             <span data-i18n="homepage.enterModule">进入模块</span>
@@ -341,38 +320,7 @@
             </div>
 
 
-            <!-- 底部特性展示 -->
-            <div class="mt-20 text-center fade-in-up delay-4">
-                <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                    <div class="flex flex-col items-center">
-                        <div class="feature-icon-bg w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 feature-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="feature-title text-lg font-semibold mb-2" data-i18n="homepage.features.security.title">企业级安全</h4>
-                        <p class="feature-description text-sm" data-i18n="homepage.features.security.description">银行级别的数据安全保护</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="feature-icon-bg w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 feature-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="feature-title text-lg font-semibold mb-2" data-i18n="homepage.features.performance.title">高性能计算</h4>
-                        <p class="feature-description text-sm" data-i18n="homepage.features.performance.description">分布式架构，极致性能优化</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="feature-icon-bg w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 feature-icon-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="feature-title text-lg font-semibold mb-2" data-i18n="homepage.features.integration.title">易于集成</h4>
-                        <p class="feature-description text-sm" data-i18n="homepage.features.integration.description">标准化API，快速业务集成</p>
-                    </div>
-                </div>
-            </div>
+           
         </div>
     </div>
 
@@ -386,12 +334,10 @@
             localStorage.setItem('businessType', type);
             localStorage.setItem('selectedModule', type);
             
-            if (type === 'ai') {
-                window.location.href = '../ai/pages/user-type-select.html';
-            } else if (type === 'blockchain') {
-                window.location.href = '../blockchain/pages/login.html';
-            } else if (type === 'crypto') {
-                window.location.href = '../crypto/pages/login.html';
+            if (type === 'p2pai') {
+                window.location.href = '../p2pai/pages/user-type-select.html';
+            } else if (type === 'edgeai') {
+                window.location.href = '../edgeai/pages/login.html';
             }
         }
 

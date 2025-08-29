@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="edgeai.dashboard.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdgeAI控制台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    
+    <style>
+        /* EdgeAI控制台深色模式样式 */
+        [data-theme="dark"] .edgeai-card {
+            background: rgba(31, 41, 55, 0.8) !important;
+            border: 1px solid rgba(75, 85, 99, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .bg-green-50 {
+            background: rgba(34, 197, 94, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-50 {
+            background: rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-orange-50 {
+            background: rgba(249, 115, 22, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-yellow-50 {
+            background: rgba(245, 158, 11, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-50 {
+            background: rgba(55, 65, 81, 0.6) !important;
+        }
+        
+        /* EdgeAI专用按钮样式 */
+        [data-theme="dark"] .btn-edgeai-primary {
+            background: rgba(16, 185, 129, 0.8) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(16, 185, 129, 0.6) !important;
+        }
+        
+        [data-theme="dark"] .btn-edgeai-secondary {
+            background: rgba(55, 65, 81, 0.8) !important;
+            color: #d1d5db !important;
+            border: 1px solid rgba(107, 114, 128, 0.4) !important;
+        }
+        
+        /* EdgeAI项目状态指示器 */
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-active { background-color: #10b981; }
+        .status-training { background-color: #3b82f6; }
+        .status-idle { background-color: #6b7280; }
+        .status-error { background-color: #ef4444; }
+        
+        /* 项目卡片特殊样式 */
+        .project-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+        
+        /* 统计卡片 */
+        .stats-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 活动列表样式 */
+        .activity-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px !important;
+            padding: 16px;
+            transition: all 0.3s ease;
+            max-width: 85%;
+            margin: 0 auto;
+        }
+        
+        .activity-item:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* 主活动卡片样式 */
+        .main-activity-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px !important;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        /* 查看全部按钮样式 */
+        .view-all-btn {
+            background: rgba(59, 130, 246, 0.1) !important;
+            color: #2563eb !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .view-all-btn:hover {
+            background: rgba(59, 130, 246, 0.2) !important;
+            transform: translateY(-1px);
+        }
+        
+        [data-theme="dark"] .view-all-btn {
+            background: rgba(59, 130, 246, 0.2) !important;
+            color: #93c5fd !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .view-all-btn:hover {
+            background: rgba(59, 130, 246, 0.3) !important;
+        }
+    </style>
+</head>
+<body class="module-background theme-transition">
+    <!-- Navigation -->
+    <nav class="navbar fade-in-up">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <span data-i18n="edgeai.dashboard.title">EdgeAI控制台</span>
+            </div>
+            
+            <div class="navbar-nav">
+                <span id="userInfo" class="text-sm text-gray-600"></span>
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+                <button onclick="logout()" class="btn btn-secondary text-sm btn-click">
+                    <span data-i18n="common.logout">退出登录</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8 content-area">
+        <!-- Welcome Section -->
+        <div class="text-center mb-12 fade-in-up delay-1">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                <span data-i18n="edgeai.dashboard.welcome">欢迎使用EdgeAI管理平台！</span>
+            </h2>
+            <p class="text-gray-600" data-i18n="edgeai.dashboard.subtitle">管理您的边缘AI节点和训练项目</p>
+        </div>
+
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stats-card fade-in-up delay-2 edgeai-card">
+                <div class="text-3xl mb-2">🖥️</div>
+                <div class="text-2xl font-bold text-gray-900" id="totalProjects">5</div>
+                <div class="text-sm text-gray-500" data-i18n="edgeai.dashboard.totalProjects">总项目数</div>
+            </div>
+            
+            <div class="stats-card fade-in-up delay-3 edgeai-card">
+                <div class="text-3xl mb-2">🌐</div>
+                <div class="text-2xl font-bold text-green-600" id="activeNodes">12</div>
+                <div class="text-sm text-gray-500" data-i18n="edgeai.dashboard.activeNodes">活跃节点</div>
+            </div>
+            
+            <div class="stats-card fade-in-up delay-4 edgeai-card">
+                <div class="text-3xl mb-2">⚡</div>
+                <div class="text-2xl font-bold text-blue-600" id="trainingTasks">3</div>
+                <div class="text-sm text-gray-500" data-i18n="edgeai.dashboard.trainingTasks">训练任务</div>
+            </div>
+            
+            <div class="stats-card fade-in-up delay-5 edgeai-card">
+                <div class="text-3xl mb-2">📊</div>
+                <div class="text-2xl font-bold text-purple-600" id="completionRate">87%</div>
+                <div class="text-sm text-gray-500" data-i18n="edgeai.dashboard.completionRate">完成率</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 mb-8 fade-in-up delay-6">
+            <button onclick="createProject()" class="btn btn-primary btn-click">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span data-i18n="edgeai.dashboard.createProject">创建新项目</span>
+            </button>
+            <button onclick="importProject()" class="btn btn-secondary btn-click">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                </svg>
+                <span data-i18n="edgeai.dashboard.importProject">导入项目</span>
+            </button>
+            <button onclick="viewAllNodes()" class="btn btn-secondary btn-click">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                <span data-i18n="edgeai.dashboard.viewAllNodes">查看所有节点</span>
+            </button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold text-gray-900" data-i18n="edgeai.dashboard.projects">我的项目</h3>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="搜索项目..." class="input pl-10 pr-4 py-2 w-64">
+                        <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <select id="statusFilter" class="input py-2 px-3">
+                        <option value="">全部状态</option>
+                        <option value="active">活跃</option>
+                        <option value="training">训练中</option>
+                        <option value="idle">空闲</option>
+                        <option value="error">错误</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="projectsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 项目卡片将在这里动态生成 -->
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="edgeai-card fade-in-up delay-7">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900" data-i18n="edgeai.dashboard.recentActivity">最近活动</h3>
+                <button class="view-all-btn btn-click" onclick="viewAllActivity()">
+                    <span data-i18n="edgeai.dashboard.viewAll">查看全部</span>
+                </button>
+            </div>
+            <div class="space-y-4" id="activityList">
+                <!-- 活动列表将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn btn-click" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    
+    <script>
+        // 模拟项目数据
+        const mockProjects = [
+            {
+                id: 1,
+                name: '智能制造监控系统',
+                description: '基于EdgeAI的工厂设备实时监控和预测维护',
+                status: 'training',
+                nodes: 8,
+                progress: 65,
+                created: '2024-01-15',
+                lastUpdate: '2小时前'
+            },
+            {
+                id: 2,
+                name: '城市交通优化',
+                description: '智能交通信号灯控制和流量预测系统',
+                status: 'active',
+                nodes: 15,
+                progress: 100,
+                created: '2024-01-10',
+                lastUpdate: '30分钟前'
+            },
+            {
+                id: 3,
+                name: '医疗图像诊断',
+                description: '分布式医疗影像AI诊断系统',
+                status: 'idle',
+                nodes: 5,
+                progress: 45,
+                created: '2024-01-08',
+                lastUpdate: '1天前'
+            },
+            {
+                id: 4,
+                name: '零售客流分析',
+                description: '商场客流量分析和商品推荐系统',
+                status: 'training',
+                nodes: 12,
+                progress: 78,
+                created: '2024-01-05',
+                lastUpdate: '5分钟前'
+            },
+            {
+                id: 5,
+                name: '农业环境监测',
+                description: '农田环境数据采集和作物生长预测',
+                status: 'error',
+                nodes: 3,
+                progress: 23,
+                created: '2024-01-03',
+                lastUpdate: '3小时前'
+            }
+        ];
+
+        // 模拟活动数据
+        const mockActivities = [
+            { type: 'success', message: '项目"智能制造监控系统"训练进度更新至65%', time: '2小时前' },
+            { type: 'info', message: '新增3个边缘节点加入"城市交通优化"项目', time: '4小时前' },
+            { type: 'warning', message: '项目"农业环境监测"节点离线警告', time: '6小时前' },
+            { type: 'success', message: '项目"零售客流分析"完成第12轮训练', time: '8小时前' },
+            { type: 'info', message: '系统进行了自动备份', time: '12小时前' }
+        ];
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userInfo = document.getElementById('userInfo');
+            if (user.name) {
+                userInfo.textContent = `${user.name}`;
+            }
+            
+            renderProjects();
+            renderActivities();
+            setupFilters();
+        });
+
+        // 渲染项目列表
+        function renderProjects(filter = '') {
+            const container = document.getElementById('projectsContainer');
+            let filteredProjects = mockProjects;
+            
+            if (filter) {
+                filteredProjects = mockProjects.filter(p => 
+                    p.name.toLowerCase().includes(filter.toLowerCase()) ||
+                    p.description.toLowerCase().includes(filter.toLowerCase())
+                );
+            }
+            
+            const statusFilter = document.getElementById('statusFilter').value;
+            if (statusFilter) {
+                filteredProjects = filteredProjects.filter(p => p.status === statusFilter);
+            }
+            
+            container.innerHTML = filteredProjects.map(project => `
+                <div class="project-card cursor-pointer fade-in-up card-hover btn-click" onclick="openVisualization(${project.id})">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">${project.name}</h4>
+                            <p class="text-sm text-gray-600 mb-3">${project.description}</p>
+                        </div>
+                        <span class="status-indicator status-${project.status}"></span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500">连接节点：</span>
+                            <span class="font-medium">${project.nodes}个</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500">训练进度：</span>
+                            <span class="font-medium">${project.progress}%</span>
+                        </div>
+                        
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: ${project.progress}%"></div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs text-gray-400 mt-4">
+                            <span>创建：${project.created}</span>
+                            <span>更新：${project.lastUpdate}</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            `).join('');
+        }
+
+        // 渲染活动列表
+        function renderActivities() {
+            const container = document.getElementById('activityList');
+            container.innerHTML = mockActivities.map(activity => `
+                <div class="activity-item flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-${getActivityColor(activity.type)}"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900">${activity.message}</p>
+                        <p class="text-xs text-gray-500">${activity.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getActivityColor(type) {
+            const colors = {
+                success: 'green-500',
+                info: 'blue-500',
+                warning: 'yellow-500',
+                error: 'red-500'
+            };
+            return colors[type] || 'gray-500';
+        }
+
+        // 设置过滤器
+        function setupFilters() {
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                renderProjects(e.target.value);
+            });
+            
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                renderProjects(document.getElementById('searchInput').value);
+            });
+        }
+
+        // 项目操作函数
+        function createProject() {
+            window.location.href = './create-project.html';
+        }
+
+        function importProject() {
+            window.location.href = './import-project.html';
+        }
+
+        function viewAllNodes() {
+            window.location.href = './all-nodes.html';
+        }
+
+        function openProject(projectId) {
+            console.log('打开项目:', projectId);
+            // 这里应该跳转到项目详情页面
+            alert(`打开项目 ${projectId} 详情页面\n\n将显示：\n- 项目概览\n- 节点列表\n- 训练进度\n- 性能指标`);
+        }
+
+        function openVisualization(projectId) {
+            console.log('打开可视化界面:', projectId);
+            // 跳转到可视化界面
+            window.location.href = `./visualization.html?project=${projectId}`;
+        }
+
+        function editProject(projectId) {
+            console.log('编辑项目:', projectId);
+            alert(`编辑项目 ${projectId}\n\n将提供：\n- 修改项目名称和描述\n- 调整训练参数\n- 管理节点连接\n- 更新配置设置`);
+        }
+
+        function deleteProject(projectId) {
+            console.log('删除项目:', projectId);
+            if (confirm('确定要删除这个项目吗？此操作不可撤销！')) {
+                alert(`项目 ${projectId} 已删除\n\n注意：\n- 所有训练数据将被清除\n- 节点连接将断开\n- 相关日志将被归档`);
+                // 在实际应用中，这里会调用删除API
+            }
+        }
+
+        function viewAllActivity() {
+            alert('活动历史功能开发中...\n\n将显示：\n- 完整活动时间线\n- 可筛选的活动类型\n- 详细的操作日志\n- 导出活动报告');
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userData');
+            localStorage.removeItem('loginTime');
+            window.location.href = './login.html';
+        }
+    </script>
+</body>
+</html>

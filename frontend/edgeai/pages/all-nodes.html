@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="edgeai.allNodes.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看所有节点 - EdgeAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    <style>
+        /* EdgeAI 节点管理页面 - 仅保留必要的自定义样式 */
+        
+        [data-theme="dark"] .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .border-gray-300 {
+            border-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] input,
+        [data-theme="dark"] textarea,
+        [data-theme="dark"] select {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] input::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] input:focus,
+        [data-theme="dark"] select:focus {
+            background-color: #4b5563 !important;
+            border-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .shadow,
+        [data-theme="dark"] .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        [data-theme="dark"] .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+            border-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .hover\\:bg-gray-50:hover {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] thead {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-50 {
+            background-color: #374151 !important;
+        }
+        
+        /* 确保统计卡片文字清晰 */
+        [data-theme="light"] .text-gray-900 {
+            color: #111827 !important;
+        }
+        
+        [data-theme="light"] .text-gray-600 {
+            color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        /* 确保表格文字清晰 */
+        [data-theme="light"] .text-gray-500 {
+            color: #6b7280 !important;
+        }
+        
+        [data-theme="dark"] .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        /* 过滤器标签样式 */
+        [data-theme="light"] .text-gray-700 {
+            color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .text-gray-700 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] tbody tr:hover {
+            background-color: #374151 !important;
+        }
+        
+        /* 统计卡片深色模式 */
+        [data-theme="dark"] .bg-green-100 {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-100 {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-yellow-100 {
+            background-color: rgba(245, 158, 11, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-red-100 {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .text-green-600 {
+            color: #10b981 !important;
+        }
+        
+        [data-theme="dark"] .text-blue-600 {
+            color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .text-yellow-600 {
+            color: #f59e0b !important;
+        }
+        
+        [data-theme="dark"] .text-red-600 {
+            color: #ef4444 !important;
+        }
+        
+        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle):not(.bg-blue-600) {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle):not(.bg-blue-600):hover {
+            background-color: #4b5563 !important;
+        }
+        
+        /* 保持蓝色按钮的正确颜色 */
+        [data-theme="dark"] button.bg-blue-600,
+        [data-theme="light"] button.bg-blue-600 {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+        
+        [data-theme="dark"] button.bg-blue-600:hover,
+        [data-theme="light"] button.bg-blue-600:hover {
+            background-color: #1d4ed8 !important;
+            color: #ffffff !important;
+        }
+        
+        /* 简化样式，主要依赖统一主题系统 */
+        
+        [data-theme="dark"] .bg-blue-500 {
+            background-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-500:hover {
+            background-color: #2563eb !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-200 {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-200:hover {
+            background-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .bg-red-500 {
+            background-color: #dc2626 !important;
+        }
+        
+        [data-theme="dark"] .bg-red-500:hover {
+            background-color: #b91c1c !important;
+        }
+        
+        /* 模态框深色模式 */
+        [data-theme="dark"] #nodeDetailsModal .bg-white {
+            background-color: #1f2937 !important;
+        }
+        
+        [data-theme="dark"] #nodeDetailsModal .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] #nodeDetailsModal .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] #nodeDetailsModal .text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] #nodeDetailsModal .bg-gray-50 {
+            background-color: #374151 !important;
+        }
+        
+        /* 节点管理模态框深色模式 */
+        [data-theme="dark"] #nodeManageModal .bg-white {
+            background-color: #1f2937 !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .bg-green-50 {
+            background-color: rgba(34, 197, 94, 0.1) !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .bg-red-50 {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .bg-blue-50 {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .bg-gray-50 {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .border-gray-200 {
+            border-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .border-green-200 {
+            border-color: rgba(34, 197, 94, 0.3) !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .border-red-200 {
+            border-color: rgba(239, 68, 68, 0.3) !important;
+        }
+        
+        [data-theme="dark"] #nodeManageModal .border-blue-200 {
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        /* 项目标签自定义样式 */
+        .project-badge-a {
+            background-color: #22c55e !important;
+            color: #ffffff !important;
+        }
+        
+        .project-badge-b {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
+        }
+        
+        .project-badge-c {
+            background-color: #ec4899 !important;
+            color: #ffffff !important;
+        }
+        
+        .project-badge-system {
+            background-color: #6366f1 !important;
+            color: #ffffff !important;
+        }
+        
+        .project-badge-monitor {
+            background-color: #f97316 !important;
+            color: #ffffff !important;
+        }
+        
+        .project-badge-unassigned {
+            background-color: #6b7280 !important;
+            color: #ffffff !important;
+        }
+        
+        /* 深色模式下项目标签样式调整 */
+        [data-theme="dark"] .project-badge-a {
+            background-color: #16a34a !important;
+        }
+        
+        [data-theme="dark"] .project-badge-b {
+            background-color: #d97706 !important;
+        }
+        
+        [data-theme="dark"] .project-badge-c {
+            background-color: #db2777 !important;
+        }
+        
+        [data-theme="dark"] .project-badge-system {
+            background-color: #4f46e5 !important;
+        }
+        
+        [data-theme="dark"] .project-badge-monitor {
+            background-color: #ea580c !important;
+        }
+        
+        [data-theme="dark"] .project-badge-unassigned {
+            background-color: #4b5563 !important;
+        }
+        
+        /* 节点类型标签自定义样式 */
+        .type-badge-edge {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+        }
+        
+        .type-badge-control {
+            background-color: #8b5cf6 !important;
+            color: #ffffff !important;
+        }
+        
+        .type-badge-observer {
+            background-color: #6b7280 !important;
+            color: #ffffff !important;
+        }
+        
+        /* 深色模式下节点类型标签样式调整 */
+        [data-theme="dark"] .type-badge-edge {
+            background-color: #2563eb !important;
+        }
+        
+        [data-theme="dark"] .type-badge-control {
+            background-color: #7c3aed !important;
+        }
+        
+        [data-theme="dark"] .type-badge-observer {
+            background-color: #4b5563 !important;
+        }
+        
+        /* 返回按钮深色模式样式 */
+        [data-theme="dark"] .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .hover\\:text-gray-900:hover {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .hover\\:bg-gray-100:hover {
+            background-color: #374151 !important;
+        }
+        
+        /* 项目分组容器样式 */
+        .project-group {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .project-header {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        [data-theme="dark"] .project-header {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+        }
+        
+        .node-type-section {
+            padding: 20px 24px;
+        }
+        
+        .node-type-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* 训练节点主题色 - 蓝色系 */
+        .training-nodes-section {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .training-nodes-section .node-type-header {
+            color: #1d4ed8;
+        }
+        
+        [data-theme="dark"] .training-nodes-section .node-type-header {
+            color: #60a5fa !important;
+        }
+        
+        /* 控制节点主题色 - 橙色系 */
+        .control-nodes-section {
+            border-left: 4px solid #f97316;
+        }
+        
+        .control-nodes-section .node-type-header {
+            color: #ea580c;
+        }
+        
+        [data-theme="dark"] .control-nodes-section .node-type-header {
+            color: #fb923c !important;
+        }
+        
+        /* 观察节点主题色 - 紫色系 */
+        .observer-nodes-section {
+            border-left: 4px solid #8b5cf6;
+        }
+        
+        .observer-nodes-section .node-type-header {
+            color: #7c3aed;
+        }
+        
+        [data-theme="dark"] .observer-nodes-section .node-type-header {
+            color: #a78bfa !important;
+        }
+        
+        /* 节点卡片样式 */
+        .node-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            padding: 28px 36px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        /* 确保卡片内容不被拉伸 */
+        .node-card > div {
+            width: fit-content !important;
+        }
+        
+        .node-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .node-card:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* 自定义滚动条样式 */
+        .node-card::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .node-card::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
+        
+        .node-card::-webkit-scrollbar-thumb {
+            background: var(--border-secondary);
+            border-radius: 3px;
+        }
+        
+        .node-card::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+        
+        
+        /* 控制节点卡片特殊样式 */
+        .control-node-card {
+            border-left: 4px solid #f97316;
+            background: rgba(249, 115, 22, 0.05);
+        }
+        
+        [data-theme="dark"] .control-node-card {
+            background: rgba(249, 115, 22, 0.1) !important;
+            border-left-color: #fb923c;
+        }
+        
+        /* 训练节点卡片样式 */
+        .training-node-card {
+            border-left: 4px solid #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        [data-theme="dark"] .training-node-card {
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-left-color: #60a5fa;
+        }
+        
+        /* 观察节点卡片样式 */
+        .observer-node-card {
+            border-left: 4px solid #8b5cf6;
+            background: rgba(139, 92, 246, 0.05);
+        }
+        
+        [data-theme="dark"] .observer-node-card {
+            background: rgba(139, 92, 246, 0.1) !important;
+            border-left-color: #a78bfa;
+        }
+        
+        /* 更新控制节点类型标签颜色 */
+        .type-badge-control {
+            background-color: #f97316 !important;
+            color: #ffffff !important;
+        }
+        
+        [data-theme="dark"] .type-badge-control {
+            background-color: #ea580c !important;
+        }
+        
+        /* 节点卡片按钮样式统一 */
+        .node-card button {
+            min-width: 60px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        [data-theme="dark"] .node-card button {
+            background-color: #4b5563 !important;
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .node-card button:hover {
+            background-color: #6b7280 !important;
+            color: #f9fafb !important;
+        }
+        
+        /* 确保深色模式下数据列标签可见 */
+        [data-theme="dark"] .node-card .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .node-card .font-semibold {
+            color: #f9fafb !important;
+        }
+    </style>
+</head>
+<body class="module-background theme-transition">
+    <div class="min-h-screen">
+        <!-- 顶部导航 -->
+        <nav class="navbar fade-in-up">
+            <div class="max-w-6xl mx-auto flex items-center justify-between">
+                <div class="flex items-center">
+                    <button onclick="navigateBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <span class="navbar-brand" data-i18n="edgeai.allNodes.title">所有节点管理</span>
+                </div>
+                
+                <div class="navbar-nav">
+                    <button class="theme-toggle" title="切换主题">
+                        <span>🌙</span>
+                    </button>
+                    <button class="language-toggle" title="切换语言">EN</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要内容 -->
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <!-- 页面头部 -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2" data-i18n="edgeai.allNodes.overview">EdgeAI 节点总览</h2>
+                        <p class="text-gray-600" data-i18n="edgeai.allNodes.description">管理和监控所有边缘AI节点的状态和性能</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="refreshNodes()" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            刷新
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="card fade-in-up delay-1">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">在线节点</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="onlineCount">15</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card fade-in-up delay-2">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">训练中</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="trainingCount">8</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card fade-in-up delay-3">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">空闲节点</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="idleCount">5</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card fade-in-up delay-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">故障节点</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="errorCount">2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 搜索和过滤 -->
+            <div class="card mb-8 fade-in-up delay-5">
+                <!-- 搜索栏 -->
+                <div class="mb-4">
+                    <div class="relative max-w-md">
+                        <input type="text" id="searchInput" placeholder="搜索节点名称或地址..."
+                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                        <div class="absolute left-3 top-3.5 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 过滤器和操作按钮 -->
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <!-- 过滤选项 -->
+                    <div class="flex flex-wrap gap-3">
+                        <!-- 状态过滤 -->
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium text-gray-700 mb-1">状态</label>
+                            <select id="statusFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm min-w-28">
+                                <option value="">所有状态</option>
+                                <option value="training">训练中</option>
+                                <option value="completed">已完成</option>
+                                <option value="idle">空闲</option>
+                                <option value="error">故障</option>
+                            </select>
+                        </div>
+
+                        <!-- 节点类型过滤 -->
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium text-gray-700 mb-1">类型</label>
+                            <select id="typeFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm min-w-28">
+                                <option value="">所有类型</option>
+                                <option value="edge">边缘节点</option>
+                                <option value="control">控制节点</option>
+                                <option value="observer">观察节点</option>
+                            </select>
+                        </div>
+
+                        <!-- 项目过滤 -->
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium text-gray-700 mb-1">项目</label>
+                            <select id="projectFilter" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm min-w-28">
+                                <option value="">所有项目</option>
+                                <option value="项目A">项目A</option>
+                                <option value="项目B">项目B</option>
+                                <option value="项目C">项目C</option>
+                                <option value="项目D">项目D</option>
+                                <option value="系统">系统</option>
+                                <option value="监控">监控</option>
+                                <option value="未分配">未分配</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 批量操作 -->
+                    <div class="flex gap-3">
+                        <button onclick="batchStart()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-6V7a3 3 0 00-3-3H6a3 3 0 00-3 3v10a3 3 0 003 3h7m-3-7l3-3 3 3m-6 4v6"></path>
+                            </svg>
+                            批量启动
+                        </button>
+                        <button onclick="batchStop()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9l6 6m0-6l-6 6"></path>
+                            </svg>
+                            批量停止
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 按项目分组的节点列表 -->
+            <div id="projectsContainer" class="space-y-8 fade-in-up delay-6">
+                <!-- 项目组将动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 节点详情模态框 -->
+    <div id="nodeDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-lg w-full m-4 max-h-[80vh] overflow-y-auto">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-xl font-bold text-gray-900" id="modalNodeTitle">节点详情</h2>
+                    <button onclick="closeNodeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modalNodeInfo">
+                    <!-- 节点详情内容将通过JavaScript填充 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 节点管理模态框 -->
+    <div id="nodeManageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-md w-full m-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900" id="manageModalTitle">节点管理</h2>
+                    <button onclick="closeNodeManageModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <p class="text-gray-600 mb-6" id="manageModalDescription">选择要执行的操作：</p>
+                
+                <div class="space-y-3">
+                    <button onclick="executeAction('startTraining')" class="w-full flex items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors group">
+                        <div class="flex-shrink-0 w-10 h-10 bg-green-100 group-hover:bg-green-200 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <h3 class="text-sm font-semibold text-green-800">启动训练</h3>
+                            <p class="text-xs text-green-600">开始节点训练任务</p>
+                        </div>
+                        <svg class="w-5 h-5 text-green-400 group-hover:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    
+                    <button onclick="executeAction('stopTraining')" class="w-full flex items-center p-4 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors group">
+                        <div class="flex-shrink-0 w-10 h-10 bg-red-100 group-hover:bg-red-200 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9l6 6m0-6l-6 6"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <h3 class="text-sm font-semibold text-red-800">停止训练</h3>
+                            <p class="text-xs text-red-600">停止当前训练任务</p>
+                        </div>
+                        <svg class="w-5 h-5 text-red-400 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    
+                    <button onclick="executeAction('restart')" class="w-full flex items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors group">
+                        <div class="flex-shrink-0 w-10 h-10 bg-blue-100 group-hover:bg-blue-200 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <h3 class="text-sm font-semibold text-blue-800">重启节点</h3>
+                            <p class="text-xs text-blue-600">重新启动节点服务</p>
+                        </div>
+                        <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    
+                    <button onclick="executeAction('delete')" class="w-full flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors group">
+                        <div class="flex-shrink-0 w-10 h-10 bg-gray-100 group-hover:bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <h3 class="text-sm font-semibold text-gray-800">删除节点</h3>
+                            <p class="text-xs text-gray-600">从系统中移除节点</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <button onclick="closeNodeManageModal()" class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../shared/js/navigation-unified.js"></script>
+    <script src="../../shared/js/theme-manager-unified.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        // 模拟节点数据
+        const allNodes = [
+            // 项目A的节点
+            { id: 'edge-1', name: '边缘节点A-01', type: 'edge', status: 'training', progress: 97, cpu: 68.25, memory: '1.8GB', gpu: 83.15, url: 'http://192.168.1.101:8080', heartbeat: '5秒前', project: '项目A' },
+            { id: 'edge-2', name: '边缘节点A-02', type: 'edge', status: 'completed', progress: 100, cpu: 45.80, memory: '2.1GB', gpu: 78.20, url: 'http://192.168.1.102:8080', heartbeat: '2秒前', project: '项目A' },
+            { id: 'edge-6', name: '边缘节点A-03', type: 'edge', status: 'error', progress: 23, cpu: 0, memory: '0GB', gpu: 0, url: 'http://192.168.1.106:8080', heartbeat: '2分钟前', project: '项目A' },
+            { id: 'edge-7', name: '边缘节点A-04', type: 'edge', status: 'idle', progress: 0, cpu: 12.30, memory: '0.5GB', gpu: 0, url: 'http://192.168.1.107:8080', heartbeat: '8秒前', project: '项目A' },
+            { id: 'control-3', name: '项目A控制节点', type: 'control', status: 'online', progress: 0, cpu: 35.60, memory: '3.2GB', gpu: 0, url: 'http://192.168.1.120:8080', heartbeat: '1秒前', project: '项目A' },
+            
+            // 项目B的节点
+            { id: 'edge-3', name: '边缘节点B-01', type: 'edge', status: 'training', progress: 64, cpu: 85.40, memory: '1.5GB', gpu: 92.35, url: 'http://192.168.1.103:8080', heartbeat: '1秒前', project: '项目B' },
+            { id: 'edge-8', name: '边缘节点B-02', type: 'edge', status: 'training', progress: 45, cpu: 72.15, memory: '1.9GB', gpu: 88.90, url: 'http://192.168.1.108:8080', heartbeat: '4秒前', project: '项目B' },
+            { id: 'edge-9', name: '边缘节点B-03', type: 'edge', status: 'completed', progress: 100, cpu: 25.80, memory: '1.2GB', gpu: 15.45, url: 'http://192.168.1.109:8080', heartbeat: '7秒前', project: '项目B' },
+            { id: 'control-4', name: '项目B主控节点', type: 'control', status: 'online', progress: 0, cpu: 28.90, memory: '2.8GB', gpu: 0, url: 'http://192.168.1.121:8080', heartbeat: '3秒前', project: '项目B' },
+            { id: 'observer-2', name: '项目B观察节点', type: 'observer', status: 'online', progress: 0, cpu: 8.75, memory: '0.8GB', gpu: 0, url: 'http://192.168.1.151:8080', heartbeat: '6秒前', project: '项目B' },
+            
+            // 项目C的节点
+            { id: 'edge-5', name: '边缘节点C-01', type: 'edge', status: 'training', progress: 83, cpu: 75.90, memory: '2.3GB', gpu: 88.75, url: 'http://192.168.1.105:8080', heartbeat: '3秒前', project: '项目C' },
+            { id: 'edge-10', name: '边缘节点C-02', type: 'edge', status: 'training', progress: 76, cpu: 68.45, memory: '2.0GB', gpu: 85.20, url: 'http://192.168.1.110:8080', heartbeat: '2秒前', project: '项目C' },
+            { id: 'edge-11', name: '边缘节点C-03', type: 'edge', status: 'idle', progress: 0, cpu: 5.20, memory: '0.3GB', gpu: 0, url: 'http://192.168.1.111:8080', heartbeat: '15秒前', project: '项目C' },
+            { id: 'edge-12', name: '边缘节点C-04', type: 'edge', status: 'error', progress: 12, cpu: 0, memory: '0GB', gpu: 0, url: 'http://192.168.1.112:8080', heartbeat: '5分钟前', project: '项目C' },
+            
+            // 系统级别的控制节点
+            { id: 'control-1', name: '主控制节点-Master', type: 'control', status: 'online', progress: 0, cpu: 25.60, memory: '4.0GB', gpu: 0, url: 'http://192.168.1.100:8080', heartbeat: '1秒前', project: '系统' },
+            { id: 'control-2', name: '备用控制节点-Backup', type: 'control', status: 'online', progress: 0, cpu: 32.15, memory: '4.0GB', gpu: 0, url: 'http://192.168.1.101:8080', heartbeat: '2秒前', project: '系统' },
+            { id: 'control-5', name: '分布式控制节点-01', type: 'control', status: 'online', progress: 0, cpu: 18.75, memory: '3.5GB', gpu: 0, url: 'http://192.168.1.122:8080', heartbeat: '4秒前', project: '系统' },
+            
+            // 监控系统
+            { id: 'observer-1', name: '全局监控节点', type: 'observer', status: 'online', progress: 0, cpu: 12.45, memory: '1.0GB', gpu: 0, url: 'http://192.168.1.150:8080', heartbeat: '5秒前', project: '监控' },
+            { id: 'observer-3', name: '性能监控节点', type: 'observer', status: 'online', progress: 0, cpu: 15.30, memory: '1.2GB', gpu: 0, url: 'http://192.168.1.152:8080', heartbeat: '3秒前', project: '监控' },
+            { id: 'observer-4', name: '日志收集节点', type: 'observer', status: 'online', progress: 0, cpu: 22.80, memory: '2.5GB', gpu: 0, url: 'http://192.168.1.153:8080', heartbeat: '1秒前', project: '监控' },
+            
+            // 未分配的节点
+            { id: 'edge-4', name: '待分配边缘节点-01', type: 'edge', status: 'idle', progress: 0, cpu: 15.25, memory: '0.8GB', gpu: 0, url: 'http://192.168.1.104:8080', heartbeat: '10秒前', project: '未分配' },
+            { id: 'edge-13', name: '待分配边缘节点-02', type: 'edge', status: 'idle', progress: 0, cpu: 8.90, memory: '0.5GB', gpu: 0, url: 'http://192.168.1.113:8080', heartbeat: '12秒前', project: '未分配' },
+            { id: 'edge-14', name: '新接入边缘节点', type: 'edge', status: 'idle', progress: 0, cpu: 3.45, memory: '0.2GB', gpu: 0, url: 'http://192.168.1.114:8080', heartbeat: '20秒前', project: '未分配' },
+            
+            // 研发项目D（新项目）
+            { id: 'edge-15', name: '研发节点D-01', type: 'edge', status: 'training', progress: 15, cpu: 55.20, memory: '1.6GB', gpu: 72.80, url: 'http://192.168.1.115:8080', heartbeat: '6秒前', project: '项目D' },
+            { id: 'edge-16', name: '研发节点D-02', type: 'edge', status: 'training', progress: 28, cpu: 61.75, memory: '1.8GB', gpu: 79.35, url: 'http://192.168.1.116:8080', heartbeat: '4秒前', project: '项目D' },
+            { id: 'control-6', name: '项目D协调节点', type: 'control', status: 'online', progress: 0, cpu: 42.60, memory: '3.0GB', gpu: 0, url: 'http://192.168.1.123:8080', heartbeat: '2秒前', project: '项目D' },
+        ];
+
+        let filteredNodes = [...allNodes];
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等待一点时间确保所有脚本加载完成，然后应用翻译
+            setTimeout(() => {
+                if (window.i18nManager) {
+                    window.i18nManager.applyTranslations();
+                }
+            }, 100);
+            updateStats();
+            renderTable();
+            setupEventListeners();
+        });
+
+        // 更新统计信息
+        function updateStats() {
+            const online = allNodes.filter(n => ['training', 'completed', 'online'].includes(n.status)).length;
+            const training = allNodes.filter(n => n.status === 'training').length;
+            const idle = allNodes.filter(n => n.status === 'idle').length;
+            const error = allNodes.filter(n => n.status === 'error').length;
+
+            document.getElementById('onlineCount').textContent = online;
+            document.getElementById('trainingCount').textContent = training;
+            document.getElementById('idleCount').textContent = idle;
+            document.getElementById('errorCount').textContent = error;
+        }
+
+        // 按项目分组渲染节点
+        function renderTable() {
+            const container = document.getElementById('projectsContainer');
+            
+            // 按项目分组节点
+            const nodesByProject = {};
+            filteredNodes.forEach(node => {
+                if (!nodesByProject[node.project]) {
+                    nodesByProject[node.project] = [];
+                }
+                nodesByProject[node.project].push(node);
+            });
+
+            // 生成项目分组HTML
+            const projectsHtml = Object.keys(nodesByProject).map(projectName => {
+                const projectNodes = nodesByProject[projectName];
+                
+                // 按节点类型分组（控制节点和观察节点在上，训练节点在下）
+                const nodesByType = {
+                    control: projectNodes.filter(n => n.type === 'control'),
+                    observer: projectNodes.filter(n => n.type === 'observer'),
+                    edge: projectNodes.filter(n => n.type === 'edge')
+                };
+
+                // 生成节点类型分组HTML
+                const nodeTypeSections = Object.keys(nodesByType).map(nodeType => {
+                    const nodes = nodesByType[nodeType];
+                    if (nodes.length === 0) return '';
+
+                    const typeText = getTypeText(nodeType);
+                    const sectionClass = `${nodeType === 'edge' ? 'training' : nodeType}-nodes-section`;
+                    
+                    const nodesHtml = nodes.map(node => renderNodeCard(node)).join('');
+
+                    return `
+                        <div class="node-type-section ${sectionClass}">
+                            <div class="node-type-header">
+                                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    ${getTypeIcon(nodeType)}
+                                </svg>
+                                ${typeText} (${nodes.length}个)
+                            </div>
+                            <div class="space-y-3">
+                                ${nodesHtml}
+                            </div>
+                        </div>
+                    `;
+                }).filter(html => html !== '').join('');
+
+                return `
+                    <div class="project-group">
+                        <div class="project-header">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-1">${projectName}</h3>
+                                    <p class="text-sm text-gray-600">共 ${projectNodes.length} 个节点</p>
+                                </div>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getProjectBadgeClass(projectName)}">
+                                    ${projectName}
+                                </span>
+                            </div>
+                        </div>
+                        ${nodeTypeSections}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = projectsHtml || '<div class="text-center text-gray-500 py-8">暂无节点数据</div>';
+        }
+
+        // 渲染单个节点卡片
+        function renderNodeCard(node) {
+            const nodeCardClass = `node-card ${node.type}-node-card`;
+            
+            return `
+                <div class="${nodeCardClass}">
+                    <div class="flex items-center gap-4" style="width: fit-content !important; display: inline-flex !important;">
+                        <input type="checkbox" class="node-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 flex-shrink-0" value="${node.id}">
+                        
+                        <div class="flex items-center flex-shrink-0 gap-3">
+                            <div class="w-3 h-3 ${getStatusColor(node.status)} rounded-full"></div>
+                            <div style="width: 280px;">
+                                <h4 class="font-semibold text-gray-900">${node.name}</h4>
+                                <p class="text-sm text-gray-500 font-mono">${node.url}</p>
+                            </div>
+                        </div>
+
+                        <div class="text-center w-20 flex-shrink-0">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(node.status)}">
+                                ${getStatusText(node.status)}
+                            </span>
+                        </div>
+                        
+                        <div class="text-center w-16 flex-shrink-0">
+                            <div class="text-xs text-gray-500 mb-1">CPU</div>
+                            <div class="font-semibold">${node.cpu.toFixed(1)}%</div>
+                        </div>
+                        
+                        <div class="text-center w-16 flex-shrink-0">
+                            <div class="text-xs text-gray-500 mb-1">内存</div>
+                            <div class="font-semibold">${node.memory}</div>
+                        </div>
+                        
+                        <div class="text-center w-16 flex-shrink-0">
+                            <div class="text-xs text-gray-500 mb-1">GPU</div>
+                            <div class="font-semibold">${node.gpu ? node.gpu.toFixed(1) + '%' : '-'}</div>
+                        </div>
+                        
+                        <div class="text-center w-32 flex-shrink-0">
+                            <div class="text-xs text-gray-500 mb-1">进度</div>
+                            ${(node.status === 'training' || node.status === 'completed') ? `
+                                <div class="flex items-center justify-center">
+                                    <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: ${node.progress}%"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold">${node.progress}%</span>
+                                </div>
+                            ` : `<div class="font-semibold">-</div>`}
+                        </div>
+
+                        <div class="text-center w-16 flex-shrink-0">
+                            <div class="text-xs text-gray-500 mb-1">心跳</div>
+                            <div class="font-semibold text-xs">${node.heartbeat}</div>
+                        </div>
+
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button onclick="viewNodeDetails('${node.id}')" class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors font-medium whitespace-nowrap">
+                                详情
+                            </button>
+                            <button onclick="manageNode('${node.id}')" class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors font-medium whitespace-nowrap">
+                                管理
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 获取节点类型图标
+        function getTypeIcon(type) {
+            const icons = {
+                'edge': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>',
+                'control': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>',
+                'observer': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>'
+            };
+            return icons[type] || icons['edge'];
+        }
+
+        // 获取状态颜色
+        function getStatusColor(status) {
+            const colors = {
+                'training': 'bg-blue-500',
+                'completed': 'bg-green-500',
+                'idle': 'bg-gray-400',
+                'error': 'bg-red-500',
+                'online': 'bg-green-500'
+            };
+            return colors[status] || 'bg-gray-400';
+        }
+
+        // 获取类型标签样式
+        function getTypeBadgeClass(type) {
+            const classes = {
+                'edge': 'type-badge-edge',
+                'control': 'type-badge-control',
+                'observer': 'type-badge-observer'
+            };
+            return classes[type] || 'type-badge-observer';
+        }
+
+        // 获取项目标签样式
+        function getProjectBadgeClass(project) {
+            const classes = {
+                '项目A': 'project-badge-a',
+                '项目B': 'project-badge-b', 
+                '项目C': 'project-badge-c',
+                '项目D': 'project-badge-system',
+                '系统': 'project-badge-system',
+                '监控': 'project-badge-monitor',
+                '未分配': 'project-badge-unassigned'
+            };
+            return classes[project] || 'project-badge-unassigned';
+        }
+
+        // 获取状态标签样式
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'training': 'bg-blue-100 text-blue-800',
+                'completed': 'bg-green-100 text-green-800',
+                'idle': 'bg-gray-100 text-gray-800',
+                'error': 'bg-red-100 text-red-800',
+                'online': 'bg-green-100 text-green-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // 获取类型文本
+        function getTypeText(type) {
+            const texts = {
+                'edge': '边缘节点',
+                'control': '控制节点',
+                'observer': '观察节点'
+            };
+            return texts[type] || '未知';
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const texts = {
+                'training': '训练中',
+                'completed': '已完成',
+                'idle': '空闲',
+                'error': '故障',
+                'online': '在线'
+            };
+            return texts[status] || '未知';
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 搜索功能
+            document.getElementById('searchInput').addEventListener('input', filterNodes);
+            document.getElementById('statusFilter').addEventListener('change', filterNodes);
+            document.getElementById('typeFilter').addEventListener('change', filterNodes);
+            document.getElementById('projectFilter').addEventListener('change', filterNodes);
+
+        }
+
+        // 过滤节点
+        function filterNodes() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const projectFilter = document.getElementById('projectFilter').value;
+
+            filteredNodes = allNodes.filter(node => {
+                const matchSearch = !search || 
+                    node.name.toLowerCase().includes(search) || 
+                    node.url.toLowerCase().includes(search);
+                const matchStatus = !statusFilter || node.status === statusFilter;
+                const matchType = !typeFilter || node.type === typeFilter;
+                const matchProject = !projectFilter || node.project === projectFilter;
+
+                return matchSearch && matchStatus && matchType && matchProject;
+            });
+
+            renderTable();
+        }
+
+
+
+        // 查看节点详情
+        function viewNodeDetails(nodeId) {
+            const node = allNodes.find(n => n.id === nodeId);
+            const modal = document.getElementById('nodeDetailsModal');
+            const modalTitle = document.getElementById('modalNodeTitle');
+            const modalInfo = document.getElementById('modalNodeInfo');
+            
+            modalTitle.textContent = `${node.name} - 详情`;
+            
+            const statusColor = {
+                training: 'text-blue-600',
+                completed: 'text-green-600',
+                idle: 'text-gray-600',
+                error: 'text-red-600'
+            }[node.status];
+            
+            const statusText = {
+                training: '训练中',
+                completed: '已完成',
+                idle: '空闲',
+                error: '错误'
+            }[node.status];
+            
+            modalInfo.innerHTML = `
+                <div class="space-y-3">
+                    <!-- 基础信息卡片 -->
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <h5 class="font-semibold mb-2 text-blue-600 text-sm">基础信息</h5>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-xs text-gray-600">节点类型</span>
+                                <div class="font-semibold">边缘节点</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">状态</span>
+                                <div class="font-semibold ${statusColor}">${statusText}</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">训练进度</span>
+                                <div class="font-semibold text-blue-600">${node.progress}%</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">最后心跳</span>
+                                <div class="font-semibold">刚刚</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 网络信息卡片 -->
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <h5 class="font-semibold mb-2 text-purple-600 text-sm">网络信息</h5>
+                        <div class="space-y-1">
+                            <div>
+                                <span class="text-xs text-gray-600">节点地址</span>
+                                <div class="font-mono text-sm text-blue-600">${node.url || 'http://192.168.1.xxx:8080'}</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">连接的控制节点</span>
+                                <div class="font-semibold">Control-Node-Master</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">网络延迟</span>
+                                <div class="font-semibold text-green-600">12ms</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 性能信息卡片 -->
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <h5 class="font-semibold mb-2 text-orange-600 text-sm">性能信息</h5>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-xs text-gray-600">CPU使用率</span>
+                                <div class="font-semibold">${Math.floor(Math.random() * 40) + 20}%</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">内存使用率</span>
+                                <div class="font-semibold">${Math.floor(Math.random() * 30) + 35}%</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">GPU使用率</span>
+                                <div class="font-semibold">${Math.floor(Math.random() * 60) + 20}%</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">磁盘使用率</span>
+                                <div class="font-semibold">${Math.floor(Math.random() * 25) + 15}%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 训练统计卡片 -->
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <h5 class="font-semibold mb-2 text-green-600 text-sm">训练统计</h5>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-xs text-gray-600">完成轮次</span>
+                                <div class="font-semibold">${Math.floor(node.progress / 10)}</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">总轮次</span>
+                                <div class="font-semibold">10</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">平均损失</span>
+                                <div class="font-semibold">${(Math.random() * 0.5 + 0.1).toFixed(4)}</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-600">准确率</span>
+                                <div class="font-semibold">${(Math.random() * 0.2 + 0.75).toFixed(3)}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        // 关闭节点详情模态框
+        function closeNodeDetailsModal() {
+            const modal = document.getElementById('nodeDetailsModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // 管理节点
+        let currentManagedNodeId = null;
+
+        function manageNode(nodeId) {
+            const node = allNodes.find(n => n.id === nodeId);
+            currentManagedNodeId = nodeId;
+            
+            const modal = document.getElementById('nodeManageModal');
+            const modalTitle = document.getElementById('manageModalTitle');
+            const modalDescription = document.getElementById('manageModalDescription');
+            
+            modalTitle.textContent = `管理 ${node.name}`;
+            modalDescription.textContent = `选择对 ${node.name} 要执行的操作：`;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeNodeManageModal() {
+            const modal = document.getElementById('nodeManageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            currentManagedNodeId = null;
+        }
+
+        function executeAction(actionType) {
+            const node = allNodes.find(n => n.id === currentManagedNodeId);
+            const actionNames = {
+                'startTraining': '启动训练',
+                'stopTraining': '停止训练', 
+                'restart': '重启节点',
+                'delete': '删除节点'
+            };
+            
+            const actionName = actionNames[actionType];
+            
+            // 关闭模态框
+            closeNodeManageModal();
+            
+            // 显示执行状态
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            statusDiv.textContent = `正在执行：${actionName}`;
+            document.body.appendChild(statusDiv);
+            
+            // 模拟执行过程
+            setTimeout(() => {
+                statusDiv.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                statusDiv.textContent = `${actionName} 执行成功！`;
+                
+                // 2秒后移除提示
+                setTimeout(() => {
+                    statusDiv.remove();
+                }, 2000);
+                
+                // 更新节点状态（示例）
+                if (actionType === 'startTraining') {
+                    node.status = 'training';
+                } else if (actionType === 'stopTraining') {
+                    node.status = 'idle';
+                }
+                
+                updateStats();
+                renderTable();
+            }, 1500);
+        }
+
+        // 添加节点功能已移除（在其他页面进行节点添加）
+
+        // 刷新节点
+        function refreshNodes() {
+            alert('正在刷新节点状态...');
+            setTimeout(() => {
+                updateStats();
+                renderTable();
+                alert('节点状态已刷新！');
+            }, 1000);
+        }
+
+        // 批量启动
+        function batchStart() {
+            const selected = getSelectedNodes();
+            if (selected.length === 0) {
+                alert('请选择要操作的节点');
+                return;
+            }
+            alert(`正在启动 ${selected.length} 个节点的训练...`);
+        }
+
+        // 批量停止
+        function batchStop() {
+            const selected = getSelectedNodes();
+            if (selected.length === 0) {
+                alert('请选择要操作的节点');
+                return;
+            }
+            alert(`正在停止 ${selected.length} 个节点的训练...`);
+        }
+
+        // 获取选中的节点
+        function getSelectedNodes() {
+            const checkboxes = document.querySelectorAll('.node-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // 自定义返回导航功能
+        function navigateBack() {
+            // 检查是否有历史记录可以返回
+            if (window.history.length > 1 && document.referrer) {
+                // 如果有引荐页面且不是同一个页面，就返回
+                const referrerUrl = new URL(document.referrer);
+                const currentUrl = new URL(window.location.href);
+                if (referrerUrl.pathname !== currentUrl.pathname) {
+                    window.history.back();
+                    return;
+                }
+            }
+            
+            // 否则导航到EdgeAI主页面
+            window.location.href = './dashboard.html';
+        }
+    </script>
+</body>
+</html>

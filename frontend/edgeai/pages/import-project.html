@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导入项目 - EdgeAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css">
+    <link rel="stylesheet" href="../../shared/css/animations.css">
+    <style>
+        /* 深色模式样式 */
+        [data-theme="dark"] {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+        
+        [data-theme="dark"] .bg-gray-50 {
+            background-color: #111827 !important;
+        }
+        
+        [data-theme="dark"] .bg-white {
+            background-color: #1f2937 !important;
+            border-color: #374151;
+        }
+        
+        [data-theme="dark"] .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .border-gray-300 {
+            border-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .border-dashed {
+            border-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] input,
+        [data-theme="dark"] textarea,
+        [data-theme="dark"] select {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] input::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] input:focus,
+        [data-theme="dark"] select:focus {
+            background-color: #4b5563 !important;
+            border-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        [data-theme="dark"] .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        [data-theme="dark"] .hover\\:shadow-md:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-100 {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-100 {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-green-100 {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-purple-100 {
+            background-color: rgba(168, 85, 247, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-orange-100 {
+            background-color: rgba(249, 115, 22, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-red-100 {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-cyan-100 {
+            background-color: rgba(6, 182, 212, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .text-blue-600 {
+            color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .text-green-600 {
+            color: #10b981 !important;
+        }
+        
+        [data-theme="dark"] .text-purple-600 {
+            color: #a855f7 !important;
+        }
+        
+        [data-theme="dark"] .text-orange-600 {
+            color: #f97316 !important;
+        }
+        
+        [data-theme="dark"] .text-red-600 {
+            color: #ef4444 !important;
+        }
+        
+        [data-theme="dark"] .text-cyan-600 {
+            color: #06b6d4 !important;
+        }
+        
+        /* 拖拽区域深色模式 */
+        [data-theme="dark"] .border-blue-400 {
+            border-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-50 {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle) {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle):hover {
+            background-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-500 {
+            background-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-500:hover {
+            background-color: #2563eb !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-200 {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-200:hover {
+            background-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .bg-red-500 {
+            background-color: #dc2626 !important;
+        }
+        
+        [data-theme="dark"] .bg-red-500:hover {
+            background-color: #b91c1c !important;
+        }
+    </style>
+</head>
+<body class="theme-transition">
+    <div class="min-h-screen bg-gray-50" data-theme="light">
+        <!-- 顶部导航 -->
+        <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="goBack()" class="mr-4 text-gray-600 hover:text-gray-900 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-semibold text-gray-900" data-i18n="edgeai.importProject.title">导入项目</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- 主题切换 -->
+                        <button class="theme-toggle" title="切换主题">
+                            <span>🌙</span>
+                        </button>
+                        <!-- 语言切换 -->
+                        <button class="language-toggle" title="切换语言">EN</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要内容 -->
+        <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <!-- 导入选项 -->
+            <div class="space-y-8">
+                <!-- 文件导入 -->
+                <div class="bg-white rounded-lg shadow-lg p-8 fade-in-up">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">文件导入</h2>
+                        <p class="text-gray-600">从本地文件导入EdgeAI项目配置</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- JSON 配置文件 -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer" onclick="selectImportType('json')">
+                            <div class="w-12 h-12 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium mb-2">JSON 配置</h3>
+                            <p class="text-sm text-gray-600">标准 EdgeAI 项目配置文件</p>
+                        </div>
+
+                        <!-- XML 项目文件 -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors cursor-pointer" onclick="selectImportType('xml')">
+                            <div class="w-12 h-12 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium mb-2">XML 项目</h3>
+                            <p class="text-sm text-gray-600">传统项目配置格式</p>
+                        </div>
+
+                        <!-- CSV 数据文件 -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-400 transition-colors cursor-pointer" onclick="selectImportType('csv')">
+                            <div class="w-12 h-12 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium mb-2">CSV 数据</h3>
+                            <p class="text-sm text-gray-600">节点数据和配置表</p>
+                        </div>
+                    </div>
+
+                    <!-- 文件上传区域 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center" id="dropZone">
+                        <input type="file" id="fileInput" class="hidden" accept=".json,.xml,.csv" onchange="handleFileSelect(event)">
+                        <div class="space-y-4">
+                            <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">拖拽文件到此处或点击选择</h3>
+                                <p class="text-sm text-gray-600 mb-4">支持 JSON、XML、CSV 格式，最大 10MB</p>
+                                <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    选择文件
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 平台导入 -->
+                <div class="bg-white rounded-lg shadow-lg p-8 fade-in-up delay-1">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">平台导入</h2>
+                        <p class="text-gray-600">从其他AI训练平台导入项目</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- TensorFlow -->
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-orange-600 font-bold">TF</span>
+                                </div>
+                                <h3 class="text-lg font-medium">TensorFlow</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">导入 TensorFlow 模型和配置</p>
+                            <button onclick="importFromPlatform('tensorflow')" class="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                                从 TensorFlow 导入
+                            </button>
+                        </div>
+
+                        <!-- PyTorch -->
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-red-600 font-bold">PT</span>
+                                </div>
+                                <h3 class="text-lg font-medium">PyTorch</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">导入 PyTorch 模型和配置</p>
+                            <button onclick="importFromPlatform('pytorch')" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-colors">
+                                从 PyTorch 导入
+                            </button>
+                        </div>
+
+                        <!-- Kubernetes -->
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-blue-600 font-bold">K8s</span>
+                                </div>
+                                <h3 class="text-lg font-medium">Kubernetes</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">从 K8s 集群导入节点配置</p>
+                            <button onclick="importFromPlatform('kubernetes')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                从 K8s 导入
+                            </button>
+                        </div>
+
+                        <!-- Docker -->
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-cyan-600 font-bold">🐳</span>
+                                </div>
+                                <h3 class="text-lg font-medium">Docker</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">从 Docker 容器导入配置</p>
+                            <button onclick="importFromPlatform('docker')" class="w-full bg-cyan-600 text-white py-2 rounded-lg hover:bg-cyan-700 transition-colors">
+                                从 Docker 导入
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- URL 导入 -->
+                <div class="bg-white rounded-lg shadow-lg p-8 fade-in-up delay-2">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">URL 导入</h2>
+                        <p class="text-gray-600">从远程URL导入项目配置</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="importUrl" class="block text-sm font-medium text-gray-700 mb-2">配置文件 URL</label>
+                            <div class="flex space-x-3">
+                                <input type="url" id="importUrl" placeholder="https://example.com/project-config.json"
+                                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <button onclick="importFromUrl()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    导入
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" id="validateUrl" class="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label for="validateUrl" class="text-sm text-gray-700">验证远程文件安全性</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../shared/js/navigation-unified.js"></script>
+    <script src="../../shared/js/theme-manager-unified.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        let selectedImportType = '';
+
+        // 选择导入类型
+        function selectImportType(type) {
+            selectedImportType = type;
+            console.log('选择导入类型:', type);
+        }
+
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 验证文件大小
+            if (file.size > 10 * 1024 * 1024) {
+                alert('文件大小不能超过 10MB');
+                return;
+            }
+
+            // 验证文件类型
+            const allowedTypes = ['.json', '.xml', '.csv'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            if (!allowedTypes.includes(fileExtension)) {
+                alert('不支持的文件类型，请选择 JSON、XML 或 CSV 文件');
+                return;
+            }
+
+            // 模拟文件处理
+            alert(`正在处理文件: ${file.name}\n文件大小: ${(file.size / 1024).toFixed(2)} KB\n文件类型: ${fileExtension.toUpperCase()}`);
+            
+            // 这里应该实际处理文件内容
+            processImportFile(file);
+        }
+
+        // 处理导入文件
+        function processImportFile(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    
+                    if (file.name.endsWith('.json')) {
+                        const jsonData = JSON.parse(content);
+                        console.log('JSON 数据:', jsonData);
+                        alert(`JSON 项目配置导入成功！\n\n项目名称: ${jsonData.name || '未命名'}\n节点数量: ${jsonData.nodes?.length || 0}`);
+                    } else if (file.name.endsWith('.xml')) {
+                        console.log('XML 数据:', content);
+                        alert('XML 项目配置导入成功！');
+                    } else if (file.name.endsWith('.csv')) {
+                        const lines = content.split('\n');
+                        console.log('CSV 数据行数:', lines.length);
+                        alert(`CSV 数据导入成功！\n\n数据行数: ${lines.length}\n预计节点数: ${lines.length - 1}`);
+                    }
+
+                    // 导入成功后跳转到项目管理页面
+                    setTimeout(() => {
+                        if (confirm('导入成功！是否跳转到项目管理页面？')) {
+                            window.location.href = './dashboard.html';
+                        }
+                    }, 1000);
+
+                } catch (error) {
+                    console.error('文件解析错误:', error);
+                    alert('文件格式错误，请检查文件内容');
+                }
+            };
+
+            reader.onerror = function() {
+                alert('文件读取失败，请重试');
+            };
+
+            reader.readAsText(file);
+        }
+
+        // 从平台导入
+        function importFromPlatform(platform) {
+            const platformNames = {
+                'tensorflow': 'TensorFlow',
+                'pytorch': 'PyTorch', 
+                'kubernetes': 'Kubernetes',
+                'docker': 'Docker'
+            };
+
+            alert(`${platformNames[platform]} 导入功能开发中...\n\n即将支持:\n- 自动发现${platformNames[platform]}资源\n- 配置文件转换\n- 节点自动映射\n- 兼容性检查`);
+        }
+
+        // 从URL导入
+        function importFromUrl() {
+            const url = document.getElementById('importUrl').value.trim();
+            const validate = document.getElementById('validateUrl').checked;
+
+            if (!url) {
+                alert('请输入配置文件URL');
+                return;
+            }
+
+            // 简单的URL验证
+            try {
+                new URL(url);
+            } catch {
+                alert('请输入有效的URL地址');
+                return;
+            }
+
+            alert(`正在从URL导入配置...\n\nURL: ${url}\n安全验证: ${validate ? '启用' : '禁用'}`);
+
+            // 模拟网络请求
+            setTimeout(() => {
+                if (Math.random() > 0.3) {
+                    alert('URL导入成功！\n\n获取到项目配置文件，正在解析...');
+                    setTimeout(() => {
+                        if (confirm('项目配置解析完成！是否跳转到项目管理页面？')) {
+                            window.location.href = './dashboard.html';
+                        }
+                    }, 1000);
+                } else {
+                    alert('URL导入失败！\n\n可能原因:\n- URL无法访问\n- 文件格式不正确\n- 网络连接问题');
+                }
+            }, 2000);
+        }
+
+        // 使用统一导航系统的goBack函数（已通过navigation-unified.js提供）
+
+        // 设置拖拽功能和初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等待一点时间确保所有脚本加载完成，然后应用翻译
+            setTimeout(() => {
+                if (window.i18nManager) {
+                    window.i18nManager.applyTranslations();
+                }
+            }, 100);
+            const dropZone = document.getElementById('dropZone');
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-400', 'bg-blue-50');
+            });
+
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    document.getElementById('fileInput').files = files;
+                    handleFileSelect({ target: { files: files } });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

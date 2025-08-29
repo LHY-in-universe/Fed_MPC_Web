@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建新项目 - EdgeAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css">
+    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css">
+    <link rel="stylesheet" href="../../shared/css/animations.css">
+    <style>
+        /* 深色模式样式 */
+        [data-theme="dark"] {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+        
+        [data-theme="dark"] .bg-gray-50 {
+            background-color: #111827 !important;
+        }
+        
+        [data-theme="dark"] .bg-white {
+            background-color: #1f2937 !important;
+            border-color: #374151;
+        }
+        
+        [data-theme="dark"] .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        
+        [data-theme="dark"] .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .border-gray-300 {
+            border-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] input,
+        [data-theme="dark"] textarea,
+        [data-theme="dark"] select {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] input::placeholder,
+        [data-theme="dark"] textarea::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        [data-theme="dark"] input:focus,
+        [data-theme="dark"] textarea:focus,
+        [data-theme="dark"] select:focus {
+            background-color: #4b5563 !important;
+            border-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle) {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle):hover {
+            background-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-500 {
+            background-color: #3b82f6 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-500:hover {
+            background-color: #2563eb !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-200 {
+            background-color: #374151 !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-200:hover {
+            background-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .bg-red-500 {
+            background-color: #dc2626 !important;
+        }
+        
+        [data-theme="dark"] .bg-red-500:hover {
+            background-color: #b91c1c !important;
+        }
+    </style>
+</head>
+<body class="theme-transition">
+    <div class="min-h-screen bg-gray-50" data-theme="light">
+        <!-- 顶部导航 -->
+        <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="goBack()" class="mr-4 text-gray-600 hover:text-gray-900 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-semibold text-gray-900" data-i18n="edgeai.createProject.title">创建新项目</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- 主题切换 -->
+                        <button class="theme-toggle" title="切换主题">
+                            <span>🌙</span>
+                        </button>
+                        <!-- 语言切换 -->
+                        <button class="language-toggle" title="切换语言">EN</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要内容 -->
+        <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <!-- 项目创建表单 -->
+            <div class="bg-white rounded-lg shadow-lg p-8 fade-in-up">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2" data-i18n="edgeai.createProject.projectConfig">EdgeAI 项目配置</h2>
+                    <p class="text-gray-600" data-i18n="edgeai.createProject.description">创建一个新的分布式边缘AI训练项目</p>
+                </div>
+
+                <form id="projectForm" class="space-y-8">
+                    <!-- 基础信息 -->
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">基础信息</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2">项目名称 *</label>
+                                <input type="text" id="projectName" name="projectName" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="例如：图像识别训练项目">
+                            </div>
+                            <div>
+                                <label for="projectOwner" class="block text-sm font-medium text-gray-700 mb-2">项目负责人 *</label>
+                                <input type="text" id="projectOwner" name="projectOwner" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="输入负责人姓名">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-2">项目描述</label>
+                            <textarea id="projectDescription" name="projectDescription" rows="3"
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      placeholder="描述项目的目标、用途和预期结果..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- AI模型配置 -->
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">AI模型配置</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="modelType" class="block text-sm font-medium text-gray-700 mb-2">模型类型 *</label>
+                                <select id="modelType" name="modelType" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">选择模型类型...</option>
+                                    <option value="cnn">CNN (卷积神经网络)</option>
+                                    <option value="rnn">RNN (循环神经网络)</option>
+                                    <option value="transformer">Transformer</option>
+                                    <option value="resnet">ResNet (残差网络)</option>
+                                    <option value="yolo">YOLO (目标检测)</option>
+                                    <option value="bert">BERT (自然语言处理)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="trainingStrategy" class="block text-sm font-medium text-gray-700 mb-2">训练策略 *</label>
+                                <select id="trainingStrategy" name="trainingStrategy" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">选择训练策略...</option>
+                                    <option value="federated">联邦学习</option>
+                                    <option value="reinforcement">强化学习</option>
+                                    <option value="transfer">迁移学习</option>
+                                    <option value="ensemble">集成学习</option>
+                                    <option value="distributed">分布式训练</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="targetAccuracy" class="block text-sm font-medium text-gray-700 mb-2">目标准确率 (%)</label>
+                                <input type="number" id="targetAccuracy" name="targetAccuracy" min="1" max="100" value="90"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="maxEpochs" class="block text-sm font-medium text-gray-700 mb-2">最大训练轮数</label>
+                                <input type="number" id="maxEpochs" name="maxEpochs" min="1" value="100"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="learningRate" class="block text-sm font-medium text-gray-700 mb-2">学习率</label>
+                                <input type="number" id="learningRate" name="learningRate" min="0.0001" max="1" step="0.0001" value="0.001"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 节点配置 -->
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">节点配置</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="maxNodes" class="block text-sm font-medium text-gray-700 mb-2">最大节点数</label>
+                                <input type="number" id="maxNodes" name="maxNodes" min="1" max="100" value="50"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="minNodes" class="block text-sm font-medium text-gray-700 mb-2">最少节点数</label>
+                                <input type="number" id="minNodes" name="minNodes" min="1" value="3"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="nodeTimeout" class="block text-sm font-medium text-gray-700 mb-2">节点超时 (秒)</label>
+                                <input type="number" id="nodeTimeout" name="nodeTimeout" min="10" value="300"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安全设置 -->
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">安全设置</h3>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="enableEncryption" name="enableEncryption" checked
+                                       class="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">启用端到端加密</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="requireAuth" name="requireAuth" checked
+                                       class="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">要求节点身份验证</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="enableAuditLog" name="enableAuditLog" checked
+                                       class="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">启用审计日志</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="enableMonitoring" name="enableMonitoring" checked
+                                       class="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">启用实时监控</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <button type="button" onclick="goBack()" 
+                                class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                            取消
+                        </button>
+                        <button type="button" onclick="saveAsDraft()"
+                                class="px-6 py-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                            保存草稿
+                        </button>
+                        <button type="submit"
+                                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            创建项目
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../shared/js/navigation-unified.js"></script>
+    <script src="../../shared/js/theme-manager-unified.js"></script>
+    <script src="../../shared/js/i18n-manager.js"></script>
+    <script>
+        // 表单提交处理
+        document.getElementById('projectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const projectData = Object.fromEntries(formData);
+            
+            // 添加复选框数据
+            projectData.enableEncryption = document.getElementById('enableEncryption').checked;
+            projectData.requireAuth = document.getElementById('requireAuth').checked;
+            projectData.enableAuditLog = document.getElementById('enableAuditLog').checked;
+            projectData.enableMonitoring = document.getElementById('enableMonitoring').checked;
+            
+            console.log('项目数据:', projectData);
+            
+            // 模拟项目创建
+            alert('正在创建项目，请稍候...');
+            
+            setTimeout(() => {
+                alert(`项目 "${projectData.projectName}" 创建成功！\n\n项目配置：\n- 模型类型: ${getModelTypeName(projectData.modelType)}\n- 训练策略: ${getStrategyName(projectData.trainingStrategy)}\n- 目标准确率: ${projectData.targetAccuracy}%\n- 最大节点数: ${projectData.maxNodes}`);
+                
+                // 创建成功后跳转到项目管理页面
+                window.location.href = './dashboard.html';
+            }, 2000);
+        });
+
+        // 保存草稿
+        function saveAsDraft() {
+            const formData = new FormData(document.getElementById('projectForm'));
+            const projectData = Object.fromEntries(formData);
+            
+            localStorage.setItem('edgeai_project_draft', JSON.stringify(projectData));
+            alert('项目草稿已保存！');
+        }
+
+        // 使用统一导航系统的goBack函数（已通过navigation-unified.js提供）
+
+        // 获取模型类型名称
+        function getModelTypeName(value) {
+            const names = {
+                'cnn': 'CNN (卷积神经网络)',
+                'rnn': 'RNN (循环神经网络)',
+                'transformer': 'Transformer',
+                'resnet': 'ResNet (残差网络)',
+                'yolo': 'YOLO (目标检测)',
+                'bert': 'BERT (自然语言处理)'
+            };
+            return names[value] || value;
+        }
+
+        // 获取策略名称
+        function getStrategyName(value) {
+            const names = {
+                'federated': '联邦学习',
+                'reinforcement': '强化学习',
+                'transfer': '迁移学习',
+                'ensemble': '集成学习',
+                'distributed': '分布式训练'
+            };
+            return names[value] || value;
+        }
+
+        // 页面加载完成后检查是否有草稿和初始化功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等待一点时间确保所有脚本加载完成，然后应用翻译
+            setTimeout(() => {
+                if (window.i18nManager) {
+                    window.i18nManager.applyTranslations();
+                }
+            }, 100);
+            const draft = localStorage.getItem('edgeai_project_draft');
+            if (draft) {
+                const projectData = JSON.parse(draft);
+                
+                // 询问是否恢复草稿
+                if (confirm('检测到未完成的项目草稿，是否要恢复？')) {
+                    // 填充表单数据
+                    Object.keys(projectData).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            if (element.type === 'checkbox') {
+                                element.checked = projectData[key] === 'on';
+                            } else {
+                                element.value = projectData[key];
+                            }
+                        }
+                    });
+                } else {
+                    localStorage.removeItem('edgeai_project_draft');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

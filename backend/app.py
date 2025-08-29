@@ -26,10 +26,11 @@ from routes.client import client_bp
 from routes.server import server_bp
 
 # 导入业务模块 - 与前端结构保持一致
-from ai import ai_bp
+from p2pai import p2pai_bp
 from blockchain import blockchain_bp
 from crypto import crypto_bp
 from homepage import homepage_bp
+from edgeai import edgeai_bp
 
 def create_app(config_name=None):
     """应用工厂函数"""
@@ -81,9 +82,10 @@ def create_app(config_name=None):
     
     # 业务模块路由 - 与前端结构保持一致
     app.register_blueprint(homepage_bp, url_prefix='/api/homepage')
-    app.register_blueprint(ai_bp, url_prefix='/api/ai')
+    app.register_blueprint(p2pai_bp, url_prefix='/api/p2pai')
     app.register_blueprint(blockchain_bp, url_prefix='/api/blockchain')
     app.register_blueprint(crypto_bp, url_prefix='/api/crypto')
+    app.register_blueprint(edgeai_bp, url_prefix='/api/edgeai')
     
     # 全局错误处理
     @app.errorhandler(400)
@@ -211,7 +213,7 @@ def create_app(config_name=None):
             'status': status,
             'timestamp': datetime.now().isoformat(),
             'services': services,
-            'supported_business_types': ['ai', 'blockchain', 'crypto'],
+            'supported_business_types': ['p2pai', 'blockchain', 'crypto', 'edgeai'],
             'version': '1.0.0'
         })
     

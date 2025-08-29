@@ -10,6 +10,137 @@
     
     <link rel="stylesheet" href="../assets/ai-styles.css?v=20250826">
     <link rel="stylesheet" href="../assets/server-dashboard-styles.css?v=20250826">
+    <style>
+        /* AI服务器控制台深色模式样式 */
+        [data-theme="dark"] .module-card {
+            background: rgba(31, 41, 55, 0.8) !important;
+            border: 1px solid rgba(75, 85, 99, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-50 {
+            background: rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-green-50 {
+            background: rgba(34, 197, 94, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-orange-50 {
+            background: rgba(249, 115, 22, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-yellow-50 {
+            background: rgba(245, 158, 11, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-50 {
+            background: rgba(55, 65, 81, 0.6) !important;
+        }
+        
+        /* 修夏按钮背景 */
+        [data-theme="dark"] .btn-module-primary {
+            background: rgba(59, 130, 246, 0.8) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(59, 130, 246, 0.6) !important;
+        }
+        
+        [data-theme="dark"] .btn-module-secondary {
+            background: rgba(55, 65, 81, 0.8) !important;
+            color: #d1d5db !important;
+            border: 1px solid rgba(107, 114, 128, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .btn-mini.primary {
+            background: rgba(59, 130, 246, 0.8) !important;
+            color: #ffffff !important;
+            border: none !important;
+        }
+        
+        [data-theme="dark"] .btn-mini.secondary {
+            background: rgba(55, 65, 81, 0.8) !important;
+            color: #d1d5db !important;
+            border: none !important;
+        }
+        
+        /* 修夏徽章背景 */
+        [data-theme="dark"] .bg-green-100 {
+            background: rgba(34, 197, 94, 0.2) !important;
+            color: #86efac !important;
+        }
+        
+        [data-theme="dark"] .bg-orange-100 {
+            background: rgba(249, 115, 22, 0.2) !important;
+            color: #fdba74 !important;
+        }
+        
+        [data-theme="dark"] .bg-blue-100 {
+            background: rgba(59, 130, 246, 0.2) !important;
+            color: #93c5fd !important;
+        }
+        
+        [data-theme="dark"] .bg-yellow-100 {
+            background: rgba(245, 158, 11, 0.2) !important;
+            color: #fbbf24 !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-100 {
+            background: rgba(75, 85, 99, 0.4) !important;
+            color: #d1d5db !important;
+        }
+        
+        /* 修夏文字颜色 */
+        [data-theme="dark"] .text-green-800 {
+            color: #86efac !important;
+        }
+        
+        [data-theme="dark"] .text-orange-800 {
+            color: #fdba74 !important;
+        }
+        
+        [data-theme="dark"] .text-blue-800 {
+            color: #93c5fd !important;
+        }
+        
+        [data-theme="dark"] .text-yellow-800 {
+            color: #fbbf24 !important;
+        }
+        
+        [data-theme="dark"] .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .text-blue-600 {
+            color: #93c5fd !important;
+        }
+        
+        /* 修夏进度条 */
+        [data-theme="dark"] .bg-gray-200 {
+            background: rgba(75, 85, 99, 0.6) !important;
+        }
+        
+        /* 修夏模态框 */
+        [data-theme="dark"] .modal-container {
+            background: rgba(31, 41, 55, 0.95) !important;
+            border: 1px solid rgba(75, 85, 99, 0.6) !important;
+        }
+        
+        [data-theme="dark"] .modal-header {
+            background: rgba(55, 65, 81, 0.8) !important;
+            border-bottom: 1px solid rgba(107, 114, 128, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .modal-title {
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .modal-close {
+            color: #d1d5db !important;
+        }
+        
+        [data-theme="dark"] .modal-close:hover {
+            color: #f9fafb !important;
+        }
+    </style>
 </head>
 <body class="module-background min-h-screen theme-transition">
     <!-- 导航栏 -->

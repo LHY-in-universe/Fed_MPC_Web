@@ -24,9 +24,9 @@
         "subtitle": "Secure and Efficient Distributed Machine Learning Solutions",
         "enterModule": "Enter Module",
         "modules": {
-            "ai": {
-                "title": "AI Model Training",
-                "description": "Federated Learning & Multi-Party Computation Training"
+            "p2pai": {
+                "title": "P2P AI Training",
+                "description": "Peer-to-Peer Federated Learning & Multi-Party Computation"
             },
             "blockchain": {
                 "title": "Blockchain Finance", 
@@ -53,8 +53,8 @@
         }
     },
 
-    "ai": {
-        "title": "AI Model Training",
+    "p2pai": {
+        "title": "P2P AI Training",
         "userType": {
             "title": "Select User Type",
             "client": "Client",
