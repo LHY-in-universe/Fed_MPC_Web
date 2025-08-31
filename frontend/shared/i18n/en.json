@@ -416,6 +416,68 @@
         }
     },
 
+    "edgeai": {
+        "title": "EdgeAI Management",
+        "dashboard": {
+            "title": "EdgeAI Console",
+            "welcome": "Welcome to EdgeAI Management Platform!",
+            "subtitle": "Manage your edge AI nodes and training projects",
+            "totalProjects": "Total Projects",
+            "activeNodes": "Active Nodes", 
+            "trainingTasks": "Training Tasks",
+            "completionRate": "Completion Rate",
+            "createProject": "Create New Project",
+            "manageModels": "Model Management",
+            "viewAllNodes": "View All Nodes",
+            "projects": "My Projects",
+            "recentActivity": "Recent Activity",
+            "viewAll": "View All"
+        },
+        "login": {
+            "title": "EdgeAI Management Login",
+            "subtitle": "Edge Artificial Intelligence Node Management Platform",
+            "username": "Username",
+            "password": "Password",
+            "usernamePlaceholder": "Enter your username",
+            "passwordPlaceholder": "Enter your password",
+            "rememberMe": "Remember me",
+            "loginBtn": "Login",
+            "quickAccess": "Quick Access:",
+            "quickAdmin": "Admin Login",
+            "quickOperator": "Operator Login",
+            "testAccounts": "Test Accounts:",
+            "adminAccount": "Admin: admin / admin123",
+            "operatorAccount": "Operator: operator / operator123",
+            "viewerAccount": "Viewer: viewer / viewer123"
+        },
+        "createProject": {
+            "title": "Create New Project",
+            "projectConfig": "EdgeAI Project Configuration",
+            "description": "Create a new distributed edge AI training project"
+        },
+        "modelManager": {
+            "title": "Model Management"
+        },
+        "allNodes": {
+            "title": "All Nodes Management",
+            "overview": "EdgeAI Node Overview",
+            "description": "Manage and monitor the status and performance of all edge AI nodes"
+        },
+        "visualization": {
+            "title": "Project Visualization",
+            "controls": "Control Panel",
+            "inviteUser": "Invite User",
+            "addNode": "Add Node",
+            "startTraining": "Start Training",
+            "resetView": "Reset View",
+            "totalNodes": "Total Nodes",
+            "avgProgress": "Average Progress",
+            "networkLatency": "Network Latency",
+            "systemHealth": "System Health",
+            "nodeList": "Node Details List"
+        }
+    },
+
     "crypto": {
         "title": "Key Encryption",
         "keyGeneration": "Key Generation",

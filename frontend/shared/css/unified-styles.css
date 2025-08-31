@@ -488,6 +488,23 @@ html[data-theme="dark"] div {
     color: #d1d5db !important;
 }
 
+/* 导航栏返回按钮深色模式样式 */
+[data-theme="dark"] button.text-gray-600,
+[data-theme="dark"] .text-gray-600 {
+    color: #d1d5db !important;
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+    border: 1px solid #4b5563 !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+}
+
+[data-theme="dark"] button.text-gray-600:hover,
+[data-theme="dark"] .text-gray-600:hover {
+    color: #f3f4f6 !important;
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
 /* 深色模式下的眼睛按钮样式 - 全局优先级最高 */
 html[data-theme="dark"] body #togglePassword,
 html[data-theme="dark"] body button#togglePassword,

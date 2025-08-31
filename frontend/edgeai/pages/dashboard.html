@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EdgeAI控制台</title>
+    <!-- ==================== 防白闪脚本 ==================== -->
+    <script src="../../shared/js/anti-flash.js"></script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
     
     <style>
         /* EdgeAI控制台深色模式样式 */
@@ -221,11 +224,11 @@
                 </svg>
                 <span data-i18n="edgeai.dashboard.createProject">创建新项目</span>
             </button>
-            <button onclick="importProject()" class="btn btn-secondary btn-click">
+            <button onclick="manageModels()" class="btn btn-secondary btn-click">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
-                <span data-i18n="edgeai.dashboard.importProject">导入项目</span>
+                <span data-i18n="edgeai.dashboard.manageModels">模型管理</span>
             </button>
             <button onclick="viewAllNodes()" class="btn btn-secondary btn-click">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -455,7 +458,7 @@
             window.location.href = './create-project.html';
         }
 
-        function importProject() {
+        function manageModels() {
             window.location.href = './import-project.html';
         }
 

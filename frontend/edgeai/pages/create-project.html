@@ -4,113 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>创建新项目 - EdgeAI</title>
+    <!-- ==================== 防白闪脚本 ==================== -->
+    <script>
+        (function() {
+            'use strict';
+            try {
+                // 获取保存的主题或系统偏好
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                
+                // 立即设置主题属性
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                console.log('🎨 防白闪: 主题已设置为', theme);
+            } catch (error) {
+                console.warn('⚠️ 防白闪脚本失败:', error);
+                // 降级到深色主题
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css">
-    <link rel="stylesheet" href="../../shared/css/theme-system-unified.css">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
     <link rel="stylesheet" href="../../shared/css/animations.css">
-    <style>
-        /* 深色模式样式 */
-        [data-theme="dark"] {
-            background-color: #1f2937;
-            color: #f9fafb;
-        }
-        
-        [data-theme="dark"] .bg-gray-50 {
-            background-color: #111827 !important;
-        }
-        
-        [data-theme="dark"] .bg-white {
-            background-color: #1f2937 !important;
-            border-color: #374151;
-        }
-        
-        [data-theme="dark"] .text-gray-900 {
-            color: #f9fafb !important;
-        }
-        
-        [data-theme="dark"] .text-gray-600 {
-            color: #d1d5db !important;
-        }
-        
-        [data-theme="dark"] .text-gray-700 {
-            color: #e5e7eb !important;
-        }
-        
-        [data-theme="dark"] .text-gray-500 {
-            color: #9ca3af !important;
-        }
-        
-        [data-theme="dark"] .border-gray-200 {
-            border-color: #374151 !important;
-        }
-        
-        [data-theme="dark"] .border-gray-300 {
-            border-color: #4b5563 !important;
-        }
-        
-        [data-theme="dark"] input,
-        [data-theme="dark"] textarea,
-        [data-theme="dark"] select {
-            background-color: #374151 !important;
-            border-color: #4b5563 !important;
-            color: #f9fafb !important;
-        }
-        
-        [data-theme="dark"] input::placeholder,
-        [data-theme="dark"] textarea::placeholder {
-            color: #9ca3af !important;
-        }
-        
-        [data-theme="dark"] input:focus,
-        [data-theme="dark"] textarea:focus,
-        [data-theme="dark"] select:focus {
-            background-color: #4b5563 !important;
-            border-color: #3b82f6 !important;
-        }
-        
-        [data-theme="dark"] .shadow-lg {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15) !important;
-        }
-        
-        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle) {
-            background-color: #374151 !important;
-            border-color: #4b5563 !important;
-            color: #f9fafb !important;
-        }
-        
-        [data-theme="dark"] button:not(.theme-toggle):not(.language-toggle):hover {
-            background-color: #4b5563 !important;
-        }
-        
-        [data-theme="dark"] .bg-blue-500 {
-            background-color: #3b82f6 !important;
-        }
-        
-        [data-theme="dark"] .bg-blue-500:hover {
-            background-color: #2563eb !important;
-        }
-        
-        [data-theme="dark"] .bg-gray-200 {
-            background-color: #374151 !important;
-        }
-        
-        [data-theme="dark"] .bg-gray-200:hover {
-            background-color: #4b5563 !important;
-        }
-        
-        [data-theme="dark"] .bg-red-500 {
-            background-color: #dc2626 !important;
-        }
-        
-        [data-theme="dark"] .bg-red-500:hover {
-            background-color: #b91c1c !important;
-        }
-    </style>
 </head>
 <body class="theme-transition">
-    <div class="min-h-screen bg-gray-50" data-theme="light">
+    <div class="min-h-screen" style="background-color: var(--bg-primary);">
         <!-- 顶部导航 -->
-        <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <nav style="background-color: var(--bg-elevated); border-bottom: 1px solid var(--border-primary);" class="sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
@@ -119,12 +42,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
-                        <h1 class="text-xl font-semibold text-gray-900" data-i18n="edgeai.createProject.title">创建新项目</h1>
+                        <h1 class="text-xl font-semibold" style="color: var(--text-primary);" data-i18n="edgeai.createProject.title">创建新项目</h1>
                     </div>
                     <div class="flex items-center space-x-4">
                         <!-- 主题切换 -->
                         <button class="theme-toggle" title="切换主题">
-                            <span>🌙</span>
+                            <span data-theme-icon>🌙</span>
                         </button>
                         <!-- 语言切换 -->
                         <button class="language-toggle" title="切换语言">EN</button>
@@ -134,9 +57,9 @@
         </nav>
 
         <!-- 主要内容 -->
-        <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <!-- 项目创建表单 -->
-            <div class="bg-white rounded-lg shadow-lg p-8 fade-in-up">
+            <div class="bg-white rounded-lg shadow-lg p-8 fade-in-up max-w-4xl mx-auto">
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2" data-i18n="edgeai.createProject.projectConfig">EdgeAI 项目配置</h2>
                     <p class="text-gray-600" data-i18n="edgeai.createProject.description">创建一个新的分布式边缘AI训练项目</p>

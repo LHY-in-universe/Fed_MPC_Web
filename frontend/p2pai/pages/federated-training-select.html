@@ -4,8 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>选择联邦训练模式</title>
+    <!-- ==================== 防白闪脚本 ==================== -->
+    <script>
+        (function() {
+            'use strict';
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                if (theme === 'dark') {
+                    document.documentElement.style.backgroundColor = '#1f2937';
+                    document.documentElement.style.color = '#f9fafb';
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.style.backgroundColor = '#ffffff';
+                    document.documentElement.style.color = '#1f2937';
+                    document.documentElement.classList.remove('dark');
+                }
+                
+                console.log('🎨 防白闪: 主题已设置为', theme);
+                
+            } catch (error) {
+                console.warn('⚠️ 防白闪脚本失败:', error);
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.style.backgroundColor = '#1f2937';
+                document.documentElement.style.color = '#f9fafb';
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    
+    <!-- ==================== 关键CSS预加载 ==================== -->
+    <style>
+        /* 防止白闪的关键样式 */
+        html[data-theme="dark"] {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        html[data-theme="light"] {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        html[data-theme="dark"] body {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        html[data-theme="light"] body {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        /* 深色模式下的文本颜色修复 */
+        html[data-theme="dark"] .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        html[data-theme="dark"] .text-gray-600 {
+            color: #9ca3af !important;
+        }
+        
+        /* 导航栏返回按钮样式修复 */
+        [data-theme="dark"] .navbar-brand button {
+            background-color: #374151 !important;
+            border: 1px solid #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .navbar-brand button:hover {
+            background-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .navbar-brand button svg {
+            color: #f9fafb !important;
+        }
+        
+        /* 平滑过渡 */
+        html, body {
+            transition: background-color 0.3s ease, color 0.3s ease !important;
+        }
+    </style>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
     
 </head>
 <body class="module-background min-h-screen theme-transition">
@@ -23,7 +108,7 @@
             
             <div class="navbar-nav">
                 <button class="theme-toggle" title="切换主题">
-                    <span>🌙</span>
+                    <span data-theme-icon>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
                 <button onclick="goHome()" class="btn btn-secondary text-sm btn-click">

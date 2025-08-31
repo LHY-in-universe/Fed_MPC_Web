@@ -76,7 +76,7 @@
 /* ====================== 模块卡片基础样式 ====================== */
 .module-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border: 1px solid #e5e7eb;
@@ -329,12 +329,12 @@
 @media (max-width: 768px) {
     .module-card {
         padding: 1rem;
-        border-radius: 8px;
+        border-radius: 12px;
     }
     
     .module-card-large {
         padding: 1.5rem;
-        border-radius: 12px;
+        border-radius: 16px;
     }
     
     .btn-module-primary,
@@ -347,7 +347,7 @@
 @media (max-width: 480px) {
     .module-card {
         padding: 0.75rem;
-        border-radius: 6px;
+        border-radius: 10px;
     }
     
     .btn-module-primary,

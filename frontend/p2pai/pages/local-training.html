@@ -4,9 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>本地模型训练</title>
+    <!-- ==================== 防白闪脚本 ==================== -->
+    <script>
+        (function() {
+            'use strict';
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                if (theme === 'dark') {
+                    document.documentElement.style.backgroundColor = '#1f2937';
+                    document.documentElement.style.color = '#f9fafb';
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.style.backgroundColor = '#ffffff';
+                    document.documentElement.style.color = '#1f2937';
+                    document.documentElement.classList.remove('dark');
+                }
+                
+                console.log('🎨 防白闪: 主题已设置为', theme);
+                
+            } catch (error) {
+                console.warn('⚠️ 防白闪脚本失败:', error);
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.style.backgroundColor = '#1f2937';
+                document.documentElement.style.color = '#f9fafb';
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    
+    <!-- ==================== 关键CSS预加载 ==================== -->
+    <style>
+        /* 防止白闪的关键样式 */
+        html[data-theme="dark"] {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        html[data-theme="light"] {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        html[data-theme="dark"] body {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        html[data-theme="light"] body {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        /* 深色模式下卡片样式修复 */
+        html[data-theme="dark"] .card {
+            background-color: #1f2937 !important;
+            border-color: #4b5563 !important;
+        }
+        
+        /* 深色模式下的文本颜色修复 */
+        html[data-theme="dark"] .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        html[data-theme="dark"] .text-gray-700 {
+            color: #d1d5db !important;
+        }
+        
+        html[data-theme="dark"] .text-gray-600 {
+            color: #9ca3af !important;
+        }
+        
+        /* 深色模式下的表单元素 */
+        html[data-theme="dark"] select,
+        html[data-theme="dark"] input[type="number"],
+        html[data-theme="dark"] input[type="range"] {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        html[data-theme="dark"] .bg-gray-200 {
+            background-color: #4b5563 !important;
+        }
+        
+        /* 深色模式下的按钮样式 - 最高优先级 */
+        [data-theme="dark"] button.bg-gray-600,
+        [data-theme="dark"] #startTraining {
+            background-color: #374151 !important;
+            border: 1px solid #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] button.bg-gray-600:hover,
+        [data-theme="dark"] #startTraining:hover {
+            background-color: #4b5563 !important;
+        }
+        
+        /* 返回按钮样式修复 */
+        [data-theme="dark"] .homepage-return-btn {
+            background-color: #374151 !important;
+            border: 1px solid #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .homepage-return-btn:hover {
+            background-color: #4b5563 !important;
+        }
+        
+        [data-theme="dark"] .homepage-return-btn svg {
+            color: #f9fafb !important;
+        }
+        
+        /* 导航栏返回按钮样式修复 */
+        [data-theme="dark"] .navbar-brand button {
+            background-color: #374151 !important;
+            border: 1px solid #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .navbar-brand button:hover {
+            background-color: #4b5563 !important;
+            color: #f9fafb !important;
+        }
+        
+        [data-theme="dark"] .navbar-brand button svg {
+            color: #f9fafb !important;
+        }
+        
+        /* 平滑过渡 */
+        html, body {
+            transition: background-color 0.3s ease, color 0.3s ease !important;
+        }
+    </style>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756353026">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
     
 </head>
 <body class="module-background theme-transition">
@@ -25,7 +161,7 @@
             <div class="navbar-nav">
                 <span id="userInfo" class="text-sm text-gray-600"></span>
                 <button class="theme-toggle" title="切换主题">
-                    <span>🌙</span>
+                    <span data-theme-icon>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
                 <button onclick="logout()" class="btn btn-secondary text-sm btn-click">
@@ -127,18 +263,10 @@
                 </div>
 
                 <!-- Training Controls -->
-                <div class="mt-8 flex justify-center space-x-4">
+                <div class="mt-8 flex justify-center">
                     <button id="startTraining" onclick="startTraining()" 
                             class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 transform hover:scale-105 shadow-lg">
                         <span data-i18n="ai.training.local.startTraining">开始训练</span>
-                    </button>
-                    <button id="pauseTraining" onclick="pauseTraining()" disabled
-                            class="bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 disabled:cursor-not-allowed">
-                        <span data-i18n="ai.training.local.pauseTraining">暂停训练</span>
-                    </button>
-                    <button id="stopTraining" onclick="stopTraining()" disabled
-                            class="bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-all duration-200 disabled:cursor-not-allowed disabled:bg-gray-400">
-                        <span data-i18n="ai.training.local.stopTraining">停止训练</span>
                     </button>
                 </div>
             </div>
@@ -342,11 +470,6 @@
         }
 
         function startTraining() {
-            if (isPaused) {
-                resumeTraining();
-                return;
-            }
-
             // 获取配置
             totalEpochs = parseInt(document.getElementById('epochs').value);
             currentEpoch = 0;
@@ -356,11 +479,10 @@
 
             // 更新UI状态
             document.getElementById('startTraining').disabled = true;
-            document.getElementById('pauseTraining').disabled = false;
-            document.getElementById('stopTraining').disabled = false;
+            document.getElementById('startTraining').innerHTML = '<span data-i18n="ai.training.local.training">训练中...</span>';
             
             const trainingStatusElement = document.getElementById('trainingStatus');
-            trainingStatusElement.innerHTML = '<span class="text-gray-600">● 训练中</span>';
+            trainingStatusElement.innerHTML = '<span class="text-green-600">● 训练中</span>';
             trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.training');
 
             // 清空图表
@@ -383,55 +505,6 @@
             trainingInterval = setInterval(updateTraining, 2000); // 每2秒更新一次
         }
 
-        function pauseTraining() {
-            isPaused = true;
-            clearInterval(trainingInterval);
-            
-            document.getElementById('startTraining').disabled = false;
-            document.getElementById('startTraining').querySelector('span').textContent = '继续训练';
-            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.continueTraining');
-            document.getElementById('pauseTraining').disabled = true;
-            
-            const trainingStatusElement = document.getElementById('trainingStatus');
-            trainingStatusElement.innerHTML = '<span class="text-yellow-600">● 已暂停</span>';
-            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.paused');
-            
-            addTrainingLog('训练已暂停');
-        }
-
-        function resumeTraining() {
-            isPaused = false;
-            
-            document.getElementById('startTraining').disabled = true;
-            document.getElementById('startTraining').querySelector('span').textContent = '开始训练';
-            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.startTraining');
-            document.getElementById('pauseTraining').disabled = false;
-            
-            const trainingStatusElement = document.getElementById('trainingStatus');
-            trainingStatusElement.innerHTML = '<span class="text-gray-600">● 训练中</span>';
-            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.training');
-            
-            addTrainingLog('训练已继续');
-            trainingInterval = setInterval(updateTraining, 2000);
-        }
-
-        function stopTraining() {
-            isTraining = false;
-            isPaused = false;
-            clearInterval(trainingInterval);
-            
-            document.getElementById('startTraining').disabled = false;
-            document.getElementById('startTraining').querySelector('span').textContent = '开始训练';
-            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.startTraining');
-            document.getElementById('pauseTraining').disabled = true;
-            document.getElementById('stopTraining').disabled = true;
-            
-            const trainingStatusElement = document.getElementById('trainingStatus');
-            trainingStatusElement.innerHTML = '<span class="text-red-600">● 已停止</span>';
-            trainingStatusElement.setAttribute('data-i18n', 'ai.training.local.stopped');
-            
-            addTrainingLog('训练已停止');
-        }
 
         function updateTraining() {
             currentEpoch++;
@@ -498,10 +571,7 @@
             clearInterval(trainingInterval);
             
             document.getElementById('startTraining').disabled = false;
-            document.getElementById('startTraining').querySelector('span').textContent = '开始训练';
-            document.getElementById('startTraining').querySelector('span').setAttribute('data-i18n', 'ai.training.local.startTraining');
-            document.getElementById('pauseTraining').disabled = true;
-            document.getElementById('stopTraining').disabled = true;
+            document.getElementById('startTraining').innerHTML = '<span data-i18n="ai.training.local.startTraining">开始训练</span>';
             
             const trainingStatusElement = document.getElementById('trainingStatus');
             trainingStatusElement.innerHTML = '<span class="text-green-600">● 训练完成</span>';

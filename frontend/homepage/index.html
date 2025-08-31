@@ -8,8 +8,73 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>联邦学习与多方计算平台</title>
+    <!-- ==================== 防白闪脚本 ==================== -->
+    <script>
+        (function() {
+            'use strict';
+            try {
+                // 获取保存的主题或系统偏好
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                
+                // 立即设置主题属性到html元素
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                // 立即设置基础背景色防止白闪
+                if (theme === 'dark') {
+                    document.documentElement.style.backgroundColor = '#1f2937';
+                    document.documentElement.style.color = '#f9fafb';
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.style.backgroundColor = '#ffffff';
+                    document.documentElement.style.color = '#1f2937';
+                    document.documentElement.classList.remove('dark');
+                }
+                
+                console.log('🎨 防白闪: 主题已设置为', theme);
+                
+            } catch (error) {
+                console.warn('⚠️ 防白闪脚本失败:', error);
+                // 降级到深色主题作为默认
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.style.backgroundColor = '#1f2937';
+                document.documentElement.style.color = '#f9fafb';
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    
+    <!-- ==================== 关键CSS预加载 ==================== -->
+    <style>
+        /* 防止白闪的关键样式 */
+        html[data-theme="dark"] {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        html[data-theme="light"] {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        /* 确保body继承正确的背景 */
+        html[data-theme="dark"] body {
+            background-color: #1f2937 !important;
+            color: #f9fafb !important;
+        }
+        html[data-theme="light"] body {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        /* 平滑过渡 */
+        html, body {
+            transition: background-color 0.3s ease, color 0.3s ease !important;
+        }
+    </style>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756353026">
+    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756626102">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
