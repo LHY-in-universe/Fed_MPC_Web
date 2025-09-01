@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-i18n-title="edgeai.modelManager.title">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,77 +27,13 @@
     </script>
     
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
     <link rel="stylesheet" href="../../shared/css/animations.css">
-    <style>
-        /* 深色模式下的模型卡片样式优化 */
-        [data-theme="dark"] .card {
-            background: var(--bg-primary) !important;
-            border: 1px solid var(--border-primary) !important;
-        }
-        
-        [data-theme="dark"] .bg-gray-100 {
-            background: rgba(55, 65, 81, 0.5) !important;
-            color: #d1d5db !important;
-        }
-        
-        [data-theme="dark"] .bg-gray-200 {
-            background: rgba(75, 85, 99, 0.6) !important;
-            color: #e5e7eb !important;
-        }
-        
-        [data-theme="dark"] .text-gray-800 {
-            color: #f3f4f6 !important;
-        }
-        
-        [data-theme="dark"] .text-gray-600 {
-            color: #d1d5db !important;
-        }
-        
-        /* 深色模式下的按钮样式 */
-        [data-theme="dark"] .text-blue-600 {
-            color: #93c5fd !important;
-        }
-        
-        [data-theme="dark"] .text-blue-600:hover {
-            color: #bfdbfe !important;
-        }
-        
-        [data-theme="dark"] .text-red-600 {
-            color: #fca5a5 !important;
-        }
-        
-        [data-theme="dark"] .text-red-600:hover {
-            color: #fecaca !important;
-        }
-        
-        /* 深色模式下的模态框样式 */
-        [data-theme="dark"] .max-w-4xl {
-            background: var(--bg-primary) !important;
-            border: 1px solid var(--border-primary) !important;
-        }
-        
-        /* 深色模式下的输入框和表单样式 */
-        [data-theme="dark"] input,
-        [data-theme="dark"] select,
-        [data-theme="dark"] textarea {
-            background: var(--bg-secondary) !important;
-            border: 1px solid var(--border-primary) !important;
-            color: var(--text-primary) !important;
-        }
-        
-        [data-theme="dark"] input:focus,
-        [data-theme="dark"] select:focus,
-        [data-theme="dark"] textarea:focus {
-            border-color: var(--primary) !important;
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
-        }
-    </style>
 </head>
 <body class="theme-transition">
-    <div class="min-h-screen" style="background-color: var(--bg-primary);">
+    <div class="page-container">
         <!-- 顶部导航 -->
-        <nav style="background-color: var(--bg-elevated); border-bottom: 1px solid var(--border-primary);" class="sticky top-0 z-50">
+        <nav class="page-nav sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
@@ -106,7 +42,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
-                        <h1 class="text-xl font-semibold" style="color: var(--text-primary);" data-i18n="edgeai.modelManager.title">模型管理</h1>
+                        <h1 class="text-xl font-semibold text-primary" data-i18n="edgeai.modelManager.title">模型管理</h1>
                     </div>
                     <div class="flex items-center space-x-4">
                         <!-- 主题切换 -->
@@ -127,8 +63,8 @@
             <div class="mb-8">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h2 class="text-2xl font-bold" style="color: var(--text-primary);">我的模型库</h2>
-                        <p style="color: var(--text-secondary);" class="mt-1">管理和查看您保存的AI模型</p>
+                        <h2 class="text-2xl font-bold text-primary">我的模型库</h2>
+                        <p class="text-secondary mt-1">管理和查看您保存的AI模型</p>
                     </div>
                     <button onclick="showAddModelModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,13 +79,13 @@
             <div class="card mb-8 fade-in-up">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label for="searchModel" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">搜索模型</label>
+                        <label for="searchModel" class="block text-sm font-medium mb-2 text-secondary">搜索模型</label>
                         <input type="text" id="searchModel" placeholder="输入模型名称..." 
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                oninput="filterModels()">
                     </div>
                     <div>
-                        <label for="filterSize" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">按大小筛选</label>
+                        <label for="filterSize" class="block text-sm font-medium mb-2 text-secondary">按大小筛选</label>
                         <select id="filterSize" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="filterModels()">
                             <option value="">全部大小</option>
                             <option value="small">小型 (<100MB)</option>
@@ -158,7 +94,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="sortBy" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">排序方式</label>
+                        <label for="sortBy" class="block text-sm font-medium mb-2 text-secondary">排序方式</label>
                         <select id="sortBy" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="sortModels()">
                             <option value="name">按名称</option>
                             <option value="size">按大小</option>
@@ -195,8 +131,8 @@
                 <div class="card max-w-4xl w-full max-h-screen overflow-y-auto">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-semibold" style="color: var(--text-primary);">添加新模型</h3>
-                            <button onclick="hideAddModelModal()" style="color: var(--text-tertiary);" class="hover:opacity-70">
+                            <h3 class="text-xl font-semibold text-primary">添加新模型</h3>
+                            <button onclick="hideAddModelModal()" class="text-tertiary hover:opacity-70">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
@@ -205,14 +141,14 @@
 
                         <form id="addModelForm" onsubmit="addModel(event)" class="space-y-6">
                             <div>
-                                <label for="modelName" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">模型名称 *</label>
+                                <label for="modelName" class="block text-sm font-medium mb-2 text-secondary">模型名称 *</label>
                                 <input type="text" id="modelName" required 
                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                        placeholder="例如：ResNet-50 图像分类模型">
                             </div>
 
                             <div>
-                                <label for="modelPath" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">模型本地地址 *</label>
+                                <label for="modelPath" class="block text-sm font-medium mb-2 text-secondary">模型本地地址 *</label>
                                 <div class="flex space-x-2">
                                     <input type="text" id="modelPath" required 
                                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -221,11 +157,11 @@
                                         浏览
                                     </button>
                                 </div>
-                                <p class="text-sm mt-1" style="color: var(--text-tertiary);">支持格式: .h5, .pb, .pth, .onnx, .pkl</p>
+                                <p class="text-sm mt-1 text-tertiary">支持格式: .h5, .pb, .pth, .onnx, .pkl</p>
                             </div>
 
                             <div>
-                                <label for="modelSize" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">模型大小</label>
+                                <label for="modelSize" class="block text-sm font-medium mb-2 text-secondary">模型大小</label>
                                 <div class="flex space-x-2">
                                     <input type="number" id="modelSizeValue" step="0.1" min="0"
                                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -239,7 +175,7 @@
                             </div>
 
                             <div>
-                                <label for="modelType" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">模型类型</label>
+                                <label for="modelType" class="block text-sm font-medium mb-2 text-secondary">模型类型</label>
                                 <select id="modelType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">请选择模型类型</option>
                                     <option value="classification">图像分类</option>
@@ -253,7 +189,7 @@
                             </div>
 
                             <div>
-                                <label for="modelDescription" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">模型描述</label>
+                                <label for="modelDescription" class="block text-sm font-medium mb-2 text-secondary">模型描述</label>
                                 <textarea id="modelDescription" rows="4" 
                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                           placeholder="描述模型的功能、用途、训练数据集、性能指标等..."></textarea>
@@ -261,7 +197,7 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="modelFramework" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">框架</label>
+                                    <label for="modelFramework" class="block text-sm font-medium mb-2 text-secondary">框架</label>
                                     <select id="modelFramework" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                         <option value="">请选择框架</option>
                                         <option value="tensorflow">TensorFlow</option>
@@ -273,7 +209,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="modelVersion" class="block text-sm font-medium mb-2" style="color: var(--text-secondary);">版本</label>
+                                    <label for="modelVersion" class="block text-sm font-medium mb-2 text-secondary">版本</label>
                                     <input type="text" id="modelVersion" 
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                            placeholder="例如：v1.0.0">
@@ -281,7 +217,7 @@
                             </div>
 
                             <div class="flex justify-end space-x-3 pt-6">
-                                <button type="button" onclick="hideAddModelModal()" class="px-6 py-2 border rounded-lg transition-colors" style="border-color: var(--border-primary); color: var(--text-secondary);">
+                                <button type="button" onclick="hideAddModelModal()" class="px-6 py-2 border rounded-lg transition-colors border-primary text-secondary">
                                     取消
                                 </button>
                                 <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -297,7 +233,7 @@
 
     <script src="../../shared/js/navigation-unified.js"></script>
     <script src="../../shared/js/theme-manager-unified.js"></script>
-    <script src="../../shared/js/i18n-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js?v=1756665500"></script>
     <script>
         // 模型管理系统
         class ModelManager {
@@ -421,7 +357,7 @@
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex-1">
                                 <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-xl font-semibold" style="color: var(--text-primary);">${model.name}</h3>
+                                    <h3 class="text-xl font-semibold text-primary">${model.name}</h3>
                                     <div class="flex space-x-2">
                                         <button onclick="editModel('${model.id}')" class="text-blue-600 hover:text-blue-800 transition-colors" title="编辑">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -446,24 +382,24 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <p class="text-sm mb-1" style="color: var(--text-tertiary);">模型路径</p>
-                                <p class="text-sm font-mono p-2 rounded break-all" style="color: var(--text-primary); background-color: var(--bg-tertiary);">${model.path}</p>
+                                <p class="text-sm mb-1 text-tertiary">模型路径</p>
+                                <p class="text-sm font-mono p-2 rounded break-all text-primary bg-tertiary">${model.path}</p>
                             </div>
                             <div>
-                                <p class="text-sm mb-1" style="color: var(--text-tertiary);">模型大小</p>
-                                <p class="text-sm font-semibold" style="color: var(--text-primary);">${model.size}</p>
+                                <p class="text-sm mb-1 text-tertiary">模型大小</p>
+                                <p class="text-sm font-semibold text-primary">${model.size}</p>
                             </div>
                         </div>
 
                         ${model.description ? `
                             <div class="mb-4">
-                                <p class="text-sm mb-1" style="color: var(--text-tertiary);">描述</p>
-                                <p class="text-sm" style="color: var(--text-secondary);">${model.description}</p>
+                                <p class="text-sm mb-1 text-tertiary">描述</p>
+                                <p class="text-sm text-secondary">${model.description}</p>
                             </div>
                         ` : ''}
 
-                        <div class="flex justify-between items-center pt-4" style="border-top: 1px solid var(--border-primary);">
-                            <div class="flex items-center text-xs" style="color: var(--text-tertiary);">
+                        <div class="flex justify-between items-center pt-4 border-t border-primary">
+                            <div class="flex items-center text-xs text-tertiary">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>

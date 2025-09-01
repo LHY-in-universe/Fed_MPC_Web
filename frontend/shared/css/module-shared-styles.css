@@ -79,10 +79,17 @@
     border-radius: 16px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     position: relative;
     overflow: hidden;
+}
+
+/* 深色模式下的module-card适应 */
+[data-theme="dark"] .module-card {
+    background: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(55, 65, 81, 0.15);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
 .module-card:hover {
@@ -102,12 +109,12 @@
 
 /* ====================== 模块特色边框卡片 ====================== */
 .module-card-bordered {
-    border-left: 4px solid var(--module-primary, #3b82f6);
+    border: none !important;
     background: linear-gradient(90deg, var(--module-light, #f0f4ff) 0%, white 100%);
 }
 
 .module-card-bordered:hover {
-    border-left-color: var(--module-primary-dark, #2563eb);
+    border: none !important;
     background: linear-gradient(90deg, var(--module-accent, #e0e7ff) 0%, white 100%);
 }
 

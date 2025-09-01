@@ -48,6 +48,12 @@ class I18nManager {
         if (titleKey) {
             this.originalTexts[titleKey] = document.title;
         }
+
+        // 保存placeholder原始文本
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-i18n-placeholder');
+            this.originalTexts[key] = element.placeholder;
+        });
     }
 
     // 加载翻译文件
@@ -63,6 +69,10 @@ class I18nManager {
             // 使用相对路径，从当前页面位置计算
             const basePath = window.location.pathname.includes('/ai/pages/') 
                 ? '../../shared/i18n/' 
+                : window.location.pathname.includes('/p2pai/pages/')
+                ? '../../shared/i18n/'
+                : window.location.pathname.includes('/edgeai/pages/')
+                ? '../../shared/i18n/'
                 : window.location.pathname.includes('/blockchain/pages/') 
                 ? '../../shared/i18n/'
                 : window.location.pathname.includes('/crypto/pages/')
@@ -71,15 +81,23 @@ class I18nManager {
                 ? '../shared/i18n/'
                 : './shared/i18n/';
             
-            console.log(`Loading translations from: ${basePath}${this.currentLanguage}.json`);
-            const response = await fetch(`${basePath}${this.currentLanguage}.json?v=2025`);
+            console.log(`🔍 Current pathname: ${window.location.pathname}`);
+            console.log(`📂 Calculated base path: ${basePath}`);
+            console.log(`🌐 Loading translations from: ${basePath}${this.currentLanguage}.json`);
+            
+            const response = await fetch(`${basePath}${this.currentLanguage}.json?v=${Date.now()}`);
+            console.log(`📡 Fetch response status: ${response.status}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
             this.translations = await response.json();
-            console.log('Translations loaded successfully:', this.translations);
+            console.log('✅ Translations loaded successfully');
+            console.log('📋 EdgeAI translations available:', !!this.translations.edgeai);
+            if (this.translations.edgeai) {
+                console.log('🔍 EdgeAI title translation:', this.translations.edgeai.title);
+            }
         } catch (error) {
             console.warn('Failed to load translations, using default Chinese texts');
             this.translations = this.getDefaultTranslations();
@@ -220,7 +238,8 @@ class I18nManager {
 
     // 应用翻译
     applyTranslations() {
-        console.log(`Applying translations for language: ${this.currentLanguage}`);
+        console.log(`🔄 Applying translations for language: ${this.currentLanguage}`);
+        console.log(`📊 Available translation keys:`, Object.keys(this.translations));
         let translatedCount = 0;
         
         document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -254,6 +273,24 @@ class I18nManager {
         });
         
         console.log(`Total translations applied: ${translatedCount}`);
+
+        // 处理placeholder翻译
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-i18n-placeholder');
+            let text;
+            
+            if (this.currentLanguage === 'zh') {
+                // 使用原始中文文本（如果存在）或当前placeholder
+                text = this.originalTexts[key] || element.placeholder;
+            } else {
+                text = this.getTranslation(key);
+            }
+            
+            if (text) {
+                element.placeholder = text;
+                console.log(`Translated placeholder ${key}: ${text}`);
+            }
+        });
 
         // 更新页面标题
         const titleKey = document.documentElement.getAttribute('data-i18n-title');

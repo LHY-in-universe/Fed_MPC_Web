@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-i18n-title="edgeai.createProject.title">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,13 +27,13 @@
     </script>
     
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
     <link rel="stylesheet" href="../../shared/css/animations.css">
 </head>
 <body class="theme-transition">
-    <div class="min-h-screen" style="background-color: var(--bg-primary);">
+    <div class="page-container">
         <!-- 顶部导航 -->
-        <nav style="background-color: var(--bg-elevated); border-bottom: 1px solid var(--border-primary);" class="sticky top-0 z-50">
+        <nav class="page-nav sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
@@ -42,7 +42,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
-                        <h1 class="text-xl font-semibold" style="color: var(--text-primary);" data-i18n="edgeai.createProject.title">创建新项目</h1>
+                        <h1 class="text-xl font-semibold text-primary" data-i18n="edgeai.createProject.title">创建新项目</h1>
                     </div>
                     <div class="flex items-center space-x-4">
                         <!-- 主题切换 -->
@@ -68,38 +68,38 @@
                 <form id="projectForm" class="space-y-8">
                     <!-- 基础信息 -->
                     <div class="space-y-6">
-                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">基础信息</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2" data-i18n="edgeai.createProject.basicInfo">基础信息</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2">项目名称 *</label>
+                                <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="edgeai.createProject.projectName">项目名称 *</label>
                                 <input type="text" id="projectName" name="projectName" required
                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                        placeholder="例如：图像识别训练项目">
                             </div>
                             <div>
-                                <label for="projectOwner" class="block text-sm font-medium text-gray-700 mb-2">项目负责人 *</label>
+                                <label for="projectOwner" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="edgeai.createProject.projectOwner">项目负责人 *</label>
                                 <input type="text" id="projectOwner" name="projectOwner" required
                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="输入负责人姓名">
+                                       placeholder="输入负责人姓名" data-i18n-placeholder="edgeai.createProject.projectOwnerPlaceholder">
                             </div>
                         </div>
 
                         <div>
-                            <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-2">项目描述</label>
+                            <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="edgeai.createProject.projectDescription">项目描述</label>
                             <textarea id="projectDescription" name="projectDescription" rows="3"
                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                      placeholder="描述项目的目标、用途和预期结果..."></textarea>
+                                      placeholder="描述项目的目标、用途和预期结果..." data-i18n-placeholder="edgeai.createProject.projectDescriptionPlaceholder"></textarea>
                         </div>
                     </div>
 
                     <!-- AI模型配置 -->
                     <div class="space-y-6">
-                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">AI模型配置</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2" data-i18n="edgeai.createProject.aiModelConfig">AI模型配置</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="modelType" class="block text-sm font-medium text-gray-700 mb-2">模型类型 *</label>
+                                <label for="modelType" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="edgeai.createProject.modelType">模型类型 *</label>
                                 <select id="modelType" name="modelType" required
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">选择模型类型...</option>
@@ -217,7 +217,7 @@
 
     <script src="../../shared/js/navigation-unified.js"></script>
     <script src="../../shared/js/theme-manager-unified.js"></script>
-    <script src="../../shared/js/i18n-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js?v=1756665500"></script>
     <script>
         // 表单提交处理
         document.getElementById('projectForm').addEventListener('submit', function(e) {

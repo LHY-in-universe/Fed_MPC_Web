@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
     
     <style>
         /* 修复眼睛按钮在深色模式下的颜色和位置 */
@@ -186,32 +186,46 @@
         
         // 快速登录功能
         function quickLogin(username, password) {
-            document.getElementById('username').value = username;
-            document.getElementById('password').value = password;
-            
-            // 根据用户名设置对应的用户类型
-            if (username.startsWith('client')) {
-                localStorage.setItem('aiUserType', 'client');
-                localStorage.setItem('userType', 'client');
-            } else if (username === 'server' || username === 'admin') {
-                localStorage.setItem('aiUserType', 'server');
-                localStorage.setItem('userType', 'server');
+            try {
+                document.getElementById('username').value = username;
+                document.getElementById('password').value = password;
+                
+                // 根据用户名设置对应的用户类型
+                if (username.startsWith('client')) {
+                    localStorage.setItem('aiUserType', 'client');
+                    localStorage.setItem('userType', 'client');
+                } else if (username === 'server' || username === 'admin') {
+                    localStorage.setItem('aiUserType', 'server');
+                    localStorage.setItem('userType', 'server');
+                }
+                
+                // 更新用户类型显示
+                const userTypeDisplay = document.getElementById('userTypeDisplay');
+                const userType = localStorage.getItem('aiUserType');
+                if (userTypeDisplay) {
+                    if (userType === 'client') {
+                        userTypeDisplay.textContent = '客户端登录';
+                    } else if (userType === 'server') {
+                        userTypeDisplay.textContent = '服务器管理登录';
+                    }
+                }
+                
+                // 创建一个模拟的事件对象并调用登录处理函数
+                const mockEvent = {
+                    preventDefault: () => {}
+                };
+                
+                // 确保handleLogin函数存在后再调用
+                if (typeof handleLogin === 'function') {
+                    handleLogin(mockEvent);
+                } else {
+                    console.error('handleLogin function not found');
+                    alert('登录功能加载失败，请刷新页面重试');
+                }
+            } catch (error) {
+                console.error('Quick login error:', error);
+                alert('快速登录出错：' + error.message);
             }
-            
-            // 更新用户类型显示
-            const userTypeDisplay = document.getElementById('userTypeDisplay');
-            const userType = localStorage.getItem('aiUserType');
-            if (userType === 'client') {
-                userTypeDisplay.textContent = '客户端登录';
-            } else if (userType === 'server') {
-                userTypeDisplay.textContent = '服务器管理登录';
-            }
-            
-            // 创建一个模拟的事件对象并调用登录处理函数
-            const mockEvent = {
-                preventDefault: () => {}
-            };
-            handleLogin(mockEvent);
         }
 
         // 页面初始化

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>选择联邦训练模式</title>
+    <title>选择分布式训练模式</title>
     <!-- ==================== 防白闪脚本 ==================== -->
     <script>
         (function() {
@@ -90,7 +90,7 @@
     </style>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
     
 </head>
 <body class="module-background min-h-screen theme-transition">
@@ -103,7 +103,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </button>
-                <span data-i18n="ai.training.federated.title">选择联邦训练模式</span>
+                <span data-i18n="ai.training.federated.title">选择分布式训练模式</span>
             </div>
             
             <div class="navbar-nav">
@@ -128,9 +128,9 @@
                     </svg>
                 </div>
             </div>
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-i18n="ai.training.federated.title">联邦训练模式选择</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-i18n="ai.training.federated.title">分布式训练模式选择</h2>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto" data-i18n="ai.training.federated.subtitle">
-                根据您的隐私需求和训练目标，选择最适合的联邦学习方案
+                根据您的隐私需求和训练目标，选择最适合的分布式训练方案
             </p>
         </div>
 
@@ -144,9 +144,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4" data-i18n="ai.training.federated.standard">标准联邦学习</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4" data-i18n="ai.training.federated.standard">分布式训练</h3>
                     <p class="text-gray-600 mb-6" data-i18n="ai.training.federated.standardDesc">
-                        传统的联邦学习模式，在保护数据隐私的同时，允许查看全局训练进度和统计信息
+                        传统的分布式训练模式，在保护数据隐私的同时，允许查看全局训练进度和统计信息
                     </p>
 
                     <!-- Features -->
@@ -192,7 +192,7 @@
                     </div>
 
                     <div class="text-gray-700 font-semibold text-lg">
-                        <span data-i18n="ai.training.federated.selectStandard">选择标准联邦学习</span> →
+                        <span data-i18n="ai.training.federated.selectStandard">选择分布式训练</span> →
                     </div>
                 </div>
             </div>
@@ -205,7 +205,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4" data-i18n="ai.training.federated.mpc">MPC联邦学习</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4" data-i18n="ai.training.federated.mpc">MPC加密分布训练</h3>
                     <p class="text-gray-600 mb-6" data-i18n="ai.training.federated.mpcDesc">
                         多方安全计算模式，提供最高级别的隐私保护，只能查看自己的训练进度
                     </p>
@@ -253,7 +253,7 @@
                     </div>
 
                     <div class="text-gray-700 font-semibold text-lg">
-                        <span data-i18n="ai.training.federated.selectMPC">选择MPC联邦学习</span> →
+                        <span data-i18n="ai.training.federated.selectMPC">选择MPC加密分布训练</span> →
                     </div>
                 </div>
             </div>
@@ -267,8 +267,8 @@
                     <thead>
                         <tr class="border-b border-gray-200 table-row">
                             <th class="text-left py-3 px-4 font-semibold text-gray-900" data-i18n="ai.training.federated.feature">特性</th>
-                            <th class="text-center py-3 px-4 font-semibold text-gray-600" data-i18n="ai.training.federated.standard">标准联邦学习</th>
-                            <th class="text-center py-3 px-4 font-semibold text-gray-600" data-i18n="ai.training.federated.mpc">MPC联邦学习</th>
+                            <th class="text-center py-3 px-4 font-semibold text-gray-600" data-i18n="ai.training.federated.standard">分布式训练</th>
+                            <th class="text-center py-3 px-4 font-semibold text-gray-600" data-i18n="ai.training.federated.mpc">MPC加密分布训练</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
@@ -316,8 +316,8 @@
                 <div>
                     <h4 class="font-semibold text-gray-900 mb-2" data-i18n="ai.training.federated.recommendations">选择建议</h4>
                     <ul class="text-sm text-gray-700 space-y-1">
-                        <li data-i18n="ai.training.federated.recommendation1">• 如果您希望了解整体训练进展和参与方情况，选择<strong>标准联邦学习</strong></li>
-                        <li data-i18n="ai.training.federated.recommendation2">• 如果您的数据极其敏感，只关心自己的训练效果，选择<strong>MPC联邦学习</strong></li>
+                        <li data-i18n="ai.training.federated.recommendation1">• 如果您希望了解整体训练进展和参与方情况，选择<strong>分布式训练</strong></li>
+                        <li data-i18n="ai.training.federated.recommendation2">• 如果您的数据极其敏感，只关心自己的训练效果，选择<strong>MPC加密分布训练</strong></li>
                         <li data-i18n="ai.training.federated.recommendation3">• MPC模式下训练时间可能会更长，但隐私保护更加严格</li>
                         <li data-i18n="ai.training.federated.recommendation4">• 两种模式都确保您的原始数据不会离开本地环境</li>
                     </ul>

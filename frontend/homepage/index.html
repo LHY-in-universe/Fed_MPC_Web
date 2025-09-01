@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>联邦学习与多方计算平台</title>
+    <title>OpenTMP多方计算平台</title>
     <!-- ==================== 防白闪脚本 ==================== -->
     <script>
         (function() {
@@ -74,7 +74,7 @@
     </style>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756673000">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
@@ -111,15 +111,19 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
-        /* 高级模块卡片 */
-        .premium-module-card {
-            position: relative;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-primary);
-            border-radius: 24px;
-            padding: 40px 32px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
+        /* 高级模块卡片 - 强制圆角 */
+        .premium-module-card,
+        html .premium-module-card,
+        body .premium-module-card {
+            position: relative !important;
+            background: var(--bg-primary) !important;
+            border: 1px solid var(--border-primary) !important;
+            border-radius: 32px !important;
+            -webkit-border-radius: 32px !important;
+            -moz-border-radius: 32px !important;
+            padding: 40px 32px !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            overflow: hidden !important;
         }
         
         .premium-module-card::before {
@@ -152,7 +156,7 @@
             width: 80px;
             height: 80px;
             background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            border-radius: 20px;
+            border-radius: 20px !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -288,14 +292,104 @@
             color: var(--text-secondary);
         }
 
-        /* 模块卡片特殊样式 */
-        [data-theme="dark"] .premium-module-card {
+        /* 模块卡片特殊样式 - 强制深色模式圆角 */
+        [data-theme="dark"] .premium-module-card,
+        html[data-theme="dark"] .premium-module-card,
+        body[data-theme="dark"] .premium-module-card {
             background: var(--bg-primary) !important;
             border: 1px solid var(--border-primary) !important;
+            border-radius: 32px !important;
+            -webkit-border-radius: 32px !important;
+            -moz-border-radius: 32px !important;
         }
 
         [data-theme="dark"] .bg-gradient-to-r {
             background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
+        }
+
+        /* 强制所有卡片内部元素圆角 - 解决直角边框问题 */
+        .premium-module-card *,
+        .premium-module-card .premium-icon-container,
+        .premium-module-card .module-description,
+        .premium-module-card div,
+        .premium-module-card span,
+        .premium-module-card p,
+        .premium-module-card h3,
+        html .premium-module-card *,
+        body .premium-module-card * {
+            border-radius: 16px !important;
+            -webkit-border-radius: 16px !important;
+            -moz-border-radius: 16px !important;
+        }
+
+        /* 图标容器特殊圆角 */
+        .premium-icon-container,
+        html .premium-icon-container,
+        body .premium-icon-container,
+        .premium-module-card .premium-icon-container {
+            border-radius: 24px !important;
+            -webkit-border-radius: 24px !important;
+            -moz-border-radius: 24px !important;
+        }
+
+        /* 卡片本身保持更大的圆角 - 最高优先级 */
+        .premium-module-card,
+        html .premium-module-card,
+        body .premium-module-card,
+        div.premium-module-card {
+            border-radius: 32px !important;
+            -webkit-border-radius: 32px !important;
+            -moz-border-radius: 32px !important;
+        }
+
+        /* 完全移除所有边框 - 直接删除而不是圆角 */
+        .premium-module-card *,
+        .premium-module-card .module-description,
+        .premium-module-card p,
+        .premium-module-card span,
+        .premium-module-card div,
+        html .premium-module-card *,
+        body .premium-module-card *,
+        .premium-module-card,
+        html .premium-module-card,
+        body .premium-module-card {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }
+
+        /* 只为主卡片添加背景和圆角，内部元素完全透明 */
+        .premium-module-card {
+            background: var(--bg-elevated) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 32px !important;
+            border: none !important;
+        }
+
+        /* 强制删除描述框的所有边框和背景 */
+        .module-description,
+        p.module-description,
+        .premium-module-card .module-description,
+        html .module-description,
+        body .module-description,
+        html p.module-description,
+        body p.module-description {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: none !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            backdrop-filter: none !important;
+        }
+
+        /* 移除所有可能的伪元素边框 */
+        .module-description::before,
+        .module-description::after {
+            display: none !important;
+            border: none !important;
+            background: none !important;
         }
     </style>
 </head>
@@ -310,7 +404,7 @@
                     </svg>
                 </div>
                 <div class="navbar-brand text-xl font-bold">
-                    <span data-i18n="homepage.title">联邦学习与多方计算平台</span>
+                    <span data-i18n="homepage.title">OpenTMP多方计算平台</span>
                 </div>
             </div>
             
@@ -329,7 +423,7 @@
             <!-- 主标题区域 -->
             <div class="text-center mb-20 fade-in-up">
                 <h1 class="hero-title text-5xl md:text-7xl font-extrabold mb-8 leading-tight" data-i18n="homepage.title">
-                    联邦学习与多方计算平台
+                    OpenTMP多方计算平台
                 </h1>
                 <p class="hero-subtitle text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed" style="color: var(--text-secondary) !important; font-weight: 600 !important;" data-i18n="homepage.subtitle">
                     安全、高效的分布式机器学习解决方案
@@ -393,7 +487,7 @@
     <script src="../shared/js/navigation-unified.js?v=20250827"></script>
     <script src="../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../shared/js/router-unified.js?v=20250827"></script>
-    <script src="../shared/js/i18n-manager.js?v=20250827"></script>
+    <script src="../shared/js/i18n-manager.js?v=20250831004"></script>
     <script>
         function selectBusinessType(type) {
             localStorage.setItem('businessType', type);

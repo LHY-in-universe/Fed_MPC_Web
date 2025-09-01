@@ -9,7 +9,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
     
     <style>
         /* EdgeAI控制台深色模式样式 */
@@ -244,17 +244,17 @@
                 <h3 class="text-xl font-semibold text-gray-900" data-i18n="edgeai.dashboard.projects">我的项目</h3>
                 <div class="flex items-center gap-4">
                     <div class="relative">
-                        <input type="text" id="searchInput" placeholder="搜索项目..." class="input pl-10 pr-4 py-2 w-64">
+                        <input type="text" id="searchInput" placeholder="搜索项目..." data-i18n-placeholder="edgeai.dashboard.searchProjects" class="input pl-10 pr-4 py-2 w-64">
                         <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                     <select id="statusFilter" class="input py-2 px-3">
-                        <option value="">全部状态</option>
-                        <option value="active">活跃</option>
-                        <option value="training">训练中</option>
-                        <option value="idle">空闲</option>
-                        <option value="error">错误</option>
+                        <option value="" data-i18n="edgeai.dashboard.allStatuses">全部状态</option>
+                        <option value="active" data-i18n="edgeai.dashboard.active">活跃</option>
+                        <option value="training" data-i18n="edgeai.dashboard.training">训练中</option>
+                        <option value="idle" data-i18n="edgeai.dashboard.idle">空闲</option>
+                        <option value="error" data-i18n="edgeai.dashboard.error">错误</option>
                     </select>
                 </div>
             </div>
@@ -286,7 +286,7 @@
     </button>
 
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
-    <script src="../../shared/js/i18n-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js?v=1756665500"></script>
     <script src="../../shared/js/router-unified.js?v=20250827"></script>
     
     <script>
@@ -395,12 +395,12 @@
                     
                     <div class="space-y-3">
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">连接节点：</span>
+                            <span class="text-gray-500" data-i18n="edgeai.dashboard.connectedNodes">连接节点：</span>
                             <span class="font-medium">${project.nodes}个</span>
                         </div>
                         
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">训练进度：</span>
+                            <span class="text-gray-500" data-i18n="edgeai.dashboard.trainingProgress">训练进度：</span>
                             <span class="font-medium">${project.progress}%</span>
                         </div>
                         
@@ -409,8 +409,8 @@
                         </div>
                         
                         <div class="flex items-center justify-between text-xs text-gray-400 mt-4">
-                            <span>创建：${project.created}</span>
-                            <span>更新：${project.lastUpdate}</span>
+                            <span><span data-i18n="edgeai.dashboard.created">创建：</span>${project.created}</span>
+                            <span><span data-i18n="edgeai.dashboard.updated">更新：</span>${project.lastUpdate}</span>
                         </div>
                     </div>
                     
@@ -469,7 +469,10 @@
         function openProject(projectId) {
             console.log('打开项目:', projectId);
             // 这里应该跳转到项目详情页面
-            alert(`打开项目 ${projectId} 详情页面\n\n将显示：\n- 项目概览\n- 节点列表\n- 训练进度\n- 性能指标`);
+            const message = window.i18nManager && window.i18nManager.getCurrentLanguage() === 'en' 
+                ? `Open Project ${projectId} Details\n\nWill show:\n- Project Overview\n- Node List\n- Training Progress\n- Performance Metrics`
+                : `打开项目 ${projectId} 详情页面\n\n将显示：\n- 项目概览\n- 节点列表\n- 训练进度\n- 性能指标`;
+            alert(message);
         }
 
         function openVisualization(projectId) {
@@ -480,19 +483,31 @@
 
         function editProject(projectId) {
             console.log('编辑项目:', projectId);
-            alert(`编辑项目 ${projectId}\n\n将提供：\n- 修改项目名称和描述\n- 调整训练参数\n- 管理节点连接\n- 更新配置设置`);
+            const message = window.i18nManager && window.i18nManager.getCurrentLanguage() === 'en' 
+                ? `Edit Project ${projectId}\n\nWill provide:\n- Modify project name and description\n- Adjust training parameters\n- Manage node connections\n- Update configuration settings`
+                : `编辑项目 ${projectId}\n\n将提供：\n- 修改项目名称和描述\n- 调整训练参数\n- 管理节点连接\n- 更新配置设置`;
+            alert(message);
         }
 
         function deleteProject(projectId) {
             console.log('删除项目:', projectId);
-            if (confirm('确定要删除这个项目吗？此操作不可撤销！')) {
-                alert(`项目 ${projectId} 已删除\n\n注意：\n- 所有训练数据将被清除\n- 节点连接将断开\n- 相关日志将被归档`);
+            const confirmMsg = window.i18nManager && window.i18nManager.getCurrentLanguage() === 'en' 
+                ? 'Are you sure you want to delete this project? This operation cannot be undone!'
+                : '确定要删除这个项目吗？此操作不可撤销！';
+            if (confirm(confirmMsg)) {
+                const alertMsg = window.i18nManager && window.i18nManager.getCurrentLanguage() === 'en' 
+                    ? `Project ${projectId} deleted\n\nNote:\n- All training data will be cleared\n- Node connections will be disconnected\n- Related logs will be archived`
+                    : `项目 ${projectId} 已删除\n\n注意：\n- 所有训练数据将被清除\n- 节点连接将断开\n- 相关日志将被归档`;
+                alert(alertMsg);
                 // 在实际应用中，这里会调用删除API
             }
         }
 
         function viewAllActivity() {
-            alert('活动历史功能开发中...\n\n将显示：\n- 完整活动时间线\n- 可筛选的活动类型\n- 详细的操作日志\n- 导出活动报告');
+            const message = window.i18nManager && window.i18nManager.getCurrentLanguage() === 'en' 
+                ? 'Activity history feature in development...\n\nWill display:\n- Complete activity timeline\n- Filterable activity types\n- Detailed operation logs\n- Export activity reports'
+                : '活动历史功能开发中...\n\n将显示：\n- 完整活动时间线\n- 可筛选的活动类型\n- 详细的操作日志\n- 导出活动报告';
+            alert(message);
         }
 
         function logout() {

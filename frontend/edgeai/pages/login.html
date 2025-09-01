@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EdgeAI登录</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756626102">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
     
     <style>
         /* 修复眼睛按钮在深色模式下的颜色和位置 */
@@ -177,7 +177,7 @@
     <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/router-unified.js?v=20250827"></script>
-    <script src="../../shared/js/i18n-manager.js"></script>
+    <script src="../../shared/js/i18n-manager.js?v=1756665500"></script>
     <script>
         // 确保goHome函数可用（备用实现）
         window.goHome = window.goHome || function() {
@@ -270,23 +270,20 @@
             errorMessage.classList.remove('hidden');
         }
 
-        // 页面初始化时应用翻译
+        // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 应用翻译到placeholder
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
+            console.log('🌐 EdgeAI登录页面初始化');
             
-            // 监听语言变更事件来更新placeholder
-            window.addEventListener('languageChanged', function(e) {
-                const lang = e.detail.language;
-                if (lang === 'en') {
-                    usernameInput.placeholder = 'Enter your username';
-                    passwordInput.placeholder = 'Enter your password';
+            // 测试翻译加载
+            setTimeout(() => {
+                if (window.i18nManager) {
+                    console.log('✅ i18n管理器已加载');
+                    console.log('当前语言:', window.i18nManager.getCurrentLanguage());
+                    console.log('测试EdgeAI翻译:', window.i18nManager.getTranslation('edgeai.title'));
                 } else {
-                    usernameInput.placeholder = '请输入您的用户名';
-                    passwordInput.placeholder = '请输入您的密码';
+                    console.warn('⚠️ i18n管理器未找到');
                 }
-            });
+            }, 1000);
             
             // 确保goHome函数可用
             setTimeout(() => {

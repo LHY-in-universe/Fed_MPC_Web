@@ -295,7 +295,7 @@ button:active {
 
 .card {
     background: var(--bg-primary);
-    border: 1px solid var(--border-primary);
+    border: none !important;
     border-radius: 16px;
     padding: 32px;
     box-shadow: var(--shadow-sm);
@@ -505,6 +505,90 @@ html[data-theme="dark"] div {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* EdgeAI页面深色模式优化样式 */
+[data-theme="dark"] .text-gray-800 {
+    color: #f3f4f6 !important;
+}
+
+[data-theme="dark"] .text-blue-600 {
+    color: #93c5fd !important;
+}
+
+[data-theme="dark"] .text-blue-600:hover {
+    color: #bfdbfe !important;
+}
+
+[data-theme="dark"] .text-red-600 {
+    color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .text-red-600:hover {
+    color: #fecaca !important;
+}
+
+/* 深色模式下的模态框和大容器样式 */
+[data-theme="dark"] .max-w-4xl.card,
+[data-theme="dark"] .max-w-4xl {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+/* 深色模式下的表单输入样式 */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+}
+
+/* 通用颜色和背景类 */
+.bg-primary {
+    background-color: var(--bg-primary) !important;
+}
+
+.bg-elevated {
+    background-color: var(--bg-elevated) !important;
+}
+
+.bg-tertiary {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--text-tertiary) !important;
+}
+
+.border-primary {
+    border-color: var(--border-primary) !important;
+}
+
+/* 页面容器样式 */
+.page-container {
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+}
+
+.page-nav {
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-primary);
+}
+
 /* 深色模式下的眼睛按钮样式 - 全局优先级最高 */
 html[data-theme="dark"] body #togglePassword,
 html[data-theme="dark"] body button#togglePassword,
@@ -550,11 +634,44 @@ html[data-theme="dark"] body button#togglePassword svg * {
 }
 
 [data-theme="dark"] .bg-gray-100 {
-    background: var(--bg-tertiary) !important;
+    background: rgba(55, 65, 81, 0.5) !important;
+    color: #d1d5db !important;
 }
 
 [data-theme="dark"] .bg-gray-200 {
-    background: var(--bg-tertiary) !important;
+    background: rgba(75, 85, 99, 0.6) !important;
+    color: #e5e7eb !important;
+}
+
+/* 深色模式下的标签样式 */
+[data-theme="dark"] .bg-blue-100 {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #93c5fd !important;
+}
+
+[data-theme="dark"] .bg-green-100 {
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+}
+
+[data-theme="dark"] .bg-purple-100 {
+    background: rgba(168, 85, 247, 0.2) !important;
+    color: #c084fc !important;
+}
+
+[data-theme="dark"] .bg-orange-100 {
+    background: rgba(249, 115, 22, 0.2) !important;
+    color: #fb923c !important;
+}
+
+[data-theme="dark"] .bg-red-100 {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .bg-cyan-100 {
+    background: rgba(6, 182, 212, 0.2) !important;
+    color: #67e8f9 !important;
 }
 
 /* 边框色统一 */
@@ -622,4 +739,199 @@ html[data-theme="dark"] body button#togglePassword svg * {
 
 ::-webkit-scrollbar-thumb:hover { 
     background: var(--text-tertiary); 
+}
+
+/* ====================== 全局圆角修复 - 移除所有直角边框 ====================== */
+
+/* 所有卡片和容器元素的圆角统一设置 */
+.card, .blockchain-card, .module-card, .premium-module-card, 
+.dashboard-card, .stats-card, .feature-card, .client-card,
+html .card, html .blockchain-card, html .module-card, html .premium-module-card,
+html .dashboard-card, html .stats-card, html .feature-card, html .client-card,
+body .card, body .blockchain-card, body .module-card, body .premium-module-card,
+body .dashboard-card, body .stats-card, body .feature-card, body .client-card {
+    border-radius: 16px !important;
+    -webkit-border-radius: 16px !important;
+    -moz-border-radius: 16px !important;
+}
+
+/* 按钮和交互元素的圆角 */
+.btn, .button, .btn-primary, .btn-secondary, .btn-click,
+.theme-toggle, .language-toggle,
+html .btn, html .button, html .btn-primary, html .btn-secondary, html .btn-click,
+html .theme-toggle, html .language-toggle,
+body .btn, body .button, body .btn-primary, body .btn-secondary, body .btn-click,
+body .theme-toggle, body .language-toggle {
+    border-radius: 12px !important;
+    -webkit-border-radius: 12px !important;
+    -moz-border-radius: 12px !important;
+}
+
+/* 输入框和表单元素的圆角 */
+input, textarea, select, .form-control, .form-input,
+html input, html textarea, html select, html .form-control, html .form-input,
+body input, body textarea, body select, body .form-control, body .form-input {
+    border-radius: 8px !important;
+    -webkit-border-radius: 8px !important;
+    -moz-border-radius: 8px !important;
+}
+
+/* 图标容器的圆角 */
+.icon-container, .premium-icon-container, .feature-icon,
+html .icon-container, html .premium-icon-container, html .feature-icon,
+body .icon-container, body .premium-icon-container, body .feature-icon {
+    border-radius: 20px !important;
+    -webkit-border-radius: 20px !important;
+    -moz-border-radius: 20px !important;
+}
+
+/* 导航栏和头部元素的圆角 */
+.navbar, .nav-item, .navbar-brand,
+html .navbar, html .nav-item, html .navbar-brand,
+body .navbar, body .nav-item, body .navbar-brand {
+    border-radius: 0 !important;
+}
+
+/* 模态框和弹出框的圆角 */
+.modal-content, .dropdown-menu, .popover, .tooltip,
+html .modal-content, html .dropdown-menu, html .popover, html .tooltip,
+body .modal-content, body .dropdown-menu, body .popover, body .tooltip {
+    border-radius: 12px !important;
+    -webkit-border-radius: 12px !important;
+    -moz-border-radius: 12px !important;
+}
+
+/* 特殊的大圆角卡片 */
+.premium-module-card, .hero-card, .main-card,
+html .premium-module-card, html .hero-card, html .main-card,
+body .premium-module-card, body .hero-card, body .main-card {
+    border-radius: 24px !important;
+    -webkit-border-radius: 24px !important;
+    -moz-border-radius: 24px !important;
+}
+
+/* 移除所有可能的直角边框和阴影 */
+* {
+    box-sizing: border-box;
+}
+
+/* 确保所有元素至少有基础圆角 */
+div:not(.navbar):not(.nav-item), span, p, h1, h2, h3, h4, h5, h6 {
+    border-radius: 4px;
+}
+
+/* 强制移除Bootstrap和其他框架的直角样式 */
+.rounded-0, .border-0 {
+    border-radius: 8px !important;
+}
+
+.rounded, .rounded-sm, .rounded-lg, .rounded-xl {
+    border-radius: 12px !important;
+}
+
+/* ====================== 全局强制删除所有边框 - 最高优先级 ====================== */
+
+/* 删除所有可能的边框源头 */
+*,
+*::before,
+*::after,
+html *,
+body *,
+div,
+span,
+p,
+h1, h2, h3, h4, h5, h6,
+.card,
+.module-card,
+.blockchain-card,
+.premium-module-card,
+.dashboard-card,
+.stats-card,
+.feature-card,
+.client-card,
+.module-description,
+p.module-description {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* 强制删除所有可能产生视觉边框的CSS属性 - 超高优先级 */
+*,
+html *,
+body *,
+.card,
+html .card,
+body .card,
+.premium-module-card,
+html .premium-module-card,
+body .premium-module-card {
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+}
+
+/* ====================== 全局主题适应卡片样式覆盖 ====================== */
+
+/* 所有卡片元素的主题适应样式 - 覆盖之前的边框移除规则 */
+.card,
+html .card,
+body .card,
+.module-card,
+html .module-card,
+body .module-card,
+.premium-module-card,
+html .premium-module-card,
+body .premium-module-card {
+    /* 浅色模式边框 - 覆盖之前的none设置 */
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    transition: border-color 0.3s ease !important;
+}
+
+/* 深色模式下的卡片边框 - 更微妙 */
+[data-theme="dark"] .card,
+[data-theme="dark"] html .card,
+[data-theme="dark"] body .card,
+[data-theme="dark"] .module-card,
+[data-theme="dark"] html .module-card,
+[data-theme="dark"] body .module-card,
+[data-theme="dark"] .premium-module-card,
+[data-theme="dark"] html .premium-module-card,
+[data-theme="dark"] body .premium-module-card {
+    border: 1px solid rgba(55, 65, 81, 0.15) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: rgba(55, 65, 81, 0.15) !important;
+}
+
+/* 卡片悬停效果 */
+.card:hover,
+.module-card:hover,
+.premium-module-card:hover {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="dark"] .card:hover,
+[data-theme="dark"] .module-card:hover,
+[data-theme="dark"] .premium-module-card:hover {
+    border-color: rgba(55, 65, 81, 0.25) !important;
+}
+
+/* 保持伪元素样式但不影响卡片边框 */
+*:not(.card):not(.module-card):not(.premium-module-card)::before,
+*:not(.card):not(.module-card):not(.premium-module-card)::after {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: none !important;
+    content: none !important;
+    display: none !important;
 }

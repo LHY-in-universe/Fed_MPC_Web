@@ -243,8 +243,8 @@ body {
 .card,
 .premium-module-card {
     background: var(--bg-primary);
-    border: 1px solid var(--border-primary);
-    border-radius: 16px;
+    border: none !important;
+    border-radius: 16px !important;
     padding: 32px;
     box-shadow: var(--shadow-md);
     position: relative;
@@ -723,10 +723,17 @@ body[data-theme="dark"].module-background,
 .module-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 16px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
+}
+
+/* 深色模式下的module-card */
+[data-theme="dark"] .module-card {
+    background: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(55, 65, 81, 0.15);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 .module-card:hover {
