@@ -1,0 +1,3148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="edgeai.visualization.title">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2PAI项目可视化</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    
+    <style>
+        /* 可视化容器 */
+        .visualization-container {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* SVG样式 */
+        .node-svg {
+            width: 100%;
+            height: 600px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            pointer-events: auto;
+            overflow: hidden;
+        }
+        
+        /* 节点样式 */
+        .control-node {
+            fill: #10b981;
+            stroke: #059669;
+            stroke-width: 3;
+            cursor: pointer;
+            transition: fill 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease;
+            transform-origin: center;
+            transform: none !important;
+            position: static !important;
+        }
+        
+        .control-node:hover {
+            fill: #059669;
+            stroke: #047857;
+            stroke-width: 4;
+        }
+        
+        /* P2PAI节点样式：基于节点所有权和状态 */
+        .edge-node {
+            stroke-width: 2;
+            cursor: pointer;
+            transition: fill 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease;
+            transform-origin: center;
+            transform: none !important;
+            position: static !important;
+        }
+        
+        /* 自己的节点 - 红色，可以看到详细状态 */
+        .edge-node.own-node {
+            fill: #ef4444;
+            stroke: #dc2626;
+            stroke-width: 3;
+        }
+        
+        .edge-node.own-node:hover {
+            fill: #dc2626;
+            stroke: #b91c1c;
+            stroke-width: 4;
+        }
+        
+        /* 其他节点在线 - 绿色 */
+        .edge-node.other-online {
+            fill: #10b981;
+            stroke: #059669;
+        }
+        
+        .edge-node.other-online:hover {
+            fill: #059669;
+            stroke: #047857;
+            stroke-width: 3;
+        }
+        
+        /* 其他节点离线 - 灰色 */
+        .edge-node.other-offline {
+            fill: #6b7280;
+            stroke: #4b5563;
+            opacity: 0.6;
+        }
+        
+        .edge-node.other-offline:hover {
+            fill: #4b5563;
+            stroke: #374151;
+            stroke-width: 3;
+        }
+        
+        .edge-node:hover {
+            stroke-width: 3;
+        }
+        
+        /* 连接线样式 */
+        .connection-line {
+            stroke: rgba(107, 114, 128, 0.3);
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.3s ease;
+        }
+        
+        .connection-line.active {
+            stroke: #10b981;
+            stroke-width: 3;
+            animation: pulse-line 2s infinite;
+        }
+        
+        .connection-line.inactive {
+            stroke: rgba(107, 114, 128, 0.2);
+            stroke-width: 1;
+            stroke-dasharray: 8,4;
+            opacity: 0.6;
+        }
+        
+        /* 发光动画 */
+        @keyframes pulse-line {
+            0% { stroke-opacity: 0.3; }
+            50% { stroke-opacity: 1; }
+            100% { stroke-opacity: 0.3; }
+        }
+        
+        @keyframes data-flow {
+            0% { stroke-dashoffset: 20; }
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        .data-flow {
+            stroke-dasharray: 5,5;
+            animation: data-flow 1s linear infinite;
+        }
+        
+        /* 节点标签 */
+        .node-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: currentColor;
+        }
+        
+        /* 进度指示器 */
+        .progress-ring {
+            fill: none;
+            stroke-width: 4;
+            stroke: #e5e7eb;
+        }
+        
+        .progress-ring.active {
+            stroke: #3b82f6;
+            stroke-dasharray: 94.2; /* 2π * 15 */
+            stroke-dashoffset: 94.2;
+            animation: progress-animation 2s ease-in-out;
+        }
+        
+        @keyframes progress-animation {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        /* 节点动画效果 */
+        .node-fade-in {
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInScale 0.6s ease-out forwards;
+        }
+        
+        .node-fade-out {
+            opacity: 1;
+            transform: scale(1);
+            animation: fadeOutScale 0.4s ease-in forwards;
+        }
+        
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeOutScale {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+        
+        /* 训练完成状态样式 */
+        .training-complete-title {
+            font-size: 32px;
+            font-weight: bold;
+            fill: #10b981;
+            opacity: 0;
+            animation: celebrationFadeIn 1s ease-out 0.5s forwards;
+        }
+        
+        .training-complete-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            fill: #059669;
+            opacity: 0;
+            animation: celebrationFadeIn 1s ease-out 1s forwards;
+        }
+        
+        .training-complete-stats {
+            font-size: 14px;
+            fill: #6b7280;
+            opacity: 0;
+            animation: celebrationFadeIn 1s ease-out 1.5s forwards;
+        }
+        
+        @keyframes celebrationFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 深色模式适配 */
+        [data-theme="dark"] .visualization-container {
+            background: rgba(31, 41, 55, 0.8);
+            border-color: rgba(75, 85, 99, 0.4);
+        }
+        
+        [data-theme="dark"] .node-label {
+            fill: #f9fafb;
+        }
+        
+        [data-theme="dark"] .connection-line {
+            stroke: rgba(156, 163, 175, 0.4);
+        }
+        
+        [data-theme="dark"] .connection-line.inactive {
+            stroke: rgba(156, 163, 175, 0.2);
+            opacity: 0.4;
+        }
+        
+        /* 控制面板 */
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 24px;
+            width: 440px;
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+        }
+        
+        [data-theme="dark"] .control-panel {
+            background: rgba(31, 41, 55, 0.9);
+            border-color: rgba(75, 85, 99, 0.4);
+        }
+        
+        /* 节点详情面板 */
+        .node-details {
+            position: absolute;
+            top: 20px;
+            right: 480px;
+            width: 360px;
+            max-height: 560px;
+            overflow-y: auto;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(calc(100% + 500px));
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .node-details.show {
+            transform: translateX(0);
+        }
+        
+        [data-theme="dark"] .node-details {
+            background: rgba(31, 41, 55, 0.95);
+            border-color: rgba(75, 85, 99, 0.4);
+            color: rgba(243, 244, 246, 0.9);
+        }
+        
+        /* 深色模式下节点详情面板内容样式 */
+        [data-theme="dark"] .node-details .space-y-3 > div {
+            background-color: rgba(55, 65, 81, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin: 4px 0;
+        }
+        
+        [data-theme="dark"] .node-details h4 {
+            color: rgba(243, 244, 246, 0.9);
+        }
+        
+        [data-theme="dark"] .node-details .text-sm {
+            color: rgba(156, 163, 175, 0.9);
+        }
+        
+        [data-theme="dark"] .node-details .font-semibold {
+            color: rgba(243, 244, 246, 0.95);
+        }
+        
+        /* 概览卡片 */
+        .overview-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        [data-theme="dark"] .overview-card {
+            background: rgba(31, 41, 55, 0.9);
+            border-color: rgba(75, 85, 99, 0.4);
+        }
+        
+        /* 深色模式下的表格和卡片样式 */
+        [data-theme="dark"] table {
+            background: rgba(31, 41, 55, 0.9);
+        }
+        
+        [data-theme="dark"] .bg-white {
+            background-color: rgba(31, 41, 55, 0.8) !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-50 {
+            background-color: rgba(55, 65, 81, 0.8) !important;
+        }
+        
+        [data-theme="dark"] .hover\:bg-gray-50:hover {
+            background-color: rgba(75, 85, 99, 0.6) !important;
+        }
+        
+        [data-theme="dark"] .text-gray-900 {
+            color: rgba(243, 244, 246, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .text-gray-600 {
+            color: rgba(156, 163, 175, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .text-gray-500 {
+            color: rgba(107, 114, 128, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .border-gray-200 {
+            border-color: rgba(75, 85, 99, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+            border-color: rgba(75, 85, 99, 0.4) !important;
+        }
+        
+        /* 深色模式下表格行背景 */
+        [data-theme="dark"] tbody tr {
+            background-color: rgba(31, 41, 55, 0.8) !important;
+        }
+        
+        [data-theme="dark"] tbody tr:hover {
+            background-color: rgba(75, 85, 99, 0.6) !important;
+        }
+        
+        /* 深色模式下按钮样式 */
+        [data-theme="dark"] .cursor-pointer:hover {
+            background-color: rgba(75, 85, 99, 0.6) !important;
+        }
+        
+        /* 深色模式下进度条 */
+        [data-theme="dark"] .bg-gray-200 {
+            background-color: rgba(55, 65, 81, 0.8) !important;
+        }
+        
+        /* 深色模式下状态标签背景 */
+        [data-theme="dark"] .bg-blue-100 {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-green-100 {
+            background-color: rgba(16, 185, 129, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-red-100 {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .bg-gray-100 {
+            background-color: rgba(55, 65, 81, 0.6) !important;
+        }
+        
+        /* 深色模式下链接和按钮颜色 */
+        [data-theme="dark"] .text-indigo-600 {
+            color: rgba(129, 140, 248, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .hover\:text-indigo-900:hover {
+            color: rgba(165, 180, 252, 0.9) !important;
+        }
+        
+        /* 深色模式下表格中的查看详情按钮 */
+        [data-theme="dark"] td button.text-indigo-600 {
+            background-color: transparent !important;
+            border-color: rgba(129, 140, 248, 0.5) !important;
+            color: rgba(129, 140, 248, 0.9) !important;
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+        
+        [data-theme="dark"] td button.text-indigo-600:hover {
+            background-color: rgba(55, 65, 81, 0.3) !important;
+            border-color: rgba(165, 180, 252, 0.8) !important;
+            color: rgba(165, 180, 252, 1) !important;
+        }
+        
+        [data-theme="dark"] thead {
+            background: rgba(55, 65, 81, 0.8);
+        }
+        
+        /* 详细信息模态卡片 */
+        .node-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .node-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .node-modal-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+        
+        .node-modal.show .node-modal-card {
+            transform: translateY(0) scale(1);
+        }
+        
+        /* 深色模式下的模态卡片 */
+        [data-theme="dark"] .node-modal-card {
+            background: rgba(31, 41, 55, 0.95);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            color: rgba(243, 244, 246, 0.9);
+        }
+
+        [data-theme="dark"] .node-modal-card .bg-gray-50 {
+            background: rgba(55, 65, 81, 0.6) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .text-gray-900 {
+            color: rgba(243, 244, 246, 0.9) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .text-gray-600 {
+            color: rgba(156, 163, 175, 0.9) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .text-gray-700 {
+            color: rgba(209, 213, 219, 0.9) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .bg-blue-100 {
+            background: rgba(55, 65, 81, 0.8) !important;
+            color: rgba(129, 140, 248, 0.9) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .bg-white {
+            background: rgba(75, 85, 99, 0.4) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .border-gray-200 {
+            border-color: rgba(75, 85, 99, 0.5) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .text-gray-400 {
+            color: rgba(156, 163, 175, 0.8) !important;
+        }
+
+        [data-theme="dark"] .node-modal-card .text-gray-500 {
+            color: rgba(107, 114, 128, 0.9) !important;
+        }
+        
+        /* 深色模式下的警告框样式 */
+        [data-theme="dark"] .node-modal-card .bg-yellow-50 {
+            background: rgba(92, 66, 0, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .node-modal-card .border-yellow-200 {
+            border-color: rgba(180, 83, 9, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .node-modal-card .text-yellow-600 {
+            color: rgba(251, 191, 36, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .node-modal-card .text-yellow-700 {
+            color: rgba(245, 158, 11, 0.9) !important;
+        }
+        
+        /* 深色模式下的信息框样式 */
+        [data-theme="dark"] .node-modal-card .bg-blue-50 {
+            background: rgba(30, 58, 138, 0.2) !important;
+        }
+        
+        [data-theme="dark"] .node-modal-card .border-blue-200 {
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        [data-theme="dark"] .node-modal-card .text-blue-800 {
+            color: rgba(147, 197, 253, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .node-modal-card .text-blue-700 {
+            color: rgba(96, 165, 250, 0.9) !important;
+        }
+
+        /* 深色模式下所有button元素的默认样式 */
+        [data-theme="dark"] button:not(.text-indigo-600) {
+            background-color: rgba(55, 65, 81, 0.7) !important;
+            border-color: rgba(75, 85, 99, 0.5) !important;
+            color: rgba(243, 244, 246, 0.9) !important;
+        }
+        
+        [data-theme="dark"] button:not(.text-indigo-600):hover {
+            background-color: rgba(75, 85, 99, 0.8) !important;
+        }
+        
+        /* 深色模式下的统计卡片文字 */
+        [data-theme="dark"] .text-center .text-sm {
+            color: rgba(156, 163, 175, 0.9) !important;
+        }
+        
+        [data-theme="dark"] tbody tr {
+            background: rgba(31, 41, 55, 0.8);
+            border-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        [data-theme="dark"] tbody tr:hover {
+            background: rgba(55, 65, 81, 0.6);
+        }
+        
+        [data-theme="dark"] th,
+        [data-theme="dark"] td {
+            color: rgba(243, 244, 246, 0.9);
+        }
+        
+        /* 项目信息头部暗色主题 */
+        [data-theme="dark"] .project-info-header .bg-white {
+            background: rgba(31, 41, 55, 0.9) !important;
+            border-color: rgba(75, 85, 99, 0.4) !important;
+        }
+        
+        [data-theme="dark"] .project-info-header h2 {
+            color: rgba(243, 244, 246, 0.95) !important;
+        }
+        
+        [data-theme="dark"] .project-info-header p {
+            color: rgba(156, 163, 175, 0.9) !important;
+        }
+    </style>
+</head>
+<body class="module-background theme-transition">
+    <!-- Navigation -->
+    <nav class="navbar fade-in-up">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="navbar-brand">
+                <button onclick="goBack()" class="btn btn-secondary mr-3 btn-click">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    返回
+                </button>
+                <span>P2PAI项目可视化</span>
+                <span id="projectName" class="ml-2 text-sm text-gray-600"></span>
+            </div>
+            
+            <div class="navbar-nav">
+                <button class="theme-toggle" title="切换主题">
+                    <span>🌙</span>
+                </button>
+                <button class="language-toggle" title="切换语言">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-8 content-area">
+        <!-- 项目信息区域 -->
+        <div class="project-info-header mb-8 fade-in-up">
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                        <h2 id="projectTitle" class="text-2xl font-bold text-gray-900 mb-2">分布式训练项目</h2>
+                        <p id="projectDescription" class="text-gray-600 mb-4">基于P2PAI的多方计算训练系统，实现隐私保护的分布式机器学习和模型协同训练。</p>
+                        
+                        <div class="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm">
+                            <div class="flex items-center whitespace-nowrap">
+                                <div id="statusDot" class="w-2 h-2 bg-green-500 rounded-full mr-2 flex-shrink-0"></div>
+                                <span class="text-gray-500">状态：</span>
+                                <span id="projectStatus" class="font-semibold text-green-600 ml-2">训练中</span>
+                            </div>
+                            <div class="flex items-center whitespace-nowrap">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span class="text-gray-500">创建时间：</span>
+                                <span id="projectCreated" class="font-medium ml-2">2024-01-15</span>
+                            </div>
+                            <div class="flex items-center whitespace-nowrap">
+                                <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                <span class="text-gray-500">最后更新：</span>
+                                <span id="projectUpdated" class="font-medium ml-2">2小时前</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4 ml-6">
+                        <!-- 整体进度圆环 -->
+                        <div class="relative w-20 h-20">
+                            <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-gray-200"></circle>
+                                <circle id="progressCircle" cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="62.8" class="text-green-500 transition-all duration-500"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="overallProgress" class="text-lg font-bold text-gray-900">75%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 快速统计 -->
+                        <div class="text-right space-y-1">
+                            <div class="text-2xl font-bold text-gray-900" id="quickNodeCount">15</div>
+                            <div class="text-sm text-gray-500">参与方总数</div>
+                            <div class="text-sm">
+                                <span class="text-green-600 font-semibold" id="quickOnlineCount">12</span> 在线
+                                <span class="text-gray-400">/</span> 
+                                <span class="text-red-600 font-semibold">1</span> 我的节点
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 项目配置信息 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500 mb-1">AI模型</div>
+                        <div class="font-semibold text-gray-900" id="aiModelType">CNN深度学习</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500 mb-1">训练策略</div>
+                        <div class="font-semibold text-gray-900" id="trainingStrategy">分布式训练</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500 mb-1">目标准确率</div>
+                        <div class="font-semibold text-gray-900" id="targetAccuracy">≥90%</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500 mb-1">预计完成</div>
+                        <div class="font-semibold text-gray-900" id="estimatedTime">2天后</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 可视化主容器 -->
+        <div class="visualization-container mb-8 fade-in-up delay-1">
+            <svg id="networkSvg" class="node-svg">
+                <!-- 背景网格 -->
+                <defs>
+                    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                
+                <!-- 连接线层 -->
+                <g id="connections"></g>
+                
+                <!-- 节点层 -->
+                <g id="nodes"></g>
+                
+                <!-- 标签层 -->
+                <g id="labels"></g>
+                
+                <!-- 训练完成状态覆盖层 -->
+                <g id="trainingComplete" style="display: none;">
+                    <!-- 背景遮罩 -->
+                    <rect width="100%" height="100%" fill="rgba(16, 185, 129, 0.1)" rx="10"/>
+                    
+                    <!-- 完成状态文字 -->
+                    <text x="50%" y="40%" text-anchor="middle" class="training-complete-title">
+                        🎉 训练完成 🎉
+                    </text>
+                    
+                    <text x="50%" y="50%" text-anchor="middle" class="training-complete-subtitle">
+                        所有边缘节点已完成训练任务
+                    </text>
+                    
+                    <text x="50%" y="60%" text-anchor="middle" class="training-complete-stats" id="trainingCompleteStats">
+                        共完成 0 个节点的训练
+                    </text>
+                </g>
+            </svg>
+            
+            <!-- 控制面板 -->
+            <div class="control-panel">
+                <h4 class="text-lg font-semibold mb-4">控制面板</h4>
+                
+                <!-- 按钮网格布局 -->
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button onclick="showInviteUserModal()" class="btn btn-primary btn-click text-sm py-3 px-4">
+                        <span>邀请参与方</span>
+                    </button>
+                    <button onclick="showAddNodeModal()" class="btn btn-secondary btn-click text-sm py-3 px-4">
+                        <span>添加计算节点</span>
+                    </button>
+                    <button onclick="startTraining()" class="btn btn-secondary btn-click text-sm py-3 px-4">
+                        <span>开始训练</span>
+                    </button>
+                    <button onclick="resetView()" class="btn btn-secondary btn-click text-sm py-3 px-4">
+                        <span>重置视图</span>
+                    </button>
+                </div>
+                
+                <!-- 测试按钮单独一行 -->
+                <div class="mb-6">
+                    <button onclick="completeAllTraining()" class="btn btn-success btn-click w-full text-sm py-3">
+                        <span>完成训练(测试)</span>
+                    </button>
+                </div>
+                
+                <!-- 实时状态 -->
+                <div class="pt-4 border-t border-gray-200">
+                    <h5 class="text-base font-medium text-gray-600 mb-3">实时状态</h5>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600" id="onlineNodes">8</div>
+                            <div class="text-sm text-gray-600">在线参与方</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600" id="trainingNodes">97%</div>
+                            <div class="text-sm text-gray-600">我的进度</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-purple-600" id="dataTransfer">加密</div>
+                            <div class="text-sm text-gray-600">传输安全</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 节点详情面板 -->
+            <div id="nodeDetails" class="node-details">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-semibold" id="nodeTitle">节点详情</h4>
+                    <button onclick="closeNodeDetails()" class="btn btn-secondary btn-click text-sm py-2 px-4">
+                        关闭
+                    </button>
+                </div>
+                <div id="nodeInfo" class="space-y-3">
+                    <!-- 节点信息将在这里动态填充 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 邀请用户模态卡片 -->
+        <div id="inviteUserModal" class="node-modal">
+            <div class="node-modal-card" style="max-width: 600px;">
+                <div class="p-6">
+                    <!-- 卡片头部 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">邀请用户</h2>
+                                <p class="text-gray-600">邀请其他用户参与EdgeAI项目</p>
+                            </div>
+                        </div>
+                        <button onclick="closeInviteUserModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 邀请表单 -->
+                    <div class="space-y-6">
+                        <!-- 邮箱输入 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">用户邮箱</label>
+                            <div class="flex space-x-3">
+                                <input type="email" id="inviteEmail" placeholder="请输入用户邮箱地址" 
+                                       onkeypress="if(event.key==='Enter') addEmailToList()"
+                                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <button onclick="addEmailToList()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                    添加
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 邮箱列表 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">待邀请用户列表</label>
+                            <div id="inviteEmailList" class="min-h-[100px] border border-gray-200 rounded-lg p-3 space-y-2">
+                                <!-- 动态添加的邮箱列表 -->
+                                <div class="text-gray-500 text-sm">暂无待邀请用户</div>
+                            </div>
+                        </div>
+
+                        <!-- 权限选择 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">用户权限</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="userRole" value="participant" checked class="mr-3">
+                                    <div>
+                                        <div class="font-medium">参与者</div>
+                                        <div class="text-sm text-gray-500">可参与训练</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="userRole" value="observer" class="mr-3">
+                                    <div>
+                                        <div class="font-medium">观察者</div>
+                                        <div class="text-sm text-gray-500">仅查看权限</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 邀请消息 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">邀请消息 (可选)</label>
+                            <textarea id="inviteMessage" rows="3" placeholder="请输入邀请消息..." 
+                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">您好，我邀请您参与我们的EdgeAI项目。期待与您合作！</textarea>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作按钮 -->
+                    <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
+                        <button onclick="closeInviteUserModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                            取消
+                        </button>
+                        <button onclick="sendInvitations()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                            发送邀请
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加节点模态卡片 -->
+        <div id="addNodeModal" class="node-modal">
+            <div class="node-modal-card" style="max-width: 700px;">
+                <div class="p-6">
+                    <!-- 卡片头部 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">添加节点</h2>
+                                <p class="text-gray-600">添加新的边缘节点到训练网络</p>
+                            </div>
+                        </div>
+                        <button onclick="closeAddNodeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 添加节点表单 -->
+                    <div class="space-y-6">
+                        <!-- 节点基础信息 -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">节点名称</label>
+                                <input type="text" id="nodeName" placeholder="例如：节点21" 
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">节点地址</label>
+                                <input type="text" id="nodeAddress" placeholder="http://192.168.1.121:8080" 
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <!-- 节点类型选择 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">节点类型</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="nodeType" value="edge" checked class="mr-3">
+                                    <div>
+                                        <div class="font-medium">边缘节点</div>
+                                        <div class="text-sm text-gray-500">参与训练</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="nodeType" value="control" class="mr-3">
+                                    <div>
+                                        <div class="font-medium">控制节点</div>
+                                        <div class="text-sm text-gray-500">协调训练</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <input type="radio" name="nodeType" value="observer" class="mr-3">
+                                    <div>
+                                        <div class="font-medium">观察节点</div>
+                                        <div class="text-sm text-gray-500">仅监控</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 连接配置 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">连接到控制节点</label>
+                            <select id="connectToControl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <option value="">选择控制节点...</option>
+                                <option value="http://192.168.1.100:8080">主控节点1 (192.168.1.100:8080)</option>
+                                <option value="http://192.168.1.101:8080">主控节点2 (192.168.1.101:8080)</option>
+                                <option value="http://192.168.1.102:8080">备用控制 (192.168.1.102:8080)</option>
+                            </select>
+                        </div>
+
+                        <!-- 资源配置 */
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">预期资源配置</label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">CPU核心数</label>
+                                    <input type="number" id="nodeCpuCores" placeholder="4" min="1" max="64" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">内存 (GB)</label>
+                                    <input type="number" id="nodeMemory" placeholder="8" min="1" max="128" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">GPU类型</label>
+                                    <select id="nodeGpuType" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                        <option value="">无GPU</option>
+                                        <option value="rtx3080">RTX 3080</option>
+                                        <option value="rtx3090">RTX 3090</option>
+                                        <option value="rtx4090">RTX 4090</option>
+                                        <option value="tesla">Tesla系列</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 安全配置 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">安全配置</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="enableSSL" checked class="mr-3">
+                                    <span>启用SSL加密通信</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="enableAuth" checked class="mr-3">
+                                    <span>启用节点身份验证</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="enableMonitoring" checked class="mr-3">
+                                    <span>启用性能监控</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作按钮 -->
+                    <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
+                        <button onclick="closeAddNodeModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                            取消
+                        </button>
+                        <button onclick="testNodeConnection()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors">
+                            测试连接
+                        </button>
+                        <button onclick="addNewNode()" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+                            添加节点
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 详细信息模态卡片 -->
+        <div id="nodeModal" class="node-modal">
+            <div class="node-modal-card">
+                <div class="p-6">
+                    <!-- 卡片头部 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <div class="w-6 h-6 bg-blue-500 rounded-full"></div>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900" id="modalNodeTitle">节点详情</h2>
+                                <p class="text-gray-600" id="modalNodeStatus">状态信息</p>
+                            </div>
+                        </div>
+                        <button onclick="closeNodeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 主要内容区域 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 左侧：基础信息和连接信息 -->
+                        <div class="space-y-6">
+                            <!-- 基础信息卡片 -->
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900">基础信息</h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">节点名称：</span>
+                                        <span class="font-semibold" id="modalNodeName">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">节点地址：</span>
+                                        <span class="font-mono text-sm bg-blue-100 px-2 py-1 rounded" id="modalNodeUrl">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">训练轮次：</span>
+                                        <span class="font-semibold" id="modalTrainingRounds">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">训练进度：</span>
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-20 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-600 h-2 rounded-full" id="modalProgressBar"></div>
+                                            </div>
+                                            <span class="font-semibold text-blue-600" id="modalProgress">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">心跳状态：</span>
+                                        <span class="font-semibold text-green-600" id="modalHeartbeat">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 连接信息卡片 -->
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900">网络连接</h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <span class="text-gray-600 block mb-2">连接到控制节点：</span>
+                                        <div class="space-y-1" id="modalConnectedNodes">
+                                            <!-- 动态填充连接的节点 -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧：性能监控和训练统计 -->
+                        <div class="space-y-6">
+                            <!-- 性能监控卡片 -->
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900">资源使用情况</h3>
+                                <div class="space-y-4">
+                                    <!-- CPU使用率 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm text-gray-600">CPU使用率</span>
+                                            <span class="text-sm font-semibold" id="modalCpuValue">-</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-3">
+                                            <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" id="modalCpuBar"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- GPU使用率 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm text-gray-600">GPU使用率</span>
+                                            <span class="text-sm font-semibold" id="modalGpuValue">-</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-3">
+                                            <div class="bg-green-600 h-3 rounded-full transition-all duration-500" id="modalGpuBar"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 内存使用 -->
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-sm text-gray-600">内存使用</span>
+                                            <span class="text-sm font-semibold" id="modalMemoryValue">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 训练统计卡片 -->
+                            <div class="bg-gray-50 rounded-lg p-6" id="modalTrainingStats" style="display: none;">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900" id="modalTrainingStatsTitle">训练统计</h3>
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-green-600" id="modalAccuracy">-</div>
+                                        <div class="text-sm text-gray-600" id="modalAccuracyLabel">当前准确率</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-red-600" id="modalLoss">-</div>
+                                        <div class="text-sm text-gray-600" id="modalLossLabel">损失值</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 历史趋势曲线图 -->
+                                <div>
+                                    <h4 class="text-sm font-semibold mb-2 text-gray-700" id="modalChartTitle">准确率历史趋势</h4>
+                                    <div class="h-24 bg-white rounded p-3 relative">
+                                        <svg width="100%" height="100%" id="modalAccuracyChart" class="overflow-visible">
+                                            <!-- SVG曲线图将在这里生成 -->
+                                        </svg>
+                                        <div class="absolute bottom-1 left-3 right-3 flex justify-between text-xs text-gray-400">
+                                            <span id="modalRoundStart">轮次</span>
+                                            <span id="modalRoundEnd">当前</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-2" id="modalAccuracyHistory">历史数据</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作按钮 -->
+                    <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200" id="modalActionButtons">
+                        <button id="stopTrainingBtn" onclick="stopTraining()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                            停止训练
+                        </button>
+                        <button id="restartTrainingBtn" onclick="restartTraining()" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+                            重启训练
+                        </button>
+                        <button id="exportResultBtn" onclick="exportTrainingResult()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors" style="display: none;">
+                            导出结果
+                        </button>
+                        <button onclick="closeNodeModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 概览卡片区域 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 fade-in-up delay-2">
+            <div class="overview-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">参与方总数</p>
+                        <p class="text-2xl font-bold text-gray-900" id="totalNodesCount">12</p>
+                    </div>
+                    <div class="text-3xl">🖥️</div>
+                </div>
+            </div>
+            
+            <div class="overview-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">我的训练进度</p>
+                        <p class="text-2xl font-bold text-red-600" id="avgProgress">97%</p>
+                    </div>
+                    <div class="text-3xl">📊</div>
+                </div>
+            </div>
+            
+            <div class="overview-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">网络延迟</p>
+                        <p class="text-2xl font-bold text-green-600" id="networkLatency">23ms</p>
+                    </div>
+                    <div class="text-3xl">⚡</div>
+                </div>
+            </div>
+            
+            <div class="overview-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">隐私保护</p>
+                        <p class="text-2xl font-bold text-purple-600" id="systemHealth">启用</p>
+                    </div>
+                    <div class="text-3xl">💚</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 节点详情列表 -->
+        <div class="mt-12 fade-in-up delay-3">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">多方计算参与方列表</h3>
+                <div class="flex items-center space-x-4 text-sm text-gray-600">
+                    <span>协调节点: <span class="font-semibold text-green-600" id="controlNodeCount">3</span></span>
+                    <span>参与方: <span class="font-semibold text-blue-600" id="edgeNodeCount">12</span></span>
+                    <span>总计: <span class="font-semibold text-gray-900" id="totalNodeCount">15</span></span>
+                </div>
+            </div>
+            
+            <!-- 控制节点表格 -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold mb-4 text-green-600">控制节点 (最多15个)</h4>
+                <div class="overflow-x-auto bg-white rounded-lg shadow">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">节点名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">负责用户</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP地址</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">连接节点</th>
+                            </tr>
+                        </thead>
+                        <tbody id="controlNodesTable" class="bg-white divide-y divide-gray-200">
+                            <!-- 动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 边缘节点表格 -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold mb-4 text-blue-600">参与方节点状态</h4>
+                <div class="overflow-x-auto bg-white rounded-lg shadow">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('name')">
+                                    节点名称 <span id="sort-name" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('status')">
+                                    状态 <span id="sort-status" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('progress')">
+                                    训练进度 <span id="sort-progress" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('cpu')">
+                                    CPU <span id="sort-cpu" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('memory')">
+                                    内存 <span id="sort-memory" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('gpu')">
+                                    GPU <span id="sort-gpu" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('heartbeat')">
+                                    最后心跳 <span id="sort-heartbeat" class="ml-1">⇅</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="edgeNodesTable" class="bg-white divide-y divide-gray-200">
+                            <!-- 动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回主页按钮 -->
+    <button class="homepage-return-btn btn-click" onclick="goHome()" title="返回主页">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+    </button>
+
+    <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
+    <script src="../../shared/js/i18n-manager.js?v=1756649655"></script>
+    <script src="../../shared/js/router-unified.js?v=20250901b"></script>
+    
+    <script>
+        // 获取项目ID
+        let projectId = '1'; // 默认项目ID
+        
+        // 模拟网络数据
+        const networkData = {
+            controlNodes: [
+                { id: 'control-1', x: 200, y: 80, name: '主控节点1', type: 'master', status: 'active', user: '管理员', ip: '192.168.1.100' },
+                { id: 'control-2', x: 400, y: 80, name: '主控节点2', type: 'participant', status: 'active', user: '协调员', ip: '192.168.1.101' },
+                { id: 'control-3', x: 600, y: 80, name: '备用控制', type: 'observer', status: 'active', user: '观察者', ip: '192.168.1.102' }
+            ],
+            // 所有边缘节点（可以无限添加，可视化界面只显示活跃的15个）
+            allEdgeNodes: [
+                // 自己的节点 - 可以看到详细状态
+                { 
+                    id: 'edge-1', name: '我的节点', status: 'training', progress: 97, cpu: 68, memory: '1.8GB', gpu: 83, heartbeat: '5秒前', priority: 1,
+                    url: 'http://192.168.1.101:8080', connectedTo: ['http://192.168.1.100:8080'], 
+                    trainingRounds: 245, accuracy: 95.2, loss: 0.048, isOwnNode: true,
+                    stats: { cpuHistory: [65, 68, 70, 68], gpuHistory: [80, 83, 85, 83], accuracyHistory: [92.1, 93.5, 94.8, 95.2] }
+                },
+                // 其他参与方的节点 - 只能看到基本状态
+                { 
+                    id: 'edge-3', name: '参与方A', status: 'online', heartbeat: '1秒前', priority: 2,
+                    url: 'http://192.168.1.103:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-5', name: '参与方B', status: 'online', heartbeat: '3秒前', priority: 3,
+                    url: 'http://192.168.1.105:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-8', name: '参与方C', status: 'online', heartbeat: '1秒前', priority: 4,
+                    url: 'http://192.168.1.108:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-9', name: '参与方D', status: 'online', heartbeat: '2秒前', priority: 5,
+                    url: 'http://192.168.1.109:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-11', name: '参与方E', status: 'online', heartbeat: '1秒前', priority: 6,
+                    url: 'http://192.168.1.111:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-13', name: '参与方F', status: 'online', heartbeat: '2秒前', priority: 7,
+                    url: 'http://192.168.1.113:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-14', name: '参与方G', status: 'online', heartbeat: '1秒前', priority: 8,
+                    url: 'http://192.168.1.114:8080', isOwnNode: false
+                },
+                // 其他在线的参与方
+                { id: 'edge-4', name: '参与方H', status: 'online', heartbeat: '10秒前', priority: 9, isOwnNode: false },
+                { id: 'edge-10', name: '参与方I', status: 'online', heartbeat: '8秒前', priority: 10, isOwnNode: false },
+                { id: 'edge-15', name: '参与方J', status: 'offline', heartbeat: '5分钟前', priority: 11, isOwnNode: false },
+                { id: 'edge-16', name: '参与方K', status: 'online', heartbeat: '12秒前', priority: 12, isOwnNode: false },
+                // 一些已离线的参与方
+                { 
+                    id: 'edge-2', name: '参与方L', status: 'offline', heartbeat: '10分钟前', priority: 13, 
+                    url: 'http://192.168.1.102:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-7', name: '参与方M', status: 'offline', heartbeat: '15分钟前', priority: 14,
+                    url: 'http://192.168.1.107:8080', isOwnNode: false
+                },
+                { 
+                    id: 'edge-12', name: '参与方N', status: 'offline', heartbeat: '8分钟前', priority: 15,
+                    url: 'http://192.168.1.112:8080', isOwnNode: false
+                },
+                // 错误或离线的参与方
+                { id: 'edge-6', name: '参与方O', status: 'offline', heartbeat: '30分钟前', priority: 16, isOwnNode: false },
+                // 更多参与方...
+                { id: 'edge-17', name: '参与方P', status: 'online', heartbeat: '1秒前', priority: 17, isOwnNode: false },
+                { id: 'edge-18', name: '参与方Q', status: 'online', heartbeat: '20秒前', priority: 18, isOwnNode: false },
+                { id: 'edge-19', name: '参与方R', status: 'online', heartbeat: '3秒前', priority: 19, isOwnNode: false },
+                { id: 'edge-20', name: '参与方S', status: 'online', heartbeat: '18秒前', priority: 20, isOwnNode: false }
+            ],
+            // 当前在可视化界面显示的节点（最多15个）
+            edgeNodes: []
+        };
+        
+        let selectedNode = null;
+        let animationId = null;
+        let nodePositions = []; // 预定义的节点位置
+        
+        // 排序相关变量
+        let currentSortField = 'priority';
+        let currentSortDirection = 'asc';
+        
+        // 预定义可视化节点位置（最多15个位置）
+        function initializeNodePositions() {
+            nodePositions = [
+                { x: 120, y: 280 }, { x: 200, y: 320 }, { x: 280, y: 360 }, { x: 360, y: 320 }, { x: 440, y: 280 },
+                { x: 520, y: 320 }, { x: 600, y: 360 }, { x: 680, y: 320 }, { x: 160, y: 440 }, { x: 320, y: 480 },
+                { x: 480, y: 440 }, { x: 640, y: 480 }, { x: 240, y: 520 }, { x: 400, y: 540 }, { x: 560, y: 520 }
+            ];
+        }
+        
+        // P2PAI可视化节点选择：优先显示自己的节点
+        function updateVisualizedNodes() {
+            // 确保nodePositions已初始化
+            if (!nodePositions || nodePositions.length === 0) {
+                initializeNodePositions();
+            }
+            
+            // P2PAI特性：优先显示自己的节点和在线的其他节点
+            let selectedNodes = [];
+            
+            // 首先添加自己的节点（如果存在）
+            const myNode = networkData.allEdgeNodes.find(node => node.isOwnNode);
+            if (myNode) {
+                selectedNodes.push(myNode);
+            }
+            
+            // 然后添加其他在线节点，最多14个（为自己的节点留一个位置）
+            const otherOnlineNodes = networkData.allEdgeNodes
+                .filter(node => !node.isOwnNode && node.status === 'online')
+                .slice(0, 14);
+            
+            selectedNodes = selectedNodes.concat(otherOnlineNodes);
+            
+            // 如果还有空位，添加一些离线节点
+            if (selectedNodes.length < 15) {
+                const offlineNodes = networkData.allEdgeNodes
+                    .filter(node => !node.isOwnNode && node.status === 'offline')
+                    .slice(0, 15 - selectedNodes.length);
+                selectedNodes = selectedNodes.concat(offlineNodes);
+            }
+            
+            // 为节点分配可视化位置
+            const newVisualizedNodes = selectedNodes.slice(0, 15).map((node, index) => {
+                const position = nodePositions[index] || { x: 200 + (index * 60), y: 200 + (Math.floor(index / 5) * 80) };
+                return {
+                    ...node,
+                    x: position.x,
+                    y: position.y,
+                    visualIndex: index
+                };
+            });
+            
+            // 检查节点变化，添加淡入淡出动画
+            const oldIds = networkData.edgeNodes.map(n => n.id);
+            const newIds = newVisualizedNodes.map(n => n.id);
+            
+            // 标记淡出的节点
+            networkData.edgeNodes.forEach(node => {
+                if (!newIds.includes(node.id)) {
+                    node.fadeOut = true;
+                }
+            });
+            
+            // 标记淡入的节点
+            newVisualizedNodes.forEach(node => {
+                if (!oldIds.includes(node.id)) {
+                    node.fadeIn = true;
+                }
+            });
+            
+            // 更新可视化节点列表
+            networkData.edgeNodes = newVisualizedNodes;
+        }
+        
+        // 模拟项目数据（根据项目ID获取不同数据）
+        const projectsData = {
+            1: {
+                name: '智能制造监控系统',
+                description: '基于EdgeAI的工厂设备实时监控和预测维护系统，实现设备状态智能分析和故障预警。',
+                status: 'training',
+                created: '2024-01-15',
+                updated: '2小时前',
+                progress: 75,
+                aiModel: 'CNN深度学习',
+                strategy: '联邦学习',
+                targetAccuracy: '≥90%',
+                estimatedTime: '2天后'
+            },
+            2: {
+                name: '智慧城市交通优化',
+                description: '利用EdgeAI技术实现城市交通流量实时分析，智能信号灯控制和路线优化推荐系统。',
+                status: 'active',
+                created: '2024-02-10',
+                updated: '30分钟前',
+                progress: 45,
+                aiModel: 'RNN循环神经网络',
+                strategy: '强化学习',
+                targetAccuracy: '≥85%',
+                estimatedTime: '5天后'
+            },
+            3: {
+                name: '医疗影像智能诊断',
+                description: '基于深度学习的医疗影像自动识别和诊断辅助系统，提升诊断准确性和效率。',
+                status: 'completed',
+                created: '2024-01-20',
+                updated: '1天前',
+                progress: 100,
+                aiModel: 'ResNet深度残差网络',
+                strategy: '迁移学习',
+                targetAccuracy: '≥95%',
+                estimatedTime: '已完成'
+            }
+        };
+        
+        // 初始化项目信息
+        function initializeProjectInfo() {
+            // 安全设置元素文本内容
+            const safeSetText = (id, text) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = text;
+            };
+            
+            // 安全设置元素类名
+            const safeSetClass = (id, className) => {
+                const element = document.getElementById(id);
+                if (element) element.className = className;
+            };
+            
+            const project = projectsData[projectId] || projectsData[1];
+            
+            // 更新项目基本信息
+            safeSetText('projectTitle', project.name);
+            safeSetText('projectDescription', project.description);
+            safeSetText('projectCreated', project.created);
+            safeSetText('projectUpdated', project.updated);
+            
+            // 更新状态
+            const statusColors = {
+                'training': { color: 'text-blue-600', text: '训练中', bgColor: 'bg-blue-500' },
+                'active': { color: 'text-green-600', text: '运行中', bgColor: 'bg-green-500' },
+                'completed': { color: 'text-green-600', text: '已完成', bgColor: 'bg-green-500' },
+                'paused': { color: 'text-yellow-600', text: '暂停', bgColor: 'bg-yellow-500' },
+                'error': { color: 'text-red-600', text: '错误', bgColor: 'bg-red-500' }
+            };
+            
+            const statusInfo = statusColors[project.status] || statusColors['training'];
+            safeSetClass('projectStatus', `font-semibold ml-2 ${statusInfo.color}`);
+            safeSetText('projectStatus', statusInfo.text);
+            
+            // 更新状态指示器
+            safeSetClass('statusDot', `w-2 h-2 rounded-full mr-2 flex-shrink-0 ${statusInfo.bgColor}`);
+            
+            // 更新进度圆环
+            const progressCircle = document.getElementById('progressCircle');
+            if (progressCircle) {
+                const circumference = 2 * Math.PI * 40; // r=40
+                const offset = circumference - (project.progress / 100) * circumference;
+                progressCircle.style.strokeDashoffset = offset;
+                const overallProgress = document.getElementById('overallProgress');
+                if (overallProgress) {
+                    overallProgress.textContent = `${project.progress}%`;
+                }
+            }
+            
+            // 更新快速统计 - 安全版本
+            const totalNodes = networkData.controlNodes.length + networkData.allEdgeNodes.length;
+            const onlineNodes = networkData.allEdgeNodes.filter(n => n.status === 'online').length;
+            const trainingNodes = 1; // 只有我们的节点在训练
+            
+            safeSetText('quickNodeCount', totalNodes);
+            safeSetText('quickOnlineCount', onlineNodes);
+            
+            // 更新项目配置
+            safeSetText('aiModelType', project.aiModel);
+            safeSetText('trainingStrategy', project.strategy);
+            safeSetText('targetAccuracy', project.targetAccuracy);
+            safeSetText('estimatedTime', project.estimatedTime);
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取项目ID（如果有）
+            const urlParams = new URLSearchParams(window.location.search);
+            projectId = urlParams.get('projectId') || localStorage.getItem('currentProjectId') || '1';
+            
+            document.getElementById('projectName').textContent = `- 项目 ${projectId}`;
+            initializeProjectInfo(); // 初始化项目信息
+            initializeVisualization();
+            startRealTimeUpdates();
+        });
+        
+        // 冻结节点位置，防止意外修改
+        function freezeNodePositions() {
+            networkData.controlNodes.forEach(node => {
+                const originalX = node.x;
+                const originalY = node.y;
+                Object.defineProperty(node, 'x', { 
+                    value: originalX, 
+                    writable: false, 
+                    configurable: false 
+                });
+                Object.defineProperty(node, 'y', { 
+                    value: originalY, 
+                    writable: false, 
+                    configurable: false 
+                });
+            });
+            
+            networkData.edgeNodes.forEach(node => {
+                const originalX = node.x;
+                const originalY = node.y;
+                Object.defineProperty(node, 'x', { 
+                    value: originalX, 
+                    writable: false, 
+                    configurable: false 
+                });
+                Object.defineProperty(node, 'y', { 
+                    value: originalY, 
+                    writable: false, 
+                    configurable: false 
+                });
+            });
+        }
+
+        // 初始化可视化
+        function initializeVisualization() {
+            initializeNodePositions(); // 首先初始化节点位置
+            updateVisualizedNodes(); // 初始化可视化节点
+            freezeNodePositions(); // 冻结节点位置
+            drawNodes();
+            drawConnections();
+            updateStats();
+            fillNodeTables(); // 填充节点表格
+        }
+        
+        // 绘制节点
+        function drawNodes() {
+            const nodesGroup = document.getElementById('nodes');
+            const labelsGroup = document.getElementById('labels');
+            
+            // 清空现有节点
+            nodesGroup.innerHTML = '';
+            labelsGroup.innerHTML = '';
+            
+            // 绘制控制节点
+            networkData.controlNodes.forEach(node => {
+                // 节点圆圈
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', 25);
+                circle.setAttribute('class', 'control-node');
+                circle.setAttribute('data-id', node.id);
+                circle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showNodeDetails(node, 'control');
+                });
+                circle.style.pointerEvents = 'auto';
+                circle.style.cursor = 'pointer';
+                nodesGroup.appendChild(circle);
+                
+                // 节点标签
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', node.x);
+                label.setAttribute('y', node.y - 35);
+                label.setAttribute('class', 'node-label');
+                label.textContent = node.name;
+                labelsGroup.appendChild(label);
+                
+                // 状态指示器
+                const statusCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                statusCircle.setAttribute('cx', node.x + 15);
+                statusCircle.setAttribute('cy', node.y - 15);
+                statusCircle.setAttribute('r', 5);
+                statusCircle.setAttribute('fill', '#10b981');
+                nodesGroup.appendChild(statusCircle);
+            });
+            
+            // 绘制边缘节点
+            networkData.edgeNodes.forEach((node, index) => {
+                // 节点圆圈
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', 18);
+                
+                // 根据P2PAI特性设置节点样式
+                let nodeClass = 'edge-node';
+                if (node.isOwnNode) {
+                    // 自己的节点 - 红色
+                    nodeClass += ' own-node';
+                } else {
+                    // 其他节点根据在线状态
+                    if (node.status === 'online') {
+                        nodeClass += ' other-online';
+                    } else {
+                        nodeClass += ' other-offline';
+                    }
+                }
+                
+                // 添加动画效果
+                if (node.fadeIn) {
+                    nodeClass += ' node-fade-in';
+                    // 清除标记
+                    setTimeout(() => {
+                        node.fadeIn = false;
+                    }, 600);
+                }
+                if (node.fadeOut) {
+                    nodeClass += ' node-fade-out';
+                    // 清除淡出标记
+                    setTimeout(() => {
+                        node.fadeOut = false;
+                    }, 400);
+                }
+                
+                circle.setAttribute('class', nodeClass);
+                circle.setAttribute('data-id', node.id);
+                circle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // P2PAI特性：只有自己的节点可以查看详细信息
+                    if (node.isOwnNode) {
+                        showNodeDetails(node, 'edge');
+                    } else {
+                        // 其他节点只显示基本连接信息
+                        showBasicNodeInfo(node);
+                    }
+                });
+                // 确保节点不会被拖拽或移动
+                circle.style.pointerEvents = 'auto';
+                circle.style.cursor = 'pointer';
+                nodesGroup.appendChild(circle);
+                
+                // 进度环 - 只对自己的节点显示
+                if (node.isOwnNode && node.status === 'training' && node.progress > 0) {
+                    const progressCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    progressCircle.setAttribute('cx', node.x);
+                    progressCircle.setAttribute('cy', node.y);
+                    progressCircle.setAttribute('r', 15);
+                    progressCircle.setAttribute('class', 'progress-ring active');
+                    progressCircle.setAttribute('stroke-dasharray', '94.2');
+                    progressCircle.setAttribute('stroke-dashoffset', 94.2 * (1 - node.progress / 100));
+                    nodesGroup.appendChild(progressCircle);
+                }
+                
+                // 节点标签
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', node.x);
+                label.setAttribute('y', node.y + 35);
+                label.setAttribute('class', 'node-label');
+                label.textContent = node.name;
+                labelsGroup.appendChild(label);
+                
+                // 进度文字
+                if (node.status === 'training') {
+                    const progressText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    progressText.setAttribute('x', node.x);
+                    progressText.setAttribute('y', node.y + 3);
+                    progressText.setAttribute('class', 'node-label');
+                    progressText.setAttribute('font-size', '10');
+                    progressText.textContent = `${node.progress}%`;
+                    labelsGroup.appendChild(progressText);
+                }
+            });
+        }
+        
+        // 绘制连接线
+        function drawConnections() {
+            const connectionsGroup = document.getElementById('connections');
+            connectionsGroup.innerHTML = '';
+            
+            // 为每个边缘节点分配控制节点（实际网络连接逻辑）
+            networkData.edgeNodes.forEach((edgeNode, index) => {
+                // 只为训练中和未完成的节点绘制连接线
+                if (edgeNode.status === 'completed') {
+                    return; // 跳过已完成的节点
+                }
+                
+                // 根据节点索引分配控制节点（模拟实际网络连接）
+                let controlNodeIndex = 0; // 默认连接到主控节点1
+                
+                // 简单的负载均衡分配逻辑
+                if (index < 4) {
+                    controlNodeIndex = 0; // 前4个节点连接到主控节点1
+                } else if (index < 8) {
+                    controlNodeIndex = 1; // 中间4个节点连接到主控节点2  
+                } else {
+                    controlNodeIndex = 2; // 剩余节点连接到备用控制节点
+                }
+                
+                // 确保控制节点存在
+                if (controlNodeIndex < networkData.controlNodes.length) {
+                    const controlNode = networkData.controlNodes[controlNodeIndex];
+                    
+                    // 创建连接线
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', controlNode.x);
+                    line.setAttribute('y1', controlNode.y);
+                    line.setAttribute('x2', edgeNode.x);
+                    line.setAttribute('y2', edgeNode.y);
+                    
+                    // 根据节点状态设置连接线样式
+                    let lineClass = 'connection-line';
+                    if (edgeNode.status === 'training') {
+                        lineClass += ' active data-flow'; // 训练中：虚线+数据流动画
+                    } else if (edgeNode.status === 'idle' || edgeNode.status === 'error') {
+                        lineClass += ' inactive'; // 空闲或错误：普通虚线
+                    }
+                    
+                    line.setAttribute('class', lineClass);
+                    line.setAttribute('data-from', controlNode.id);
+                    line.setAttribute('data-to', edgeNode.id);
+                    line.setAttribute('data-status', edgeNode.status);
+                    
+                    connectionsGroup.appendChild(line);
+                }
+            });
+        }
+        
+        // 通过节点ID打开节点详情
+        function openNodeDetails(nodeId) {
+            console.log('Opening node details for:', nodeId);
+            const node = networkData.allEdgeNodes.find(n => n.id === nodeId);
+            if (node) {
+                console.log('Found node:', node);
+                showNodeModal(node);
+            } else {
+                console.log('Node not found:', nodeId);
+            }
+        }
+
+        // 显示新的模态卡片
+        function showNodeModal(node) {
+            const modal = document.getElementById('nodeModal');
+            
+            // 填充基础信息
+            document.getElementById('modalNodeTitle').textContent = node.name;
+            document.getElementById('modalNodeStatus').textContent = getStatusText(node.status);
+            document.getElementById('modalNodeName').textContent = node.name;
+            document.getElementById('modalNodeUrl').textContent = node.url || '未配置';
+            document.getElementById('modalTrainingRounds').textContent = node.trainingRounds || 0;
+            document.getElementById('modalProgress').textContent = `${node.progress}%`;
+            document.getElementById('modalProgressBar').style.width = `${node.progress}%`;
+            document.getElementById('modalHeartbeat').textContent = node.heartbeat || '未知';
+            
+            // 填充连接节点信息
+            const connectedNodesDiv = document.getElementById('modalConnectedNodes');
+            connectedNodesDiv.innerHTML = '';
+            if (node.connectedTo && node.connectedTo.length > 0) {
+                node.connectedTo.forEach(url => {
+                    const nodeDiv = document.createElement('div');
+                    nodeDiv.className = 'flex items-center space-x-2 bg-white px-3 py-2 rounded border';
+                    nodeDiv.innerHTML = `
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="font-mono text-sm">${url}</span>
+                        <div class="ml-auto text-xs text-green-600">已连接</div>
+                    `;
+                    connectedNodesDiv.appendChild(nodeDiv);
+                });
+            } else {
+                connectedNodesDiv.innerHTML = '<div class="text-gray-500 text-sm">无连接</div>';
+            }
+            
+            // 填充资源使用情况
+            document.getElementById('modalCpuValue').textContent = `${node.cpu.toFixed(2)}%`;
+            document.getElementById('modalCpuBar').style.width = `${node.cpu}%`;
+            document.getElementById('modalGpuValue').textContent = `${node.gpu.toFixed(2)}%`;
+            document.getElementById('modalGpuBar').style.width = `${node.gpu}%`;
+            document.getElementById('modalMemoryValue').textContent = node.memory || '未知';
+            
+            // 如果是训练节点或已完成训练的节点，显示训练统计
+            const trainingStatsDiv = document.getElementById('modalTrainingStats');
+            if ((node.status === 'training' || node.status === 'completed') && node.accuracy && node.loss) {
+                trainingStatsDiv.style.display = 'block';
+                
+                // 根据节点状态更新标题和标签
+                const statsTitle = document.getElementById('modalTrainingStatsTitle');
+                const accuracyLabel = document.getElementById('modalAccuracyLabel');
+                const lossLabel = document.getElementById('modalLossLabel');
+                const chartTitle = document.getElementById('modalChartTitle');
+                
+                if (node.status === 'completed') {
+                    statsTitle.textContent = '历史训练结果';
+                    accuracyLabel.textContent = '最终准确率';
+                    lossLabel.textContent = '最终损失值';
+                    chartTitle.textContent = '训练过程曲线';
+                } else {
+                    statsTitle.textContent = '训练统计';
+                    accuracyLabel.textContent = '当前准确率';
+                    lossLabel.textContent = '当前损失值';
+                    chartTitle.textContent = '准确率历史趋势';
+                }
+                
+                document.getElementById('modalAccuracy').textContent = `${node.accuracy.toFixed(2)}%`;
+                document.getElementById('modalLoss').textContent = node.loss.toFixed(2);
+                
+                // 显示历史趋势曲线
+                if (node.stats && node.stats.accuracyHistory && node.stats.accuracyHistory.length > 1) {
+                    const chartSvg = document.getElementById('modalAccuracyChart');
+                    const svgRect = chartSvg.getBoundingClientRect();
+                    const width = svgRect.width || 280;
+                    const height = svgRect.height || 60;
+                    const padding = 10;
+                    const chartWidth = width - 2 * padding;
+                    const chartHeight = height - 2 * padding;
+                    
+                    // 清空SVG
+                    chartSvg.innerHTML = '';
+                    
+                    const accuracyData = node.stats.accuracyHistory;
+                    const rounds = accuracyData.length;
+                    const maxAccuracy = Math.max(...accuracyData);
+                    const minAccuracy = Math.min(...accuracyData);
+                    const accuracyRange = maxAccuracy - minAccuracy || 10; // 避免除以0
+                    
+                    // 计算点的坐标
+                    const points = accuracyData.map((accuracy, index) => {
+                        const x = padding + (index / (rounds - 1)) * chartWidth;
+                        const y = padding + ((maxAccuracy - accuracy) / accuracyRange) * chartHeight;
+                        return { x, y, accuracy, round: index + 1 };
+                    });
+                    
+                    // 创建路径字符串
+                    let pathD = `M ${points[0].x} ${points[0].y}`;
+                    for (let i = 1; i < points.length; i++) {
+                        // 使用贝塞尔曲线创建平滑曲线
+                        const prevPoint = points[i - 1];
+                        const currentPoint = points[i];
+                        const controlPointX1 = prevPoint.x + (currentPoint.x - prevPoint.x) / 3;
+                        const controlPointY1 = prevPoint.y;
+                        const controlPointX2 = currentPoint.x - (currentPoint.x - prevPoint.x) / 3;
+                        const controlPointY2 = currentPoint.y;
+                        
+                        pathD += ` C ${controlPointX1} ${controlPointY1}, ${controlPointX2} ${controlPointY2}, ${currentPoint.x} ${currentPoint.y}`;
+                    }
+                    
+                    // 创建渐变定义
+                    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                    const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+                    gradient.setAttribute('id', 'accuracyGradient');
+                    gradient.setAttribute('x1', '0%');
+                    gradient.setAttribute('y1', '0%');
+                    gradient.setAttribute('x2', '0%');
+                    gradient.setAttribute('y2', '100%');
+                    
+                    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                    stop1.setAttribute('offset', '0%');
+                    stop1.setAttribute('style', 'stop-color:rgb(34,197,94);stop-opacity:0.8');
+                    
+                    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                    stop2.setAttribute('offset', '100%');
+                    stop2.setAttribute('style', 'stop-color:rgb(34,197,94);stop-opacity:0.1');
+                    
+                    gradient.appendChild(stop1);
+                    gradient.appendChild(stop2);
+                    defs.appendChild(gradient);
+                    chartSvg.appendChild(defs);
+                    
+                    // 创建填充区域路径
+                    const fillPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    const fillPathD = pathD + ` L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`;
+                    fillPath.setAttribute('d', fillPathD);
+                    fillPath.setAttribute('fill', 'url(#accuracyGradient)');
+                    chartSvg.appendChild(fillPath);
+                    
+                    // 创建曲线路径
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', pathD);
+                    path.setAttribute('stroke', 'rgb(34,197,94)');
+                    path.setAttribute('stroke-width', '2');
+                    path.setAttribute('fill', 'none');
+                    path.setAttribute('stroke-linecap', 'round');
+                    path.setAttribute('stroke-linejoin', 'round');
+                    chartSvg.appendChild(path);
+                    
+                    // 添加数据点
+                    points.forEach((point, index) => {
+                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('cx', point.x);
+                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('r', '3');
+                        circle.setAttribute('fill', 'rgb(34,197,94)');
+                        circle.setAttribute('stroke', 'white');
+                        circle.setAttribute('stroke-width', '1');
+                        
+                        // 添加hover效果
+                        circle.addEventListener('mouseover', function() {
+                            circle.setAttribute('r', '5');
+                            // 可以添加tooltip显示具体数值
+                        });
+                        circle.addEventListener('mouseout', function() {
+                            circle.setAttribute('r', '3');
+                        });
+                        
+                        chartSvg.appendChild(circle);
+                    });
+                    
+                    // 更新轮次显示
+                    const currentRound = (node.trainingRounds || 0) - rounds + 1;
+                    document.getElementById('modalRoundStart').textContent = `轮次 ${Math.max(1, currentRound)}`;
+                    document.getElementById('modalRoundEnd').textContent = `轮次 ${node.trainingRounds || rounds}`;
+                    document.getElementById('modalAccuracyHistory').textContent = 
+                        `历史准确率: ${accuracyData.map(acc => acc.toFixed(2)).join('% → ')}%`;
+                } else {
+                    // 如果没有历史数据，显示占位内容
+                    const chartSvg = document.getElementById('modalAccuracyChart');
+                    chartSvg.innerHTML = '<text x="50%" y="50%" text-anchor="middle" fill="#9CA3AF" font-size="12">暂无历史数据</text>';
+                    document.getElementById('modalRoundStart').textContent = '轮次';
+                    document.getElementById('modalRoundEnd').textContent = '当前';
+                    document.getElementById('modalAccuracyHistory').textContent = '暂无历史数据';
+                }
+            } else {
+                trainingStatsDiv.style.display = 'none';
+            }
+            
+            // 根据节点状态控制按钮显示
+            const stopBtn = document.getElementById('stopTrainingBtn');
+            const restartBtn = document.getElementById('restartTrainingBtn');
+            const exportBtn = document.getElementById('exportResultBtn');
+            
+            if (node.status === 'completed') {
+                stopBtn.style.display = 'none';
+                restartBtn.textContent = '重新训练';
+                exportBtn.style.display = 'inline-block';
+            } else if (node.status === 'training') {
+                stopBtn.style.display = 'inline-block';
+                restartBtn.textContent = '重启训练';
+                restartBtn.style.display = 'inline-block';
+                exportBtn.style.display = 'none';
+            } else {
+                stopBtn.style.display = 'none';
+                restartBtn.textContent = '开始训练';
+                restartBtn.style.display = 'inline-block';
+                exportBtn.style.display = 'none';
+            }
+            
+            // 显示模态框
+            modal.classList.add('show');
+        }
+
+        // 关闭模态卡片
+        function closeNodeModal() {
+            const modal = document.getElementById('nodeModal');
+            modal.classList.remove('show');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'training': '正在训练',
+                'completed': '训练完成',
+                'idle': '空闲待命',
+                'error': '错误状态'
+            };
+            return statusMap[status] || '未知状态';
+        }
+
+        // 停止训练功能
+        function stopTraining() {
+            alert('停止训练功能暂未实现');
+        }
+
+        // 重启训练功能
+        function restartTraining() {
+            alert('重启训练功能暂未实现');
+        }
+
+        // 导出训练结果功能
+        function exportTrainingResult() {
+            if (!selectedNode) {
+                alert('未选择节点');
+                return;
+            }
+            
+            const result = {
+                nodeInfo: {
+                    name: selectedNode.name,
+                    url: selectedNode.url,
+                    status: selectedNode.status
+                },
+                trainingResults: {
+                    totalRounds: selectedNode.trainingRounds || 0,
+                    finalAccuracy: selectedNode.accuracy ? selectedNode.accuracy.toFixed(2) : 'N/A',
+                    finalLoss: selectedNode.loss ? selectedNode.loss.toFixed(2) : 'N/A',
+                    progress: selectedNode.progress
+                },
+                historyData: selectedNode.stats || {}
+            };
+            
+            // 创建JSON文件并下载
+            const dataStr = JSON.stringify(result, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${selectedNode.name}_训练结果_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert(`${selectedNode.name} 的训练结果已导出！\n\n包含信息:\n- 节点基础信息\n- 最终训练结果\n- 历史数据记录`);
+        }
+
+        // ========== 邀请用户模态卡片功能 ==========
+        
+        function showInviteUserModal() {
+            const modal = document.getElementById('inviteUserModal');
+            modal.classList.add('show');
+        }
+        
+        function closeInviteUserModal() {
+            const modal = document.getElementById('inviteUserModal');
+            modal.classList.remove('show');
+            // 清空表单
+            clearInviteForm();
+        }
+        
+        // 邮箱列表管理
+        let inviteEmailList = [];
+        
+        function addEmailToList() {
+            const emailInput = document.getElementById('inviteEmail');
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                alert('请输入邮箱地址');
+                return;
+            }
+            
+            // 简单的邮箱验证
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('请输入有效的邮箱地址');
+                return;
+            }
+            
+            // 检查是否已存在
+            if (inviteEmailList.includes(email)) {
+                alert('该邮箱已在列表中');
+                return;
+            }
+            
+            inviteEmailList.push(email);
+            updateInviteEmailList();
+            emailInput.value = '';
+        }
+        
+        function removeEmailFromList(email) {
+            inviteEmailList = inviteEmailList.filter(e => e !== email);
+            updateInviteEmailList();
+        }
+        
+        function updateInviteEmailList() {
+            const listDiv = document.getElementById('inviteEmailList');
+            
+            if (inviteEmailList.length === 0) {
+                listDiv.innerHTML = '<div class="text-gray-500 text-sm">暂无待邀请用户</div>';
+                return;
+            }
+            
+            listDiv.innerHTML = inviteEmailList.map(email => `
+                <div class="flex items-center justify-between bg-blue-50 px-3 py-2 rounded-lg">
+                    <span class="font-mono text-sm">${email}</span>
+                    <button onclick="removeEmailFromList('${email}')" class="text-red-500 hover:text-red-700 ml-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function sendInvitations() {
+            if (inviteEmailList.length === 0) {
+                alert('请至少添加一个邮箱地址');
+                return;
+            }
+            
+            const role = document.querySelector('input[name="userRole"]:checked').value;
+            const message = document.getElementById('inviteMessage').value;
+            
+            // 模拟发送邀请
+            alert(`正在向 ${inviteEmailList.length} 个用户发送邀请...\n\n角色: ${role === 'participant' ? '参与者' : '观察者'}\n邮箱列表: ${inviteEmailList.join(', ')}`);
+            
+            // 发送成功后关闭模态框
+            setTimeout(() => {
+                closeInviteUserModal();
+                alert('邀请已成功发送！');
+            }, 1000);
+        }
+        
+        function clearInviteForm() {
+            inviteEmailList = [];
+            updateInviteEmailList();
+            document.getElementById('inviteEmail').value = '';
+            document.getElementById('inviteMessage').value = '您好，我邀请您参与我们的EdgeAI项目。期待与您合作！';
+            document.querySelector('input[name="userRole"][value="participant"]').checked = true;
+        }
+
+        // ========== 添加节点模态卡片功能 ==========
+        
+        function showAddNodeModal() {
+            const modal = document.getElementById('addNodeModal');
+            modal.classList.add('show');
+        }
+        
+        function closeAddNodeModal() {
+            const modal = document.getElementById('addNodeModal');
+            modal.classList.remove('show');
+            // 清空表单
+            clearAddNodeForm();
+        }
+        
+        function testNodeConnection() {
+            const address = document.getElementById('nodeAddress').value.trim();
+            
+            if (!address) {
+                alert('请输入节点地址');
+                return;
+            }
+            
+            // 模拟连接测试
+            alert('正在测试连接...');
+            
+            setTimeout(() => {
+                const success = Math.random() > 0.3; // 70%成功率
+                if (success) {
+                    alert('连接测试成功！\n\n节点信息:\n- 响应时间: 25ms\n- 状态: 在线\n- 可用资源: 充足');
+                } else {
+                    alert('连接测试失败！\n\n可能原因:\n- 节点地址不正确\n- 节点未启动\n- 网络连接问题');
+                }
+            }, 1500);
+        }
+        
+        function addNewNode() {
+            const name = document.getElementById('nodeName').value.trim();
+            const address = document.getElementById('nodeAddress').value.trim();
+            const type = document.querySelector('input[name="nodeType"]:checked').value;
+            const controlNode = document.getElementById('connectToControl').value;
+            
+            if (!name || !address) {
+                alert('请填写节点名称和地址');
+                return;
+            }
+            
+            // 模拟添加节点
+            const nodeInfo = {
+                name,
+                address,
+                type: type === 'edge' ? '边缘节点' : type === 'control' ? '控制节点' : '观察节点',
+                controlNode: controlNode || '无',
+                cpuCores: document.getElementById('nodeCpuCores').value || '未指定',
+                memory: document.getElementById('nodeMemory').value || '未指定',
+                gpu: document.getElementById('nodeGpuType').value || '无',
+                ssl: document.getElementById('enableSSL').checked,
+                auth: document.getElementById('enableAuth').checked,
+                monitoring: document.getElementById('enableMonitoring').checked
+            };
+            
+            alert(`正在添加节点...\n\n节点信息:\n- 名称: ${nodeInfo.name}\n- 地址: ${nodeInfo.address}\n- 类型: ${nodeInfo.type}\n- 连接到: ${nodeInfo.controlNode}`);
+            
+            // 添加成功后关闭模态框
+            setTimeout(() => {
+                closeAddNodeModal();
+                alert('节点添加成功！');
+                // 这里可以添加实际的节点添加逻辑，更新网络数据
+            }, 1500);
+        }
+        
+        function clearAddNodeForm() {
+            document.getElementById('nodeName').value = '';
+            document.getElementById('nodeAddress').value = '';
+            document.getElementById('connectToControl').value = '';
+            document.getElementById('nodeCpuCores').value = '';
+            document.getElementById('nodeMemory').value = '';
+            document.getElementById('nodeGpuType').value = '';
+            document.querySelector('input[name="nodeType"][value="edge"]').checked = true;
+            document.getElementById('enableSSL').checked = true;
+            document.getElementById('enableAuth').checked = true;
+            document.getElementById('enableMonitoring').checked = true;
+        }
+        
+        // 显示其他节点的基本信息（P2PAI特性）
+        function showBasicNodeInfo(node) {
+            const title = node.status === 'online' ? `${node.name} - 在线` : `${node.name} - 离线`;
+            const statusColor = node.status === 'online' ? 'text-green-600' : 'text-gray-500';
+            const statusText = node.status === 'online' ? '在线' : '离线';
+            const lastSeen = node.heartbeat || '未知';
+            
+            const content = `
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <h4 class="detail-title">${node.name}</h4>
+                        <span class="detail-badge ${node.status === 'online' ? 'success' : 'info'}">${statusText}</span>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    <strong>隐私保护：</strong>根据P2PAI协议，您只能查看其他参与方的基本连接状态，无法获取详细的训练信息。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">参与方名称</div>
+                            <div class="detail-value">${node.name}</div>
+                            <div class="detail-meta">多方计算参与节点</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">连接状态</div>
+                            <div class="detail-value ${statusColor}">${statusText}</div>
+                            <div class="detail-meta">最后心跳: ${lastSeen}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">网络地址</div>
+                            <div class="detail-value font-mono">${node.url || '不可见'}</div>
+                            <div class="detail-meta">端点访问地址</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h5 class="text-sm font-semibold text-blue-800 mb-2">可获取信息</h5>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>• 节点在线/离线状态</li>
+                            <li>• 网络连接可用性</li>
+                            <li>• 基本通信延迟</li>
+                        </ul>
+                        <h5 class="text-sm font-semibold text-blue-800 mb-2 mt-3">隐私保护信息</h5>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>• 训练进度和准确率</li>
+                            <li>• 系统资源使用情况</li>
+                            <li>• 数据集和模型详情</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            showModal('参与方基本信息', content);
+        }
+
+        // 通用模态框显示函数
+        function showModal(title, content) {
+            // 创建临时模态框元素
+            const modalId = 'tempModal';
+            let existingModal = document.getElementById(modalId);
+            
+            // 如果已存在，先移除
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            const modalHTML = `
+                <div id="${modalId}" class="node-modal show">
+                    <div class="node-modal-card" style="max-width: 600px;">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl font-bold text-gray-900">${title}</h2>
+                                <button onclick="closeTempModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="modal-content">${content}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // 添加点击外部关闭功能
+            const modal = document.getElementById(modalId);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeTempModal();
+                }
+            });
+            
+            // 添加ESC键关闭功能
+            const escHandler = function(e) {
+                if (e.key === 'Escape') {
+                    closeTempModal();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+        }
+        
+        // 关闭临时模态框
+        function closeTempModal() {
+            const modal = document.getElementById('tempModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // 显示节点详情
+        function showNodeDetails(node, type) {
+            selectedNode = node;
+            const detailsPanel = document.getElementById('nodeDetails');
+            const nodeTitle = document.getElementById('nodeTitle');
+            const nodeInfo = document.getElementById('nodeInfo');
+            
+            nodeTitle.textContent = `${node.name} - 详情`;
+            
+            if (type === 'control') {
+                nodeInfo.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">节点类型</span>
+                            <span class="font-semibold">控制节点</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">角色</span>
+                            <span class="font-semibold">${node.type === 'master' ? '主控制器' : node.type === 'participant' ? '参与者' : '观察者'}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">状态</span>
+                            <span class="font-semibold text-green-600">在线</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">负责用户</span>
+                            <span class="font-semibold">${node.user}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">IP地址</span>
+                            <span class="font-semibold text-xs">${node.ip}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">连接节点</span>
+                            <span class="font-semibold">${networkData.edgeNodes.filter(n => n.status !== 'error').length}个</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">运行时间</span>
+                            <span class="font-semibold">15天</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">版本</span>
+                            <span class="font-semibold">v2.1.0</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const statusColor = {
+                    training: 'text-blue-600',
+                    completed: 'text-green-600',
+                    idle: 'text-gray-600',
+                    error: 'text-red-600'
+                }[node.status];
+                
+                const statusText = {
+                    training: '训练中',
+                    completed: '已完成',
+                    idle: '空闲',
+                    error: '错误'
+                }[node.status];
+                
+                nodeInfo.innerHTML = `
+                    <div class="space-y-4">
+                        <!-- 基础信息卡片 -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="font-semibold mb-3 text-blue-600">基础信息</h5>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <span class="text-xs text-gray-600">节点类型</span>
+                                    <div class="font-semibold">边缘节点</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">状态</span>
+                                    <div class="font-semibold ${statusColor}">${statusText}</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">训练进度</span>
+                                    <div class="font-semibold text-blue-600">${node.progress}%</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">最后心跳</span>
+                                    <div class="font-semibold">${node.heartbeat}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络信息卡片 -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="font-semibold mb-3 text-purple-600">网络信息</h5>
+                            <div class="space-y-2">
+                                <div>
+                                    <span class="text-xs text-gray-600">节点地址</span>
+                                    <div class="font-mono text-sm text-blue-600">${node.url || 'http://192.168.1.xxx:8080'}</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">连接的控制节点</span>
+                                    <div class="space-y-1">
+                                        ${(node.connectedTo || ['http://192.168.1.100:8080']).map(url => 
+                                            `<div class="font-mono text-sm text-green-600">${url}</div>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">网络速度</span>
+                                    <div class="font-semibold">72Mbps</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 训练统计卡片 -->
+                        ${node.status === 'training' && node.trainingRounds ? `
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="font-semibold mb-3 text-orange-600">训练统计</h5>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <span class="text-xs text-gray-600">训练轮数</span>
+                                    <div class="font-bold text-lg">${node.trainingRounds || 0}</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">当前准确率</span>
+                                    <div class="font-bold text-lg text-green-600">${(node.accuracy || 0).toFixed(2)}%</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">损失值</span>
+                                    <div class="font-bold text-lg text-red-600">${(node.loss || 0).toFixed(2)}</div>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-600">学习率</span>
+                                    <div class="font-bold text-lg">0.001</div>
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <!-- 资源使用卡片 -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="font-semibold mb-3 text-red-600">资源使用</h5>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>CPU使用率</span>
+                                        <span class="font-semibold">${node.cpu.toFixed(2)}%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: ${node.cpu}%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>GPU使用率</span>
+                                        <span class="font-semibold">${node.gpu.toFixed(2)}%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: ${node.gpu}%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>内存使用</span>
+                                        <span class="font-semibold">${node.memory}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 历史趋势卡片 -->
+                        ${node.stats ? `
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="font-semibold mb-3 text-indigo-600">趋势分析</h5>
+                            <div class="space-y-2">
+                                <div>
+                                    <span class="text-xs text-gray-600">准确率趋势</span>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        ${node.stats.accuracyHistory.map(acc => 
+                                            `<div class="flex-1 bg-green-200 rounded h-3" style="height: ${(acc/100) * 20 + 5}px"></div>`
+                                        ).join('')}
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">最近4轮: ${node.stats.accuracyHistory.map(acc => acc.toFixed(2)).join(' → ')}%</div>
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            detailsPanel.classList.add('show');
+        }
+        
+        // 关闭节点详情
+        function closeNodeDetails() {
+            const detailsPanel = document.getElementById('nodeDetails');
+            if (detailsPanel) {
+                detailsPanel.classList.remove('show');
+                selectedNode = null;
+            }
+        }
+        
+        // 添加点击外部关闭面板的功能
+        document.addEventListener('click', function(e) {
+            // 处理查看详情按钮点击
+            if (e.target.classList.contains('node-details-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const nodeId = e.target.getAttribute('data-node-id');
+                
+                // 查找节点数据
+                const node = networkData.allEdgeNodes.find(n => n.id === nodeId);
+                if (node) {
+                    // P2PAI特性：根据节点类型显示不同信息
+                    if (node.isOwnNode) {
+                        // 自己的节点 - 显示详细信息
+                        showNodeDetails(node, 'edge');
+                    } else {
+                        // 其他参与方节点 - 显示基本信息
+                        showBasicNodeInfo(node);
+                    }
+                }
+                return;
+            }
+            
+            // 处理模态框外部点击关闭
+            const nodeModal = document.getElementById('nodeModal');
+            const inviteModal = document.getElementById('inviteUserModal');
+            const addNodeModal = document.getElementById('addNodeModal');
+            
+            if (nodeModal && nodeModal.classList.contains('show')) {
+                // 如果点击的是模态框背景，关闭模态框
+                if (e.target === nodeModal) {
+                    closeNodeModal();
+                }
+            }
+            
+            if (inviteModal && inviteModal.classList.contains('show')) {
+                if (e.target === inviteModal) {
+                    closeInviteUserModal();
+                }
+            }
+            
+            if (addNodeModal && addNodeModal.classList.contains('show')) {
+                if (e.target === addNodeModal) {
+                    closeAddNodeModal();
+                }
+            }
+            
+            const nodeDetails = document.getElementById('nodeDetails');
+            const controlPanel = document.querySelector('.control-panel');
+            
+            if (nodeDetails && nodeDetails.classList.contains('show')) {
+                // 如果点击的不是节点详情面板内部、控制面板内部、或SVG节点
+                if (!nodeDetails.contains(e.target) && 
+                    !controlPanel.contains(e.target) && 
+                    !e.target.closest('.edge-node') && 
+                    !e.target.closest('.control-node')) {
+                    closeNodeDetails();
+                }
+            }
+        });
+        
+        // 更新统计信息
+        function updateStats() {
+            // P2PAI特性：只显示自己节点的进度和在线参与方数量
+            const onlineParticipants = networkData.allEdgeNodes.filter(n => n.status === 'online').length;
+            const myNode = networkData.allEdgeNodes.find(n => n.isOwnNode);
+            const myProgress = myNode ? myNode.progress || 0 : 0;
+            
+            // 更新控制面板实时状态
+            document.getElementById('onlineNodes').textContent = onlineParticipants;
+            document.getElementById('trainingNodes').textContent = `${myProgress}%`;
+            document.getElementById('dataTransfer').textContent = '加密';
+            
+            // 更新概览卡片
+            document.getElementById('totalNodesCount').textContent = networkData.allEdgeNodes.length + networkData.controlNodes.length;
+            document.getElementById('avgProgress').textContent = `${myProgress}%`;
+            document.getElementById('networkLatency').textContent = `${Math.floor(Math.random() * 20 + 15)}ms`;
+            document.getElementById('systemHealth').textContent = '启用';
+            
+            // 更新节点计数
+            document.getElementById('controlNodeCount').textContent = networkData.controlNodes.length;
+            document.getElementById('edgeNodeCount').textContent = networkData.allEdgeNodes.length;
+            document.getElementById('totalNodeCount').textContent = networkData.controlNodes.length + networkData.allEdgeNodes.length;
+            
+            // 更新项目头部的快速统计
+            const totalNodes = networkData.controlNodes.length + networkData.allEdgeNodes.length;
+            const onlineNodes = onlineParticipants;
+            
+            document.getElementById('quickNodeCount').textContent = totalNodes;
+            document.getElementById('quickOnlineCount').textContent = onlineNodes;
+            
+            // 检查训练完成状态
+            checkTrainingComplete();
+        }
+        
+        // 检查训练完成状态
+        function checkTrainingComplete() {
+            const allNodes = networkData.allEdgeNodes;
+            const trainingNodes = allNodes.filter(n => n.status === 'training' || n.status === 'idle');
+            const completedNodes = allNodes.filter(n => n.status === 'completed');
+            const totalActiveNodes = allNodes.filter(n => n.status !== 'error');
+            
+            // 如果所有活跃节点都已完成训练，显示完成状态
+            if (trainingNodes.length === 0 && completedNodes.length > 0) {
+                showTrainingComplete(completedNodes.length);
+            } else {
+                hideTrainingComplete();
+            }
+        }
+        
+        // 显示训练完成状态
+        function showTrainingComplete(completedCount) {
+            const completeOverlay = document.getElementById('trainingComplete');
+            const statsText = document.getElementById('trainingCompleteStats');
+            
+            if (completeOverlay && statsText) {
+                statsText.textContent = `共完成 ${completedCount} 个节点的训练`;
+                completeOverlay.style.display = 'block';
+            }
+        }
+        
+        // 隐藏训练完成状态
+        function hideTrainingComplete() {
+            const completeOverlay = document.getElementById('trainingComplete');
+            if (completeOverlay) {
+                completeOverlay.style.display = 'none';
+            }
+        }
+        
+        // 填充节点表格
+        function fillNodeTables() {
+            fillControlNodesTable();
+            fillEdgeNodesTable();
+        }
+        
+        // 填充控制节点表格
+        function fillControlNodesTable() {
+            const tableBody = document.getElementById('controlNodesTable');
+            tableBody.innerHTML = '';
+            
+            networkData.controlNodes.forEach(node => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 cursor-pointer';
+                row.onclick = () => showNodeDetails(node, 'control');
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                            <span class="text-sm font-medium text-gray-900">${node.name}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm text-gray-900">${node.type === 'master' ? '主控制器' : node.type === 'participant' ? '参与者' : '观察者'}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            在线
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.user}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">${node.ip}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${networkData.edgeNodes.filter(n => n.status !== 'error').length}个</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // 填充边缘节点表格
+        function fillEdgeNodesTable() {
+            const tableBody = document.getElementById('edgeNodesTable');
+            tableBody.innerHTML = '';
+            
+            networkData.allEdgeNodes.forEach(node => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                // P2PAI特性：根据节点所有权显示不同信息
+                if (node.isOwnNode) {
+                    // 自己的节点 - 显示详细信息
+                    const statusColorMap = {
+                        'training': 'bg-red-100 text-red-800',
+                        'completed': 'bg-green-100 text-green-800',
+                        'idle': 'bg-gray-100 text-gray-800',
+                        'error': 'bg-red-100 text-red-800'
+                    };
+                    
+                    const statusTextMap = {
+                        'training': '训练中',
+                        'completed': '已完成',
+                        'idle': '空闲',
+                        'error': '错误'
+                    };
+                    
+                    const statusColor = statusColorMap[node.status] || 'bg-gray-100 text-gray-800';
+                    const statusText = statusTextMap[node.status] || '未知';
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                                <span class="text-sm font-medium text-gray-900">${node.name} <span class="text-xs text-red-600">(我的节点)</span></span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-red-600 h-2 rounded-full" style="width: ${node.progress || 0}%"></div>
+                                </div>
+                                <span class="text-sm text-gray-900">${node.progress || 0}%</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.cpu ? node.cpu.toFixed(2) + '%' : 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.memory || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.gpu ? node.gpu.toFixed(2) + '%' : 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${node.heartbeat}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-red-600 hover:text-red-900 px-3 py-2 rounded border border-red-300 hover:border-red-500 bg-transparent cursor-pointer transition-colors duration-200 node-details-btn" data-node-id="${node.id}">查看详情</button>
+                        </td>
+                    `;
+                } else {
+                    // 其他参与方的节点 - 只显示基本状态
+                    const statusColor = node.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+                    const statusText = node.status === 'online' ? '在线' : '离线';
+                    const dotColor = node.status === 'online' ? 'bg-green-500' : 'bg-gray-400';
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 ${dotColor} rounded-full mr-3"></div>
+                                <span class="text-sm font-medium text-gray-900">${node.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                            <span class="italic">隐私保护</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${node.heartbeat}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-green-600 hover:text-green-900 px-3 py-2 rounded border border-green-300 hover:border-green-500 bg-transparent cursor-pointer transition-colors duration-200 node-details-btn" data-node-id="${node.id}">基本信息</button>
+                        </td>
+                    `;
+                }
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // 启动实时更新
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                let hasCompletedNodes = false;
+                
+                // 随机将等待中的节点开始训练
+                const idleNodes = networkData.allEdgeNodes.filter(n => n.status === 'idle');
+                if (idleNodes.length > 0 && Math.random() < 0.3) {
+                    const randomIdleNode = idleNodes[Math.floor(Math.random() * idleNodes.length)];
+                    randomIdleNode.status = 'training';
+                    randomIdleNode.progress = Math.floor(Math.random() * 10); // 开始进度
+                    randomIdleNode.fadeIn = true; // 标记节点需要淡入
+                }
+                
+                // 随机更新训练进度
+                networkData.allEdgeNodes.forEach(node => {
+                    if (node.status === 'training' && node.progress < 100) {
+                        node.progress = Math.min(100, node.progress + Math.floor(Math.random() * 3));
+                        
+                        // 更新训练统计数据
+                        if (node.trainingRounds) {
+                            node.trainingRounds += Math.floor(Math.random() * 3 + 1);
+                            
+                            // 更新准确率和损失值
+                            if (Math.random() < 0.7) { // 70%概率提升准确率
+                                node.accuracy = Math.min(99.9, node.accuracy + Math.random() * 0.3);
+                                node.loss = Math.max(0.001, node.loss - Math.random() * 0.005);
+                            }
+                            
+                            // 更新资源使用历史
+                            if (node.stats) {
+                                // CPU波动
+                                const cpuChange = (Math.random() - 0.5) * 10;
+                                node.cpu = Math.round((Math.max(10, Math.min(100, node.cpu + cpuChange)) * 100)) / 100;
+                                
+                                // GPU波动
+                                const gpuChange = (Math.random() - 0.5) * 8;
+                                node.gpu = Math.round((Math.max(0, Math.min(100, node.gpu + gpuChange)) * 100)) / 100;
+                                
+                                // 更新历史记录（保持最近4个值）
+                                node.stats.cpuHistory.push(node.cpu);
+                                node.stats.gpuHistory.push(node.gpu);
+                                node.stats.accuracyHistory.push(Math.round(node.accuracy * 10) / 10);
+                                
+                                if (node.stats.cpuHistory.length > 4) {
+                                    node.stats.cpuHistory.shift();
+                                    node.stats.gpuHistory.shift();
+                                    node.stats.accuracyHistory.shift();
+                                }
+                            }
+                        }
+                        
+                        if (node.progress >= 100) {
+                            node.status = 'completed';
+                            node.fadeOut = true; // 标记节点需要淡出
+                            hasCompletedNodes = true;
+                        }
+                    }
+                });
+                
+                // 如果有节点完成训练，延迟更新可视化节点（让淡出动画先播放）
+                if (hasCompletedNodes) {
+                    // 立即重绘以显示淡出动画
+                    drawNodes();
+                    drawConnections();
+                    
+                    // 1秒后更新可视化节点列表（移除已完成的节点）
+                    setTimeout(() => {
+                        updateVisualizedNodes();
+                        drawNodes();
+                        drawConnections();
+                        updateStats();
+                        fillNodeTables();
+                    }, 1000);
+                } else {
+                    // 正常更新
+                    updateVisualizedNodes();
+                    drawNodes();
+                    drawConnections();
+                    updateStats();
+                    fillNodeTables();
+                }
+                
+                // 随机数据传输速度
+                const speeds = ['0.8MB/s', '1.2MB/s', '2.1MB/s', '1.5MB/s', '0.9MB/s'];
+                document.getElementById('dataTransfer').textContent = speeds[Math.floor(Math.random() * speeds.length)];
+                
+                // 随机网络延迟（如果元素存在）
+                const networkLatencyElement = document.getElementById('networkLatency');
+                if (networkLatencyElement) {
+                    networkLatencyElement.textContent = `${Math.floor(Math.random() * 20 + 15)}ms`;
+                }
+                
+                // 如果有节点详情面板打开，实时更新其内容
+                if (selectedNode && document.getElementById('nodeDetails').classList.contains('show')) {
+                    const updatedNode = networkData.allEdgeNodes.find(n => n.id === selectedNode.id);
+                    if (updatedNode) {
+                        showNodeDetails(updatedNode, 'edge');
+                    }
+                }
+            }, 3000);
+        }
+        
+        // 控制面板功能
+        function inviteUser() {
+            alert('邀请用户功能开发中...\n\n将提供：\n- 用户邀请链接生成\n- 权限设置\n- 用户管理\n- 协作控制');
+        }
+        
+        function addNode() {
+            alert('添加节点功能开发中...\n\n将支持：\n- 自动发现边缘设备\n- 手动添加节点\n- 节点配置\n- 连接测试');
+        }
+        
+        function startTraining() {
+            alert('开始训练功能开发中...\n\n将包含：\n- 训练参数设置\n- 数据分发策略\n- 模型同步机制\n- 进度监控');
+        }
+        
+        // 测试功能：完成所有训练
+        function completeAllTraining() {
+            networkData.allEdgeNodes.forEach(node => {
+                if (node.status === 'training' || node.status === 'idle') {
+                    node.status = 'completed';
+                    node.progress = 100;
+                }
+            });
+            
+            // 重新绘制界面
+            updateVisualizedNodes();
+            drawNodes();
+            drawConnections();
+            updateStats();
+            fillNodeTables();
+            
+            alert('所有节点训练已完成！');
+        }
+        
+        function resetView() {
+            // 重置可视化视图
+            initializeVisualization();
+            closeNodeDetails();
+            alert('视图已重置');
+        }
+        
+        // 边缘节点表格排序功能
+        function sortEdgeNodes(field) {
+            // 更新排序方向
+            if (currentSortField === field) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortField = field;
+                currentSortDirection = 'asc';
+            }
+            
+            // 清除所有排序指示器
+            const sortIndicators = ['sort-name', 'sort-status', 'sort-progress', 'sort-cpu', 'sort-memory', 'sort-gpu', 'sort-heartbeat'];
+            sortIndicators.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = '⇅';
+            });
+            
+            // 设置当前排序指示器
+            const currentIndicator = document.getElementById(`sort-${field}`);
+            if (currentIndicator) {
+                currentIndicator.textContent = currentSortDirection === 'asc' ? '↑' : '↓';
+            }
+            
+            // 执行排序
+            networkData.allEdgeNodes.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(field) {
+                    case 'name':
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                        break;
+                    case 'status':
+                        // 状态排序：training > idle > completed > error
+                        const statusOrder = { 'training': 1, 'idle': 2, 'completed': 3, 'error': 4 };
+                        valueA = statusOrder[a.status] || 5;
+                        valueB = statusOrder[b.status] || 5;
+                        break;
+                    case 'progress':
+                        valueA = a.progress || 0;
+                        valueB = b.progress || 0;
+                        break;
+                    case 'cpu':
+                        valueA = a.cpu || 0;
+                        valueB = b.cpu || 0;
+                        break;
+                    case 'memory':
+                        // 解析内存值（去除GB后缀）
+                        valueA = parseFloat(a.memory.replace('GB', '')) || 0;
+                        valueB = parseFloat(b.memory.replace('GB', '')) || 0;
+                        break;
+                    case 'gpu':
+                        valueA = a.gpu || 0;
+                        valueB = b.gpu || 0;
+                        break;
+                    case 'heartbeat':
+                        // 解析心跳时间（简化处理）
+                        const parseHeartbeat = (heartbeat) => {
+                            if (heartbeat.includes('秒前')) {
+                                return parseInt(heartbeat.replace('秒前', '')) || 0;
+                            } else if (heartbeat.includes('分钟前')) {
+                                return (parseInt(heartbeat.replace('分钟前', '')) || 0) * 60;
+                            }
+                            return 999; // 其他情况排在最后
+                        };
+                        valueA = parseHeartbeat(a.heartbeat);
+                        valueB = parseHeartbeat(b.heartbeat);
+                        break;
+                    default:
+                        valueA = a[field];
+                        valueB = b[field];
+                }
+                
+                if (typeof valueA === 'string' && typeof valueB === 'string') {
+                    return currentSortDirection === 'asc' 
+                        ? valueA.localeCompare(valueB)
+                        : valueB.localeCompare(valueA);
+                } else {
+                    return currentSortDirection === 'asc' 
+                        ? valueA - valueB 
+                        : valueB - valueA;
+                }
+            });
+            
+            // 重新填充表格
+            fillEdgeNodesTable();
+        }
+        
+        // 导航功能
+        function goBack() {
+            window.location.href = './client-dashboard.html';
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 确保用户登录状态（为可视化页面提供模拟登录）
+            if (!localStorage.getItem('user') || !localStorage.getItem('user_token')) {
+                // 设置默认用户信息
+                const defaultUser = {
+                    name: 'P2PAI用户',
+                    userType: 'client',
+                    id: 'p2pai_user_001'
+                };
+                localStorage.setItem('user', JSON.stringify(defaultUser));
+                localStorage.setItem('user_token', 'mock-token-' + Date.now());
+                localStorage.setItem('auth_token', 'p2pai-auth-token');
+            }
+            
+            // 从localStorage获取项目ID
+            const storedProjectId = localStorage.getItem('currentProjectId');
+            if (storedProjectId) {
+                projectId = storedProjectId;
+            }
+            
+            // 初始化项目信息
+            initializeProjectInfo();
+            
+            // 检查SVG容器是否存在并初始化可视化
+            const svgContainer = document.getElementById('networkSvg');
+            if (svgContainer) {
+                initializeVisualization();
+            }
+        });
+    </script>
+</body>
+</html>

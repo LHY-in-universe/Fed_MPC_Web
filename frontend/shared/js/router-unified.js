@@ -262,7 +262,7 @@ class UnifiedRouter {
     }
 
     generateRouteId(path) {
-        return path.replace(/[\/\-\.]/g, '_').toLowerCase();
+        return path.replace(/[/\-\.]/g, '_').toLowerCase();
     }
 
     getRoute(path) {
@@ -277,7 +277,7 @@ class UnifiedRouter {
 
     findRouteByPattern(path) {
         // 智能路径匹配算法
-        const cleanPath = path.toLowerCase().replace(/[\/\-_]/g, '');
+        const cleanPath = path.toLowerCase().replace(/[/\-_]/g, '');
         
         // AI模块匹配
         if (path.includes('/ai/') || cleanPath.includes('ai')) {
@@ -993,12 +993,9 @@ class UnifiedRouter {
     }
 
     initializeModules() {
-        // 预加载关键模块
-        const criticalModules = ['ai', 'blockchain', 'crypto'];
-        criticalModules.forEach(module => {
-            this.preloadModule(module);
-        });
-
+        // 只对当前页面相关的模块进行初始化，避免404错误
+        // 预加载关键模块已禁用，以避免P2PAI项目中不存在的路径产生404错误
+        
         // 初始化模块特定功能
         this.initializeModuleSpecificFeatures();
     }
@@ -1188,8 +1185,8 @@ if (typeof window !== 'undefined') {
     // 智能路径计算函数
     function calculateRelativePath(currentPath, targetPath) {
         // 移除开头的斜杠
-        currentPath = currentPath.replace(/^\\/+/, '');
-        targetPath = targetPath.replace(/^\\/+/, '');
+        currentPath = currentPath.replace(/^\/+/, '');
+        targetPath = targetPath.replace(/^\/+/, '');
         
         // 计算当前页面相对于frontend根目录的深度
         const currentParts = currentPath.split('/').filter(part => part);

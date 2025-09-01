@@ -892,7 +892,7 @@
                 </button>
             </div>
             <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewTrainingDetail('img_classify_001')">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewProjectVisualization('img_classify_001')">
                     <div>
                         <div class="font-medium text-gray-900" data-i18n="ai.dashboard.client.imageClassification">图像分类模型</div>
                         <div class="text-sm text-gray-500">2024-01-15 14:30</div>
@@ -904,7 +904,7 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewTrainingDetail('text_classify_002')">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewProjectVisualization('text_classify_002')">
                     <div>
                         <div class="font-medium text-gray-900" data-i18n="ai.dashboard.client.textClassification">文本分类模型</div>
                         <div class="text-sm text-gray-500">2024-01-14 10:15</div>
@@ -916,7 +916,7 @@
                     </div>
                 </div>
                 
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewTrainingDetail('regression_003')">
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onclick="viewProjectVisualization('regression_003')">
                     <div>
                         <div class="font-medium text-gray-900" data-i18n="ai.dashboard.client.regressionModel">回归预测模型</div>
                         <div class="text-sm text-gray-500">2024-01-13 16:45</div>
@@ -1202,6 +1202,15 @@
                 </div>
             `;
             showModal('准确率统计详情', content);
+        }
+
+        // 跳转到项目可视化页面
+        function viewProjectVisualization(projectId) {
+            console.log('跳转到项目可视化页面:', projectId);
+            // 将项目ID存储到localStorage中，以便可视化页面使用
+            localStorage.setItem('currentProjectId', projectId);
+            // 跳转到可视化页面
+            window.location.href = './project-visualization.html';
         }
 
         // 训练详细信息
