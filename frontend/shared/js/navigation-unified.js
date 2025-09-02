@@ -11,6 +11,8 @@
     
     // 智能路径计算函数
     function calculateRelativePath(currentPath, targetPath) {
+        console.log('🔄 calculateRelativePath called:', { currentPath, targetPath });
+        
         // 移除开头的斜杠
         currentPath = currentPath.replace(/^\/+/, '');
         targetPath = targetPath.replace(/^\/+/, '');
@@ -19,17 +21,23 @@
         const currentParts = currentPath.split('/').filter(part => part);
         let depth = 0;
         
-        // 确定深度
+        console.log('📂 Current parts:', currentParts);
+        
+        // 确定深度 - 修复逻辑
         if (currentParts.includes('pages')) {
             // 在子目录的pages文件夹中，需要返回2级 (pages -> module -> frontend)
             const pagesIndex = currentParts.indexOf('pages');
             depth = pagesIndex + 1; // +1是因为还要跳出pages目录
-        } else if (currentParts.length > 1) {
+            console.log('📄 In pages folder, depth:', depth);
+        } else if (currentParts.length > 0) {
             // 在子目录中，但特殊处理homepage目录
             if (currentParts[0] === 'homepage') {
                 depth = 1; // homepage目录只需返回1级
+                console.log('🏠 In homepage folder, depth:', depth);
             } else {
-                depth = currentParts.length - 1;
+                // 其他情况，根据实际路径深度计算
+                depth = currentParts.length;
+                console.log('📁 In other folder, depth:', depth);
             }
         }
         
@@ -40,6 +48,7 @@
         }
         relativePath += targetPath;
         
+        console.log('✅ Final relative path:', relativePath);
         return relativePath;
     }
     
@@ -100,32 +109,49 @@
         // 主页导航
         window.goHome = window.goHome || function() {
             console.log('🏠 goHome() called');
-            smartNavigate('homepage/index.html');
+            console.log('🔗 Current URL:', window.location.href);
+            console.log('🎯 Target URL:', window.location.origin + '/homepage/index.html');
+            
+            try {
+                console.log('📍 About to redirect...');
+                // 强制跳转
+                window.location.replace('/homepage/index.html');
+                console.log('✅ Redirect command executed');
+            } catch (error) {
+                console.error('❌ Redirect failed:', error);
+                // 备用方法
+                window.location.href = '/homepage/index.html';
+            }
         };
         
         // AI模块导航
         window.goToAI = window.goToAI || function() {
             console.log('🤖 goToAI() called');
-            smartNavigate('ai/pages/user-type-select.html');
+            window.location.href = '/p2pai/pages/user-type-select.html';
         };
         
         // 区块链模块导航
         window.goToBlockchain = window.goToBlockchain || function() {
             console.log('⛓️ goToBlockchain() called');
-            smartNavigate('blockchain/pages/login.html');
+            window.location.href = '/blockchain/pages/login.html';
         };
         
         // 密码学模块导航
         window.goToCrypto = window.goToCrypto || function() {
             console.log('🔐 goToCrypto() called');
-            smartNavigate('crypto/pages/login.html');
+            window.location.href = '/crypto/pages/login.html';
+        };
+        
+        // EdgeAI模块导航
+        window.goToEdgeAI = window.goToEdgeAI || function() {
+            console.log('🤖 goToEdgeAI() called');
+            window.location.href = '/edgeai/pages/login.html';
         };
         
         // 通用页面导航
         window.navigateToPage = window.navigateToPage || function(moduleName, pageName) {
             console.log(`📄 navigateToPage(${moduleName}, ${pageName}) called`);
-            const targetPath = `${moduleName}/pages/${pageName}`;
-            smartNavigate(targetPath);
+            window.location.href = `/${moduleName}/pages/${pageName}`;
         };
         
         // 返回功能

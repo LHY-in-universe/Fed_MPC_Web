@@ -131,7 +131,7 @@ const ChartConfig = {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: '模型准确率',
+                    label: window.i18nManager?.getCurrentLanguage() === 'en' ? 'Model Accuracy' : '模型准确率',
                     data: data,
                     borderColor: theme.primary,
                     backgroundColor: this.createGradient(theme.primary, 0.1),
@@ -163,7 +163,7 @@ const ChartConfig = {
                         ...this.defaults.scales.x,
                         title: {
                             display: true,
-                            text: '训练轮次 (Rounds)',
+                            text: window.i18nManager?.getCurrentLanguage() === 'en' ? 'Training Rounds' : '训练轮次 (Rounds)',
                             color: '#475569',
                             font: {
                                 size: 14,
@@ -181,7 +181,8 @@ const ChartConfig = {
                         ...this.defaults.plugins.tooltip,
                         callbacks: {
                             label: function(context) {
-                                return `准确率: ${(context.parsed.y * 100).toFixed(2)}%`;
+                                const isEn = window.i18nManager?.getCurrentLanguage() === 'en';
+                                return isEn ? `Accuracy: ${(context.parsed.y * 100).toFixed(2)}%` : `准确率: ${(context.parsed.y * 100).toFixed(2)}%`;
                             }
                         }
                     }
@@ -257,7 +258,7 @@ const ChartConfig = {
         return {
             type: 'doughnut',
             data: {
-                labels: ['在线', '离线', '训练中'],
+                labels: window.i18nManager?.getCurrentLanguage() === 'en' ? ['Online', 'Offline', 'Training'] : ['在线', '离线', '训练中'],
                 datasets: [{
                     data: data,
                     backgroundColor: [

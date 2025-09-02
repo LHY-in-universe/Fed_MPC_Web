@@ -163,7 +163,7 @@
         .via-gray-500 { --tw-gradient-stops: var(--tw-gradient-from), rgb(107 114 128), var(--tw-gradient-to, transparent) !important; }
         .to-transparent { --tw-gradient-to: transparent !important; }
     </style>
-    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../shared/css/unified-styles.css?v=1756673001">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
@@ -183,7 +183,7 @@
         /* 确保组件有正确的背景 */
         .premium-module-card {
             background: var(--bg-primary) !important;
-            border: 1px solid var(--border-primary) !important;
+            border: none !important;
         }
 
         /* 导航栏样式由统一CSS处理 */
@@ -200,16 +200,16 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
-        /* 高级模块卡片 - 强制圆角 */
+        /* 高级模块卡片 - 添加圆角 */
         .premium-module-card,
         html .premium-module-card,
         body .premium-module-card {
             position: relative !important;
             background: var(--bg-primary) !important;
-            border: 1px solid var(--border-primary) !important;
-            border-radius: 32px !important;
-            -webkit-border-radius: 32px !important;
-            -moz-border-radius: 32px !important;
+            border: none !important;
+            border-radius: 16px !important;
+            -webkit-border-radius: 16px !important;
+            -moz-border-radius: 16px !important;
             padding: 40px 32px !important;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
             overflow: hidden !important;
@@ -240,12 +240,12 @@
             border-color: var(--gray-500);
         }
         
-        /* 图标容器升级 */
+        /* 图标容器升级 - 添加圆角 */
         .premium-icon-container {
             width: 80px;
             height: 80px;
             background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            border-radius: 20px !important;
+            border-radius: 12px !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -381,22 +381,22 @@
             color: var(--text-secondary);
         }
 
-        /* 模块卡片特殊样式 - 强制深色模式圆角 */
+        /* 模块卡片特殊样式 - 深色模式圆角 */
         [data-theme="dark"] .premium-module-card,
         html[data-theme="dark"] .premium-module-card,
         body[data-theme="dark"] .premium-module-card {
             background: var(--bg-primary) !important;
-            border: 1px solid var(--border-primary) !important;
-            border-radius: 32px !important;
-            -webkit-border-radius: 32px !important;
-            -moz-border-radius: 32px !important;
+            border: none !important;
+            border-radius: 16px !important;
+            -webkit-border-radius: 16px !important;
+            -moz-border-radius: 16px !important;
         }
 
         [data-theme="dark"] .bg-gradient-to-r {
             background: linear-gradient(90deg, transparent, var(--text-secondary), transparent) !important;
         }
 
-        /* 强制所有卡片内部元素圆角 - 解决直角边框问题 */
+        /* 恢复卡片圆角 */
         .premium-module-card *,
         .premium-module-card .premium-icon-container,
         .premium-module-card .module-description,
@@ -406,29 +406,29 @@
         .premium-module-card h3,
         html .premium-module-card *,
         body .premium-module-card * {
-            border-radius: 16px !important;
-            -webkit-border-radius: 16px !important;
-            -moz-border-radius: 16px !important;
+            border-radius: 8px !important;
+            -webkit-border-radius: 8px !important;
+            -moz-border-radius: 8px !important;
         }
 
-        /* 图标容器特殊圆角 */
+        /* 图标容器圆角 */
         .premium-icon-container,
         html .premium-icon-container,
         body .premium-icon-container,
         .premium-module-card .premium-icon-container {
-            border-radius: 24px !important;
-            -webkit-border-radius: 24px !important;
-            -moz-border-radius: 24px !important;
+            border-radius: 12px !important;
+            -webkit-border-radius: 12px !important;
+            -moz-border-radius: 12px !important;
         }
 
-        /* 卡片本身保持更大的圆角 - 最高优先级 */
+        /* 卡片本身圆角 - 最高优先级 */
         .premium-module-card,
         html .premium-module-card,
         body .premium-module-card,
         div.premium-module-card {
-            border-radius: 32px !important;
-            -webkit-border-radius: 32px !important;
-            -moz-border-radius: 32px !important;
+            border-radius: 16px !important;
+            -webkit-border-radius: 16px !important;
+            -moz-border-radius: 16px !important;
         }
 
         /* 完全移除所有边框 - 直接删除而不是圆角 */
@@ -452,7 +452,7 @@
         .premium-module-card {
             background: var(--bg-elevated) !important;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
-            border-radius: 32px !important;
+            border-radius: 16px !important;
             border: none !important;
         }
 
@@ -480,6 +480,16 @@
             border: none !important;
             background: none !important;
         }
+
+        /* 强制移除容器边框 */
+        .flex,
+        div.flex,
+        .flex.flex-row {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
     </style>
 </head>
 <body>
@@ -487,7 +497,7 @@
     <nav class="navbar backdrop-blur-xl bg-opacity-80 border-b border-gray-200/20">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <div class="enterprise-logo w-12 h-12 rounded-xl flex items-center justify-center">
+                <div class="enterprise-logo w-12 h-12 flex items-center justify-center">
                     <svg class="w-6 h-6 text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
@@ -518,12 +528,12 @@
                     安全、高效的分布式机器学习解决方案
                 </p>
                 <div class="mt-8 flex justify-center">
-                    <div class="w-24 h-1 bg-gradient-to-r from-transparent via-gray-500 to-transparent rounded-full"></div>
+                    <div class="w-24 h-1 bg-gradient-to-r from-transparent via-gray-500 to-transparent"></div>
                 </div>
             </div>
 
             <!-- 模块选择区域 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="flex flex-row gap-8 max-w-4xl mx-auto justify-center" style="border: none !important; outline: none !important; box-shadow: none !important;">
                 <!-- P2P AI模块 -->
                 <div class="premium-module-card cursor-pointer fade-in-up delay-1" onclick="selectBusinessType('p2pai')">
                     <div class="text-center">
@@ -575,9 +585,9 @@
     <!-- 脚本文件 -->
     <script src="../shared/js/utils.js?v=20250901"></script>
     <script src="../shared/js/common-utils.js?v=20250901"></script>
-    <script src="../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../shared/js/theme-manager-unified.js?v=20250827"></script>
-    <script src="../shared/js/router-unified.js?v=20250827"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     <script src="../shared/js/i18n-manager.js?v=20250831004"></script>
     <script>
         function selectBusinessType(type) {
@@ -585,9 +595,9 @@
             localStorage.setItem('selectedModule', type);
             
             if (type === 'p2pai') {
-                window.location.href = '../p2pai/pages/user-type-select.html';
+                window.location.href = '/p2pai/pages/user-type-select.html';
             } else if (type === 'edgeai') {
-                window.location.href = '../edgeai/pages/login.html';
+                window.location.href = '/edgeai/pages/login.html';
             }
         }
 

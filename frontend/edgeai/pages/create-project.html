@@ -27,7 +27,7 @@
     </script>
     
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     <link rel="stylesheet" href="../../shared/css/animations.css">
 </head>
 <body class="theme-transition">
@@ -241,7 +241,7 @@
                 alert(`项目 "${projectData.projectName}" 创建成功！\n\n项目配置：\n- 模型类型: ${getModelTypeName(projectData.modelType)}\n- 训练策略: ${getStrategyName(projectData.trainingStrategy)}\n- 目标准确率: ${projectData.targetAccuracy}%\n- 最大节点数: ${projectData.maxNodes}`);
                 
                 // 创建成功后跳转到项目管理页面
-                window.location.href = './dashboard.html';
+                window.location.href = '/edgeai/pages/dashboard.html';
             }, 2000);
         });
 

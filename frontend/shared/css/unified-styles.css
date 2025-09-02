@@ -888,15 +888,15 @@ body .module-card,
 .premium-module-card,
 html .premium-module-card,
 body .premium-module-card {
-    /* 浅色模式边框 - 覆盖之前的none设置 */
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-color: rgba(0, 0, 0, 0.08) !important;
+    /* 移除边框 - 根据用户要求去除外边框 */
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
     transition: border-color 0.3s ease !important;
 }
 
-/* 深色模式下的卡片边框 - 更微妙 */
+/* 深色模式下的卡片边框 - 同样移除边框 */
 [data-theme="dark"] .card,
 [data-theme="dark"] html .card,
 [data-theme="dark"] body .card,
@@ -906,23 +906,23 @@ body .premium-module-card {
 [data-theme="dark"] .premium-module-card,
 [data-theme="dark"] html .premium-module-card,
 [data-theme="dark"] body .premium-module-card {
-    border: 1px solid rgba(55, 65, 81, 0.15) !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-color: rgba(55, 65, 81, 0.15) !important;
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
 }
 
-/* 卡片悬停效果 */
+/* 卡片悬停效果 - 移除边框变化 */
 .card:hover,
 .module-card:hover,
 .premium-module-card:hover {
-    border-color: rgba(0, 0, 0, 0.15) !important;
+    border: none !important;
 }
 
 [data-theme="dark"] .card:hover,
 [data-theme="dark"] .module-card:hover,
 [data-theme="dark"] .premium-module-card:hover {
-    border-color: rgba(55, 65, 81, 0.25) !important;
+    border: none !important;
 }
 
 /* 保持伪元素样式但不影响卡片边框 */

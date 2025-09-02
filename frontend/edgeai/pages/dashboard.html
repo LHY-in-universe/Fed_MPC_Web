@@ -9,7 +9,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
     <style>
         /* EdgeAI控制台深色模式样式 */
@@ -287,7 +287,7 @@
 
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js?v=1756665500"></script>
-    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     
     <script>
         // 模拟项目数据
@@ -455,15 +455,15 @@
 
         // 项目操作函数
         function createProject() {
-            window.location.href = './create-project.html';
+            window.location.href = '/edgeai/pages/create-project.html';
         }
 
         function manageModels() {
-            window.location.href = './import-project.html';
+            window.location.href = '/edgeai/pages/import-project.html';
         }
 
         function viewAllNodes() {
-            window.location.href = './all-nodes.html';
+            window.location.href = '/edgeai/pages/all-nodes.html';
         }
 
         function openProject(projectId) {
@@ -514,7 +514,7 @@
             localStorage.removeItem('token');
             localStorage.removeItem('userData');
             localStorage.removeItem('loginTime');
-            window.location.href = './login.html';
+            window.location.href = '/edgeai/pages/login.html';
         }
     </script>
 </body>

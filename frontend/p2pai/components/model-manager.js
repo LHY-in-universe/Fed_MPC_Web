@@ -21,19 +21,19 @@ class ModelManager {
         this.container.innerHTML = `
             <div class="model-manager">
                 <div class="manager-header">
-                    <h3>模型管理</h3>
+                    <h3 data-i18n="ai.dashboard.model.management">模型管理</h3>
                     <div class="manager-controls">
-                        <button id="createModel" class="btn btn-primary">创建模型</button>
-                        <button id="importModel" class="btn btn-secondary">导入模型</button>
-                        <button id="refreshModels" class="btn btn-outline-primary">刷新</button>
+                        <button id="createModel" class="btn btn-primary" data-i18n="ai.dashboard.model.create">创建模型</button>
+                        <button id="importModel" class="btn btn-secondary" data-i18n="ai.dashboard.model.import">导入模型</button>
+                        <button id="refreshModels" class="btn btn-outline-primary" data-i18n="common.refresh">刷新</button>
                     </div>
                 </div>
                 
                 <div class="manager-filters">
                     <div class="filter-group">
-                        <label for="modelTypeFilter">模型类型:</label>
+                        <label for="modelTypeFilter" data-i18n="ai.dashboard.model.modelType">模型类型:</label>
                         <select id="modelTypeFilter" class="form-select">
-                            <option value="">全部</option>
+                            <option value="" data-i18n="common.all">全部</option>
                             <option value="cnn">CNN</option>
                             <option value="rnn">RNN</option>
                             <option value="lstm">LSTM</option>
@@ -41,13 +41,13 @@ class ModelManager {
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label for="statusFilter">状态:</label>
+                        <label for="statusFilter" data-i18n="ai.dashboard.model.status">状态:</label>
                         <select id="statusFilter" class="form-select">
-                            <option value="">全部</option>
-                            <option value="created">已创建</option>
-                            <option value="training">训练中</option>
-                            <option value="trained">已训练</option>
-                            <option value="deployed">已部署</option>
+                            <option value="" data-i18n="common.all">全部</option>
+                            <option value="created" data-i18n="ai.dashboard.model.statuses.created">已创建</option>
+                            <option value="training" data-i18n="ai.dashboard.model.statuses.training">训练中</option>
+                            <option value="trained" data-i18n="ai.dashboard.model.statuses.trained">已训练</option>
+                            <option value="deployed" data-i18n="ai.dashboard.model.statuses.deployed">已部署</option>
                         </select>
                     </div>
                 </div>
@@ -59,14 +59,14 @@ class ModelManager {
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">模型详情</h5>
+                                <h5 class="modal-title" data-i18n="ai.dashboard.model.detail">模型详情</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body" id="modelDetailContent"></div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                                <button type="button" class="btn btn-primary" id="trainModel">训练模型</button>
-                                <button type="button" class="btn btn-success" id="deployModel">部署模型</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.close">关闭</button>
+                                <button type="button" class="btn btn-primary" id="trainModel" data-i18n="ai.dashboard.model.train">训练模型</button>
+                                <button type="button" class="btn btn-success" id="deployModel" data-i18n="ai.dashboard.model.deploy">部署模型</button>
                             </div>
                         </div>
                     </div>
@@ -77,44 +77,44 @@ class ModelManager {
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">创建新模型</h5>
+                                <h5 class="modal-title" data-i18n="ai.dashboard.model.createNew">创建新模型</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <form id="createModelForm">
                                     <div class="mb-3">
-                                        <label for="modelName" class="form-label">模型名称</label>
+                                        <label for="modelName" class="form-label" data-i18n="ai.dashboard.model.form.name">模型名称</label>
                                         <input type="text" class="form-control" id="modelName" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="modelDescription" class="form-label">描述</label>
+                                        <label for="modelDescription" class="form-label" data-i18n="ai.dashboard.model.form.description">描述</label>
                                         <textarea class="form-control" id="modelDescription" rows="3"></textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="modelType" class="form-label">模型类型</label>
+                                        <label for="modelType" class="form-label" data-i18n="ai.dashboard.model.form.type">模型类型</label>
                                         <select class="form-select" id="modelType" required>
-                                            <option value="">选择模型类型</option>
-                                            <option value="cnn">CNN - 卷积神经网络</option>
-                                            <option value="rnn">RNN - 循环神经网络</option>
-                                            <option value="lstm">LSTM - 长短期记忆网络</option>
+                                            <option value="" data-i18n="ai.dashboard.model.form.selectType">选择模型类型</option>
+                                            <option value="cnn" data-i18n="ai.dashboard.model.form.cnn">CNN - 卷积神经网络</option>
+                                            <option value="rnn" data-i18n="ai.dashboard.model.form.rnn">RNN - 循环神经网络</option>
+                                            <option value="lstm" data-i18n="ai.dashboard.model.form.lstm">LSTM - 长短期记忆网络</option>
                                             <option value="transformer">Transformer</option>
-                                            <option value="mlp">MLP - 多层感知器</option>
+                                            <option value="mlp" data-i18n="ai.dashboard.model.form.mlp">MLP - 多层感知器</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="architecture" class="form-label">架构</label>
+                                        <label for="architecture" class="form-label" data-i18n="ai.dashboard.model.form.architecture">架构</label>
                                         <input type="text" class="form-control" id="architecture" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">超参数配置</label>
+                                        <label class="form-label" data-i18n="ai.dashboard.model.form.hyperparams">超参数配置</label>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label for="learningRate" class="form-label">学习率</label>
+                                                <label for="learningRate" class="form-label" data-i18n="ai.dashboard.model.form.learningRate">学习率</label>
                                                 <input type="number" class="form-control" id="learningRate" 
                                                        value="0.001" step="0.0001" min="0.0001" max="1">
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="batchSize" class="form-label">批次大小</label>
+                                                <label for="batchSize" class="form-label" data-i18n="ai.dashboard.model.form.batchSize">批次大小</label>
                                                 <input type="number" class="form-control" id="batchSize" 
                                                        value="32" min="1" max="1024">
                                             </div>
@@ -123,8 +123,8 @@ class ModelManager {
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                                <button type="button" class="btn btn-primary" id="submitCreateModel">创建模型</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">取消</button>
+                                <button type="button" class="btn btn-primary" id="submitCreateModel" data-i18n="ai.dashboard.model.create">创建模型</button>
                             </div>
                         </div>
                     </div>
@@ -133,6 +133,11 @@ class ModelManager {
         `;
         
         this.bindEvents();
+        
+        // Apply i18n translations if available
+        if (window.i18nManager) {
+            window.i18nManager.applyTranslations();
+        }
     }
     
     bindEvents() {

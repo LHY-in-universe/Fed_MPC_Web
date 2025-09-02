@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>密钥加密登录</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     <style>
         /* 眼睛按钮样式 - 平时状态就是深色 */
         #togglePassword {
@@ -146,11 +146,11 @@
                 goHome();
             } else {
                 console.log('❌ goHome函数不存在，使用直接跳转');
-                window.location.href = '../../homepage/index.html';
+                window.location.href = '/homepage/index.html';
             }
         } catch (error) {
             console.error('❌ 导航出错:', error);
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/homepage/index.html';
         }
     " title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,17 +158,15 @@
         </svg>
     </button>
 
-
-
-    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
-    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）
         window.goHome = window.goHome || function() {
-            console.log('🏠 备用goHome函数被调用');
-            window.location.href = '../../homepage/index.html';
+            console.log('🏠 goHome函数被调用');
+            window.location.href = '/homepage/index.html';
         };
         
         // 模拟账号数据
@@ -237,7 +235,7 @@
                     localStorage.setItem('loginTime', new Date().toISOString());
 
                     // 跳转到仪表板
-                    window.location.href = './crypto-dashboard.html';
+                    window.location.href = '/crypto/pages/crypto-dashboard.html';
                 } else {
                     // 登录失败
                     errorMessage.querySelector('p').textContent = '用户名或密码错误';
@@ -267,41 +265,11 @@
             });
         });
         
-        // 确保goHome函数可用（备用定义）
-        function ensureGoHome() {
-            if (typeof window.goHome !== 'function') {
-                console.log('⚠️ goHome函数不存在，创建备用函数');
-                window.goHome = function() {
-                    const currentPath = window.location.pathname;
-                    const currentParts = currentPath.replace(/^\/+/, '').split('/').filter(part => part);
-                    let depth = 0;
-                    
-                    if (currentParts.includes('pages')) {
-                        const pagesIndex = currentParts.indexOf('pages');
-                        depth = pagesIndex + 1;
-                    } else if (currentParts.length > 1) {
-                        if (currentParts[0] === 'homepage') {
-                            depth = 1;
-                        } else {
-                            depth = currentParts.length - 1;
-                        }
                     }
-                    
-                    let relativePath = '';
-                    for (let i = 0; i < depth; i++) {
-                        relativePath += '../';
-                    }
-                    relativePath += 'homepage/index.html';
-                    
-                    console.log('备用goHome: 跳转到', relativePath);
-                    window.location.href = relativePath;
-                };
-            }
         }
         
-        // 页面加载完成后确保函数可用
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(ensureGoHome, 500);
+                document.addEventListener('DOMContentLoaded', function() {
+            
         });
     </script>
 </body>

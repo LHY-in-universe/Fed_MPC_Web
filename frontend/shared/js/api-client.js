@@ -140,7 +140,7 @@ class ApiClient {
         } else if (currentPath.includes('/crypto/')) {
             window.location.href = '../pages/login.html';
         } else {
-            window.location.href = '/frontend/homepage/index.html';
+            window.location.href = '/homepage/index.html';
         }
     }
 

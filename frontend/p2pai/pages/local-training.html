@@ -142,7 +142,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
 </head>
 <body class="module-background theme-transition">
@@ -378,16 +378,14 @@
         </svg>
     </button>
 
-
-
-    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）
         window.goHome = window.goHome || function() {
-            console.log("🏠 备用goHome函数被调用");
-            window.location.href = "../../homepage/index.html";
+            console.log('🏠 goHome函数被调用');
+            window.location.href = '/homepage/index.html';
         };
                 let trainingInterval;
         let startTime;
@@ -505,7 +503,6 @@
             trainingInterval = setInterval(updateTraining, 2000); // 每2秒更新一次
         }
 
-
         function updateTraining() {
             currentEpoch++;
             
@@ -603,7 +600,7 @@
             if (isTraining && !confirm('训练正在进行中，确定要返回吗？')) {
                 return;
             }
-            window.location.href = './client-dashboard.html';
+            window.location.href = '/p2pai/pages/client-dashboard.html';
         }
 
         function logout() {
@@ -613,9 +610,9 @@
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('loginTime');
-            window.location.href = './login.html';
+            window.location.href = '/p2pai/pages/login.html';
         }
-            window.location.href = '/frontend/homepage/index.html';
+            window.location.href = '/homepage/index.html';
         }
     </script>
 </body>

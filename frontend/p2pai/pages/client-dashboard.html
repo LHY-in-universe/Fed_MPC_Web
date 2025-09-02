@@ -9,7 +9,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     <style>
         /* 强制深色模式测试 - 最高优先级 */
         [data-theme="dark"] * {
@@ -965,9 +965,9 @@
     <script>
         function selectTrainingMode(mode) {
             if (mode === 'local') {
-                window.location.href = './local-training.html';
+                window.location.href = '/p2pai/pages/local-training.html';
             } else if (mode === 'federated') {
-                window.location.href = './federated-training-select.html';
+                window.location.href = '/p2pai/pages/federated-training-select.html';
             }
         }
 
@@ -975,20 +975,20 @@
         function goToDatasetManagement() {
             console.log('导航到数据集管理中心');
             // Navigate to dataset management page (EdgeAI create project page repurposed)
-            window.location.href = '../../edgeai/pages/create-project.html';
+            window.location.href = '/edgeai/pages/create-project.html';
         }
 
         function goToModelManagement() {
             console.log('导航到模型管理中心');
             // Navigate to model management page (EdgeAI import project page converted to model management)
-            window.location.href = '../../edgeai/pages/import-project.html';
+            window.location.href = '/edgeai/pages/import-project.html';
         }
 
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('loginTime');
-            window.location.href = './login.html';
+            window.location.href = '/p2pai/pages/login.html';
         }
 
 
@@ -1210,7 +1210,7 @@
             // 将项目ID存储到localStorage中，以便可视化页面使用
             localStorage.setItem('currentProjectId', projectId);
             // 跳转到可视化页面
-            window.location.href = './project-visualization.html';
+            window.location.href = '/p2pai/pages/project-visualization.html';
         }
 
         // 训练详细信息
@@ -1363,7 +1363,7 @@
                     </div>
                     
                     <div style="text-align: center; margin-top: 20px;">
-                        <button class="btn btn-primary btn-click" onclick="closeModal(); /* window.location.href = './training-history.html'; */">
+                        <button class="btn btn-primary btn-click" onclick="closeModal(); /* window.location.href = '/p2pai/pages/training-history.html'; */">
                             🚀 跳转到训练历史页面
                         </button>
                         <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
@@ -1384,11 +1384,11 @@
                     goHome();
                 } else {
                     console.log('goHome 函数不存在，使用备用导航');
-                    window.location.href = '../../homepage/index.html';
+                    window.location.href = '/homepage/index.html';
                 }
             } catch (error) {
                 console.error('导航出错:', error);
-                window.location.href = '../../homepage/index.html';
+                window.location.href = '/homepage/index.html';
             }
         }
 
@@ -1401,6 +1401,6 @@
             }
         });
     </script>
-    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
 </body>
 </html>

@@ -6,6 +6,17 @@
 let networkChart;
 let isEnglish = localStorage.getItem('language') === 'en';
 
+// Listen for language changes and update charts
+window.addEventListener('languageChanged', function(event) {
+    isEnglish = event.detail.language === 'en';
+    
+    // Reinitialize charts with new language
+    if (networkChart) {
+        networkChart.destroy();
+        initializeNetworkChart();
+    }
+});
+
 // ====================== 数据模板系统 ======================
 const ViewTemplates = {
     systemStatus: (isEnglish) => ({

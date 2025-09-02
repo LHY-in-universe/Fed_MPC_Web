@@ -71,7 +71,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
     <link rel="stylesheet" href="../assets/ai-styles.css?v=20250901">
     <link rel="stylesheet" href="../assets/server-dashboard-styles.css?v=20250901">
@@ -234,7 +234,7 @@
                     <span>🌙</span>
                 </button>
                 <button class="language-toggle" title="切换语言">EN</button>
-                <button onclick="logout()" class="btn-secondary text-sm btn-click">退出登录</button>
+                <button onclick="logout()" class="btn-secondary text-sm btn-click" data-i18n="common.logout">退出登录</button>
             </div>
         </div>
     </nav>
@@ -324,8 +324,8 @@
                     <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl mb-4">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm text-blue-600 dark:text-blue-400 font-medium" data-i18n="ai.dashboard.server.currentModel">当前活跃模型</p>
-                                <p class="font-semibold text-gray-900 dark:text-white" id="currentModelName" data-i18n="ai.dashboard.server.cnnModelName">CNN图像分类模型 v2.1</p>
+                                <p class="text-sm text-blue-600 dark:text-blue-400 font-medium" data-i18n="ai.dashboard.server.currentActiveModel">当前活跃模型</p>
+                                <p class="font-semibold text-gray-900 dark:text-white" id="currentModelName" data-i18n="ai.dashboard.server.cnnImageClassificationModel">CNN图像分类模型 v2.1</p>
                             </div>
                             <button onclick="openModelSelectionModal()" class="btn-module-primary text-sm btn-click">
                                 <span data-i18n="ai.dashboard.server.switchModel">切换模型</span>
@@ -362,24 +362,24 @@
                         <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
                             <div class="flex items-center gap-3">
                                 <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
-                                <span class="font-medium text-gray-900 dark:text-white">MLP回归预测模型</span>
-                                <span class="text-sm px-2 py-1 bg-gray-100 text-gray-600 rounded">非活跃</span>
+                                <span class="font-medium text-gray-900 dark:text-white" data-i18n="ai.dashboard.server.mlpRegressionModel">MLP回归预测模型</span>
+                                <span class="text-sm px-2 py-1 bg-gray-100 text-gray-600 rounded" data-i18n="ai.dashboard.server.inactive">非活跃</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="activateModel('model3')" class="btn-mini primary btn-click">激活</button>
-                                <button onclick="deleteModel('model3')" class="btn-mini secondary btn-click">删除</button>
+                                <button onclick="activateModel('model3')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.activate">激活</button>
+                                <button onclick="deleteModel('model3')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.delete">删除</button>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
                             <div class="flex items-center gap-3">
                                 <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                <span class="font-medium text-gray-900 dark:text-white">推荐系统模型</span>
-                                <span class="text-sm px-2 py-1 bg-yellow-100 text-yellow-800 rounded">草稿</span>
+                                <span class="font-medium text-gray-900 dark:text-white" data-i18n="ai.dashboard.server.recommendationSystemModel">推荐系统模型</span>
+                                <span class="text-sm px-2 py-1 bg-yellow-100 text-yellow-800 rounded" data-i18n="ai.dashboard.server.draft">草稿</span>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="editModel('model4')" class="btn-mini primary btn-click">完善</button>
-                                <button onclick="deleteModel('model4')" class="btn-mini secondary btn-click">删除</button>
+                                <button onclick="editModel('model4')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.refine">完善</button>
+                                <button onclick="deleteModel('model4')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.delete">删除</button>
                             </div>
                         </div>
                     </div>
@@ -408,11 +408,11 @@
 
                     <div class="flex justify-center gap-6">
                         <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl" style="min-width: 120px; max-width: 140px;">
-                            <p class="text-sm text-blue-600 dark:text-blue-400">当前延迟</p>
+                            <p class="text-sm text-blue-600 dark:text-blue-400" data-i18n="ai.dashboard.server.currentLatency">当前延迟</p>
                             <p class="text-2xl font-bold text-blue-800 dark:text-blue-300">45ms</p>
                         </div>
                         <div class="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-xl" style="min-width: 120px; max-width: 140px;">
-                            <p class="text-sm text-green-600 dark:text-green-400">带宽使用率</p>
+                            <p class="text-sm text-green-600 dark:text-green-400" data-i18n="ai.dashboard.server.bandwidthUsage">带宽使用率</p>
                             <p class="text-2xl font-bold text-green-800 dark:text-green-300">65%</p>
                         </div>
                     </div>
@@ -433,7 +433,7 @@
                     <div class="space-y-3">
                         <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl max-w-sm mx-auto">
                             <p class="font-medium text-gray-900 dark:text-white text-sm" data-i18n="ai.dashboard.server.imageClassificationFederated">图像分类联邦训练</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.client1Waiting">client1 • 等待35分钟</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.client1Waiting35">client1 • 等待35分钟</p>
                             <div class="flex gap-2 mt-2 justify-center">
                                 <button onclick="approveRequest('req1')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.approve">批准</button>
                                 <button onclick="rejectRequest('req1')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.reject">拒绝</button>
@@ -441,15 +441,15 @@
                         </div>
                         
                         <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl max-w-sm mx-auto">
-                            <p class="font-medium text-gray-900 dark:text-white text-sm" data-i18n="ai.dashboard.server.textAnalysisMPC">文本分析MPC训练</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.client2Waiting">client2 • 等待5分钟</p>
+                            <p class="font-medium text-gray-900 dark:text-white text-sm" data-i18n="ai.dashboard.server.textAnalysisMPCTraining">文本分析MPC训练</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.client2Waiting5">client2 • 等待5分钟</p>
                             <div class="flex gap-2 mt-2 justify-center">
-                                <button onclick="approveRequest('req2')" class="btn-mini primary btn-click">批准</button>
-                                <button onclick="rejectRequest('req2')" class="btn-mini secondary btn-click">拒绝</button>
+                                <button onclick="approveRequest('req2')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.approve">批准</button>
+                                <button onclick="rejectRequest('req2')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.reject">拒绝</button>
                             </div>
                         </div>
 
-                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">查看所有申请 →</button>
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" data-i18n="ai.dashboard.server.viewAllRequests">查看所有申请 →</button>
                     </div>
                 </div>
 
@@ -464,27 +464,27 @@
                     
                     <div class="space-y-3">
                         <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl max-w-sm mx-auto">
-                            <p class="font-medium text-gray-900 dark:text-white text-sm">CNN故障检测</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">5个参与方 • 进度 45%</p>
+                            <p class="font-medium text-gray-900 dark:text-white text-sm" data-i18n="ai.dashboard.server.cnnFaultDetectionTitle">CNN故障检测</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.participants5Progress">5个参与方 • 进度 45%</p>
                             <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
                                 <div class="bg-green-600 h-2 rounded-full" style="width: 45%"></div>
                             </div>
                             <div class="flex gap-2 mt-2 justify-center">
-                                <button onclick="viewSession('session1')" class="btn-mini primary btn-click">查看</button>
-                                <button onclick="pauseSession('session1')" class="btn-mini secondary btn-click">暂停</button>
+                                <button onclick="viewSession('session1')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.view">查看</button>
+                                <button onclick="pauseSession('session1')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.pause">暂停</button>
                             </div>
                         </div>
                         
                         <div class="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl max-w-sm mx-auto">
-                            <p class="font-medium text-gray-900 dark:text-white text-sm">LSTM情感分析</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">2/4个参与方 • 等待中</p>
+                            <p class="font-medium text-gray-900 dark:text-white text-sm" data-i18n="ai.dashboard.server.lstmSentimentAnalysisTitle">LSTM情感分析</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.participants2Of4Waiting">2/4个参与方 • 等待中</p>
                             <div class="flex gap-2 mt-2 justify-center">
-                                <button onclick="inviteParticipants('session2')" class="btn-mini primary btn-click">邀请</button>
-                                <button onclick="viewSession('session2')" class="btn-mini secondary btn-click">查看</button>
+                                <button onclick="inviteParticipants('session2')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.invite">邀请</button>
+                                <button onclick="viewSession('session2')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.view">查看</button>
                             </div>
                         </div>
 
-                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">查看所有会话 →</button>
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" data-i18n="ai.dashboard.server.viewAllSessions">查看所有会话 →</button>
                     </div>
                 </div>
 
@@ -502,11 +502,11 @@
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                                 <span class="text-sm font-medium text-gray-900 dark:text-white">client1</span>
-                                <span class="text-xs text-gray-600 dark:text-gray-400">在线</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.online_status">在线</span>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="viewClient('client1')" class="btn-mini primary btn-click">查看</button>
-                                <button onclick="kickClient('client1')" class="btn-mini secondary btn-click">踢出</button>
+                                <button onclick="viewClient('client1')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.view">查看</button>
+                                <button onclick="kickClient('client1')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.kick">踢出</button>
                             </div>
                         </div>
                         
@@ -514,11 +514,11 @@
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                                 <span class="text-sm font-medium text-gray-900 dark:text-white">client2</span>
-                                <span class="text-xs text-gray-600 dark:text-gray-400">在线</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.online_status">在线</span>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="viewClient('client2')" class="btn-mini primary btn-click">查看</button>
-                                <button onclick="kickClient('client2')" class="btn-mini secondary btn-click">踢出</button>
+                                <button onclick="viewClient('client2')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.view">查看</button>
+                                <button onclick="kickClient('client2')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.kick">踢出</button>
                             </div>
                         </div>
                         
@@ -526,15 +526,15 @@
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
                                 <span class="text-sm font-medium text-gray-900 dark:text-white">client3</span>
-                                <span class="text-xs text-gray-600 dark:text-gray-400">空闲</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-400" data-i18n="ai.dashboard.server.idle">空闲</span>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="viewClient('client3')" class="btn-mini primary btn-click">查看</button>
-                                <button onclick="removeClient('client3')" class="btn-mini secondary btn-click">移除</button>
+                                <button onclick="viewClient('client3')" class="btn-mini primary btn-click" data-i18n="ai.dashboard.server.view">查看</button>
+                                <button onclick="removeClient('client3')" class="btn-mini secondary btn-click" data-i18n="ai.dashboard.server.remove">移除</button>
                             </div>
                         </div>
 
-                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">查看所有客户端 →</button>
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" data-i18n="ai.dashboard.server.viewAllClients">查看所有客户端 →</button>
                     </div>
                 </div>
             </div>
@@ -546,16 +546,16 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             <span data-i18n="ai.dashboard.server.systemLogs">系统日志</span>
                         </h3>
-                        <span class="text-sm text-gray-500">实时更新</span>
+                        <span class="text-sm text-gray-500" data-i18n="ai.dashboard.server.realTimeUpdates">实时更新</span>
                     </div>
                     
                     <div class="bg-black text-green-400 p-4 rounded-xl font-mono text-sm h-32 overflow-y-auto" id="systemLogs">
-                        <div>[08/22/2025, 9:15:30 AM] 客户端状态检查完成</div>
-                        <div>[08/22/2025, 9:16:45 AM] 训练会话性能正常</div>
-                        <div>[08/22/2025, 9:17:12 AM] 收到新的训练申请</div>
-                        <div>[08/22/2025, 9:18:01 AM] MPC计算完成一轮</div>
-                        <div>[08/22/2025, 9:18:33 AM] 网络连接稳定</div>
-                        <div>[08/22/2025, 9:19:15 AM] 数据同步完成</div>
+                        <div data-i18n="ai.dashboard.server.log.clientStatusCheck">[08/22/2025, 9:15:30 AM] 客户端状态检查完成</div>
+                        <div data-i18n="ai.dashboard.server.log.trainingSessionNormal">[08/22/2025, 9:16:45 AM] 训练会话性能正常</div>
+                        <div data-i18n="ai.dashboard.server.log.newTrainingRequest">[08/22/2025, 9:17:12 AM] 收到新的训练申请</div>
+                        <div data-i18n="ai.dashboard.server.log.mpcRoundComplete">[08/22/2025, 9:18:01 AM] MPC计算完成一轮</div>
+                        <div data-i18n="ai.dashboard.server.log.networkStable">[08/22/2025, 9:18:33 AM] 网络连接稳定</div>
+                        <div data-i18n="ai.dashboard.server.log.dataSyncComplete">[08/22/2025, 9:19:15 AM] 数据同步完成</div>
                     </div>
                 </div>
             </div>
@@ -587,10 +587,10 @@
     </button>
 
     <!-- 脚本引用 -->
-    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
-    <script src="../../shared/js/router-unified.js?v=20250827"></script>
-    <script src="../../shared/js/i18n-manager.js?v=1756667500"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
+    <script src="../../shared/js/i18n-manager.js?v=20250901"></script>
     <script src="../assets/server-dashboard-scripts.js?v=20250901"></script>
     
     <!-- Enhanced modal styles for better visibility -->
@@ -918,7 +918,7 @@
                 console.log('🚪 Logout clicked');
                 if (confirm('确定要退出登录吗？')) {
                     localStorage.clear();
-                    window.location.href = './login.html';
+                    window.location.href = '/p2pai/pages/login.html';
                 }
             };
             

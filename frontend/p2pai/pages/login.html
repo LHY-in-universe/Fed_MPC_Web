@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
     <style>
         /* 修复眼睛按钮在深色模式下的颜色和位置 */
@@ -159,11 +159,11 @@
                 goHome();
             } else {
                 console.log('❌ goHome函数不存在，使用直接跳转');
-                window.location.href = '../../homepage/index.html';
+                window.location.href = '/homepage/index.html';
             }
         } catch (error) {
             console.error('❌ 导航出错:', error);
-            window.location.href = '../../homepage/index.html';
+            window.location.href = '/homepage/index.html';
         }
     " title="返回主页">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,17 +171,15 @@
         </svg>
     </button>
 
-
-
-    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script src="../../shared/js/api-config.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）
         window.goHome = window.goHome || function() {
-            console.log('🏠 备用goHome函数被调用');
-            window.location.href = '../../homepage/index.html';
+            console.log('🏠 goHome函数被调用');
+            window.location.href = '/homepage/index.html';
         };
         
         // 快速登录功能
@@ -304,11 +302,11 @@
                 
                 // 根据用户类型跳转
                 if (userType === 'client') {
-                    window.location.href = './client-dashboard.html';
+                    window.location.href = '/p2pai/pages/client-dashboard.html';
                 } else if (userType === 'server') {
-                    window.location.href = './server-dashboard.html';
+                    window.location.href = '/p2pai/pages/server-dashboard.html';
                 } else {
-                    window.location.href = './client-dashboard.html';
+                    window.location.href = '/p2pai/pages/client-dashboard.html';
                 }
             }, 1000);
         }
@@ -375,12 +373,12 @@
         }
 
         function goBack() {
-            window.location.href = './user-type-select.html';
+            window.location.href = '/p2pai/pages/user-type-select.html';
         }
     </script>
     
     <!-- 统一主题和路由管理 -->
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
-    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
 </body>
 </html>

@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>选择用户类型</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
     <style>
         /* P2P AI页面卡片主题适应边框 */
         .card,
         html .card,
         body .card {
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            border: none !important;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
             transition: all 0.3s ease !important;
         }
@@ -20,17 +20,48 @@
         /* 深色模式下的卡片样式调整 */
         [data-theme="dark"] .card {
             background: rgba(31, 41, 55, 0.8) !important;
-            border: 1px solid rgba(55, 65, 81, 0.15) !important;
+            border: none !important;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
         }
         
         /* 卡片悬停效果 */
         .card:hover {
-            border-color: rgba(0, 0, 0, 0.15) !important;
+            border: none !important;
         }
         
         [data-theme="dark"] .card:hover {
-            border-color: rgba(55, 65, 81, 0.25) !important;
+            border: none !important;
+        }
+
+        /* 移除容器边框 */
+        .content-area,
+        .max-w-4xl,
+        .grid,
+        .grid.md\\:grid-cols-2,
+        div.max-w-4xl,
+        div.content-area {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* 强制移除所有可能的边框 */
+        html,
+        body,
+        body.module-background,
+        .module-background,
+        * {
+            border: none !important;
+            outline: none !important;
+        }
+
+        /* 重新为卡片添加边框 */
+        .card {
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        }
+
+        [data-theme="dark"] .card {
+            border: 1px solid rgba(55, 65, 81, 0.15) !important;
         }
     </style>
 </head>
@@ -51,7 +82,7 @@
         </div>
     </nav>
 
-    <div class="max-w-4xl mx-auto px-6 py-16 content-area">
+    <div class="max-w-4xl mx-auto px-6 py-16 content-area" style="border: none !important; outline: none !important; box-shadow: none !important;">
         <!-- 标题区域 -->
         <div class="text-center mb-16">
             <h1 class="text-4xl font-bold mb-6" data-i18n="p2pai.userType.title">
@@ -60,7 +91,7 @@
         </div>
 
         <!-- 用户类型选择 -->
-        <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="grid md:grid-cols-2 gap-8 mb-12" style="border: none !important; outline: none !important; box-shadow: none !important;">
             <!-- 客户端 -->
             <div class="card cursor-pointer transition-all duration-300 hover:scale-105 fade-in-up delay-1 card-hover btn-click" onclick="selectUserType('client')">
                 <div class="text-center">
@@ -108,55 +139,22 @@
     </button>
 
     <!-- 脚本文件 -->
-    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
-    <script src="../../shared/js/router-unified.js?v=20250827"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         function selectUserType(userType) {
             localStorage.setItem('aiUserType', userType);
             localStorage.setItem('userType', userType);
-            window.location.href = './login.html';
+            window.location.href = '/p2pai/pages/login.html';
         }
         
-        // 确保goHome函数可用（备用定义）
-        function ensureGoHome() {
-            if (typeof window.goHome !== 'function') {
-                console.log('⚠️ goHome函数不存在，创建备用函数');
-                window.goHome = function() {
-                    const currentPath = window.location.pathname;
-                    const currentParts = currentPath.replace(/^\/+/, '').split('/').filter(part => part);
-                    let depth = 0;
-                    
-                    if (currentParts.includes('pages')) {
-                        const pagesIndex = currentParts.indexOf('pages');
-                        depth = pagesIndex + 1;
-                    } else if (currentParts.length > 1) {
-                        if (currentParts[0] === 'homepage') {
-                            depth = 1;
-                        } else {
-                            depth = currentParts.length - 1;
-                        }
-                    }
-                    
-                    let relativePath = '';
-                    for (let i = 0; i < depth; i++) {
-                        relativePath += '../';
-                    }
-                    relativePath += 'homepage/index.html';
-                    
-                    console.log('备用goHome: 跳转到', relativePath);
-                    window.location.href = relativePath;
-                };
-            }
-        }
-
-        
-        // 页面加载完成后确保函数可用
-        document.addEventListener('DOMContentLoaded', function() {
-            // 延迟确保goHome函数，等待路由脚本加载
-            setTimeout(ensureGoHome, 500);
-        });
+        // 确保goHome函数可用（简化版本）
+        window.goHome = window.goHome || function() {
+            console.log('🏠 goHome函数被调用');
+            window.location.href = '/homepage/index.html';
+        };
     </script>
 </body>
 </html>

@@ -90,7 +90,7 @@
     </style>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
 </head>
 <body class="module-background min-h-screen theme-transition">
@@ -333,16 +333,14 @@
         </svg>
     </button>
 
-
-
-    <script src="../../shared/js/navigation-unified.js?v=20250827"></script>
+    <script src="../../shared/js/navigation-unified.js?v=20250902"></script>
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js"></script>
     <script>
         // 确保goHome函数可用（备用实现）
         window.goHome = window.goHome || function() {
-            console.log("🏠 备用goHome函数被调用");
-            window.location.href = "../../homepage/index.html";
+            console.log('🏠 goHome函数被调用');
+            window.location.href = '/homepage/index.html';
         };
                 function selectMode(mode) {
             // 保存选择的模式
@@ -350,14 +348,14 @@
             
             // 跳转到对应的训练页面
             if (mode === 'federated') {
-                window.location.href = './federated-training.html';
+                window.location.href = '/p2pai/pages/federated-training.html';
             } else if (mode === 'mpc') {
-                window.location.href = './mpc-training.html';
+                window.location.href = '/p2pai/pages/mpc-training.html';
             }
         }
 
         function goBack() {
-            window.location.href = './client-dashboard.html';
+            window.location.href = '/p2pai/pages/client-dashboard.html';
         }
 
         // 页面加载动画

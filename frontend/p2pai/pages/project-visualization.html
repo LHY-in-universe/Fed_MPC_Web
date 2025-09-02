@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P2PAI项目可视化</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
     <style>
         /* 可视化容器 */
@@ -609,7 +609,7 @@
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                    返回
+                    <span data-i18n="common.back">返回</span>
                 </button>
                 <span>P2PAI项目可视化</span>
                 <span id="projectName" class="ml-2 text-sm text-gray-600"></span>
@@ -630,27 +630,27 @@
             <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
                 <div class="flex items-start justify-between mb-6">
                     <div class="flex-1">
-                        <h2 id="projectTitle" class="text-2xl font-bold text-gray-900 mb-2">分布式训练项目</h2>
-                        <p id="projectDescription" class="text-gray-600 mb-4">基于P2PAI的多方计算训练系统，实现隐私保护的分布式机器学习和模型协同训练。</p>
+                        <h2 id="projectTitle" class="text-2xl font-bold text-gray-900 mb-2" data-i18n="ai.dashboard.project.distributedTraining">分布式训练项目</h2>
+                        <p id="projectDescription" class="text-gray-600 mb-4" data-i18n="ai.dashboard.project.description">基于P2PAI的多方计算训练系统，实现隐私保护的分布式机器学习和模型协同训练。</p>
                         
                         <div class="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm">
                             <div class="flex items-center whitespace-nowrap">
                                 <div id="statusDot" class="w-2 h-2 bg-green-500 rounded-full mr-2 flex-shrink-0"></div>
-                                <span class="text-gray-500">状态：</span>
-                                <span id="projectStatus" class="font-semibold text-green-600 ml-2">训练中</span>
+                                <span class="text-gray-500" data-i18n="ai.dashboard.project.statusLabel">状态：</span>
+                                <span id="projectStatus" class="font-semibold text-green-600 ml-2" data-i18n="ai.dashboard.project.statuses.training">训练中</span>
                             </div>
                             <div class="flex items-center whitespace-nowrap">
                                 <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <span class="text-gray-500">创建时间：</span>
+                                <span class="text-gray-500" data-i18n="ai.dashboard.project.createdTime">创建时间：</span>
                                 <span id="projectCreated" class="font-medium ml-2">2024-01-15</span>
                             </div>
                             <div class="flex items-center whitespace-nowrap">
                                 <svg class="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                 </svg>
-                                <span class="text-gray-500">最后更新：</span>
+                                <span class="text-gray-500" data-i18n="ai.dashboard.project.lastUpdated">最后更新：</span>
                                 <span id="projectUpdated" class="font-medium ml-2">2小时前</span>
                             </div>
                         </div>
@@ -671,11 +671,11 @@
                         <!-- 快速统计 -->
                         <div class="text-right space-y-1">
                             <div class="text-2xl font-bold text-gray-900" id="quickNodeCount">15</div>
-                            <div class="text-sm text-gray-500">参与方总数</div>
+                            <div class="text-sm text-gray-500" data-i18n="ai.dashboard.project.totalParticipants">参与方总数</div>
                             <div class="text-sm">
-                                <span class="text-green-600 font-semibold" id="quickOnlineCount">12</span> 在线
+                                <span class="text-green-600 font-semibold" id="quickOnlineCount">12</span> <span data-i18n="ai.dashboard.project.online">在线</span>
                                 <span class="text-gray-400">/</span> 
-                                <span class="text-red-600 font-semibold">1</span> 我的节点
+                                <span class="text-red-600 font-semibold">1</span> <span data-i18n="ai.dashboard.project.myNode">我的节点</span>
                             </div>
                         </div>
                     </div>
@@ -684,19 +684,19 @@
                 <!-- 项目配置信息 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
                     <div class="text-center">
-                        <div class="text-sm text-gray-500 mb-1">AI模型</div>
-                        <div class="font-semibold text-gray-900" id="aiModelType">CNN深度学习</div>
+                        <div class="text-sm text-gray-500 mb-1" data-i18n="ai.dashboard.project.aiModel">AI模型</div>
+                        <div class="font-semibold text-gray-900" id="aiModelType" data-i18n="ai.dashboard.project.cnnDeepLearning">CNN深度学习</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-sm text-gray-500 mb-1">训练策略</div>
-                        <div class="font-semibold text-gray-900" id="trainingStrategy">分布式训练</div>
+                        <div class="text-sm text-gray-500 mb-1" data-i18n="ai.dashboard.project.trainingStrategy">训练策略</div>
+                        <div class="font-semibold text-gray-900" id="trainingStrategy" data-i18n="ai.dashboard.project.federatedLearning">联邦学习</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-sm text-gray-500 mb-1">目标准确率</div>
+                        <div class="text-sm text-gray-500 mb-1" data-i18n="ai.dashboard.project.targetAccuracy">目标准确率</div>
                         <div class="font-semibold text-gray-900" id="targetAccuracy">≥90%</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-sm text-gray-500 mb-1">预计完成</div>
+                        <div class="text-sm text-gray-500 mb-1" data-i18n="ai.dashboard.project.estimatedCompletion">预计完成</div>
                         <div class="font-semibold text-gray-900" id="estimatedTime">2天后</div>
                     </div>
                 </div>
@@ -745,46 +745,46 @@
             
             <!-- 控制面板 -->
             <div class="control-panel">
-                <h4 class="text-lg font-semibold mb-4">控制面板</h4>
+                <h4 class="text-lg font-semibold mb-4" data-i18n="ai.dashboard.project.controlPanel">控制面板</h4>
                 
                 <!-- 按钮网格布局 -->
                 <div class="grid grid-cols-2 gap-3 mb-6">
                     <button onclick="showInviteUserModal()" class="btn btn-primary btn-click text-sm py-3 px-4">
-                        <span>邀请参与方</span>
+                        <span data-i18n="ai.dashboard.project.inviteParticipants">邀请参与方</span>
                     </button>
                     <button onclick="showAddNodeModal()" class="btn btn-secondary btn-click text-sm py-3 px-4">
-                        <span>添加计算节点</span>
+                        <span data-i18n="ai.dashboard.project.addComputeNode">添加计算节点</span>
                     </button>
                     <button onclick="startTraining()" class="btn btn-secondary btn-click text-sm py-3 px-4">
-                        <span>开始训练</span>
+                        <span data-i18n="ai.dashboard.project.startTraining">开始训练</span>
                     </button>
                     <button onclick="resetView()" class="btn btn-secondary btn-click text-sm py-3 px-4">
-                        <span>重置视图</span>
+                        <span data-i18n="ai.dashboard.project.resetView">重置视图</span>
                     </button>
                 </div>
                 
                 <!-- 测试按钮单独一行 -->
                 <div class="mb-6">
                     <button onclick="completeAllTraining()" class="btn btn-success btn-click w-full text-sm py-3">
-                        <span>完成训练(测试)</span>
+                        <span data-i18n="ai.dashboard.project.completeTraining">完成训练(测试)</span>
                     </button>
                 </div>
                 
                 <!-- 实时状态 -->
                 <div class="pt-4 border-t border-gray-200">
-                    <h5 class="text-base font-medium text-gray-600 mb-3">实时状态</h5>
+                    <h5 class="text-base font-medium text-gray-600 mb-3" data-i18n="ai.dashboard.project.realTimeStatus">实时状态</h5>
                     <div class="grid grid-cols-3 gap-4">
                         <div class="text-center">
                             <div class="text-2xl font-bold text-green-600" id="onlineNodes">8</div>
-                            <div class="text-sm text-gray-600">在线参与方</div>
+                            <div class="text-sm text-gray-600" data-i18n="ai.dashboard.project.onlineParticipants">在线参与方</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-red-600" id="trainingNodes">97%</div>
-                            <div class="text-sm text-gray-600">我的进度</div>
+                            <div class="text-sm text-gray-600" data-i18n="ai.dashboard.project.myProgress">我的进度</div>
                         </div>
                         <div class="text-center">
                             <div class="text-lg font-bold text-purple-600" id="dataTransfer">加密</div>
-                            <div class="text-sm text-gray-600">传输安全</div>
+                            <div class="text-sm text-gray-600" data-i18n="ai.dashboard.project.transmissionSecurity">传输安全</div>
                         </div>
                     </div>
                 </div>
@@ -793,9 +793,9 @@
             <!-- 节点详情面板 -->
             <div id="nodeDetails" class="node-details">
                 <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg font-semibold" id="nodeTitle">节点详情</h4>
+                    <h4 class="text-lg font-semibold" id="nodeTitle" data-i18n="ai.dashboard.project.nodeDetails">节点详情</h4>
                     <button onclick="closeNodeDetails()" class="btn btn-secondary btn-click text-sm py-2 px-4">
-                        关闭
+                        <span data-i18n="common.close">关闭</span>
                     </button>
                 </div>
                 <div id="nodeInfo" class="space-y-3">
@@ -817,7 +817,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900">邀请用户</h2>
+                                <h2 class="text-2xl font-bold text-gray-900" data-i18n="ai.dashboard.project.inviteUser">邀请用户</h2>
                                 <p class="text-gray-600">邀请其他用户参与EdgeAI项目</p>
                             </div>
                         </div>
@@ -884,7 +884,7 @@
                     <!-- 底部操作按钮 -->
                     <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
                         <button onclick="closeInviteUserModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors">
-                            取消
+                            <span data-i18n="common.cancel">取消</span>
                         </button>
                         <button onclick="sendInvitations()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
                             发送邀请
@@ -907,7 +907,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900">添加节点</h2>
+                                <h2 class="text-2xl font-bold text-gray-900" data-i18n="ai.dashboard.project.addNode">添加节点</h2>
                                 <p class="text-gray-600">添加新的边缘节点到训练网络</p>
                             </div>
                         </div>
@@ -1023,7 +1023,7 @@
                     <!-- 底部操作按钮 -->
                     <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
                         <button onclick="closeAddNodeModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors">
-                            取消
+                            <span data-i18n="common.cancel">取消</span>
                         </button>
                         <button onclick="testNodeConnection()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors">
                             测试连接
@@ -1064,7 +1064,7 @@
                         <div class="space-y-6">
                             <!-- 基础信息卡片 -->
                             <div class="bg-gray-50 rounded-lg p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-900">基础信息</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900" data-i18n="ai.dashboard.project.basicInfo">基础信息</h3>
                                 <div class="space-y-3">
                                     <div class="flex justify-between">
                                         <span class="text-gray-600">节点名称：</span>
@@ -1096,7 +1096,7 @@
 
                             <!-- 连接信息卡片 -->
                             <div class="bg-gray-50 rounded-lg p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-900">网络连接</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900" data-i18n="ai.dashboard.project.networkConnection">网络连接</h3>
                                 <div class="space-y-3">
                                     <div>
                                         <span class="text-gray-600 block mb-2">连接到控制节点：</span>
@@ -1112,7 +1112,7 @@
                         <div class="space-y-6">
                             <!-- 性能监控卡片 -->
                             <div class="bg-gray-50 rounded-lg p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-900">资源使用情况</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900" data-i18n="ai.dashboard.project.resourceUsage">资源使用情况</h3>
                                 <div class="space-y-4">
                                     <!-- CPU使用率 -->
                                     <div>
@@ -1148,7 +1148,7 @@
 
                             <!-- 训练统计卡片 -->
                             <div class="bg-gray-50 rounded-lg p-6" id="modalTrainingStats" style="display: none;">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-900" id="modalTrainingStatsTitle">训练统计</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900" id="modalTrainingStatsTitle" data-i18n="ai.dashboard.project.trainingStats">训练统计</h3>
                                 <div class="grid grid-cols-2 gap-4 mb-6">
                                     <div class="text-center">
                                         <div class="text-2xl font-bold text-green-600" id="modalAccuracy">-</div>
@@ -1181,7 +1181,7 @@
                     <!-- 底部操作按钮 -->
                     <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200" id="modalActionButtons">
                         <button id="stopTrainingBtn" onclick="stopTraining()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
-                            停止训练
+                            <span data-i18n="ai.dashboard.project.stopTraining">停止训练</span>
                         </button>
                         <button id="restartTrainingBtn" onclick="restartTraining()" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
                             重启训练
@@ -1243,27 +1243,27 @@
         <!-- 节点详情列表 -->
         <div class="mt-12 fade-in-up delay-3">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-gray-900">多方计算参与方列表</h3>
+                <h3 class="text-xl font-bold text-gray-900" data-i18n="ai.dashboard.project.participantsList">多方计算参与方列表</h3>
                 <div class="flex items-center space-x-4 text-sm text-gray-600">
-                    <span>协调节点: <span class="font-semibold text-green-600" id="controlNodeCount">3</span></span>
-                    <span>参与方: <span class="font-semibold text-blue-600" id="edgeNodeCount">12</span></span>
-                    <span>总计: <span class="font-semibold text-gray-900" id="totalNodeCount">15</span></span>
+                    <span><span data-i18n="ai.dashboard.project.coordinationNodes">协调节点</span>: <span class="font-semibold text-green-600" id="controlNodeCount">3</span></span>
+                    <span><span data-i18n="ai.dashboard.project.participants">参与方</span>: <span class="font-semibold text-blue-600" id="edgeNodeCount">12</span></span>
+                    <span><span data-i18n="ai.dashboard.project.total">总计</span>: <span class="font-semibold text-gray-900" id="totalNodeCount">15</span></span>
                 </div>
             </div>
             
             <!-- 控制节点表格 -->
             <div class="mb-8">
-                <h4 class="text-lg font-semibold mb-4 text-green-600">控制节点 (最多15个)</h4>
+                <h4 class="text-lg font-semibold mb-4 text-green-600" data-i18n="ai.dashboard.project.controlNodes">控制节点 (最多15个)</h4>
                 <div class="overflow-x-auto bg-white rounded-lg shadow">
                     <table class="min-w-full">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">节点名称</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">负责用户</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP地址</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">连接节点</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.nodeName">节点名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.role">角色</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.status">状态</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.user">负责用户</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.ipAddress">IP地址</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.connectedNodes">连接节点</th>
                             </tr>
                         </thead>
                         <tbody id="controlNodesTable" class="bg-white divide-y divide-gray-200">
@@ -1275,33 +1275,33 @@
             
             <!-- 边缘节点表格 -->
             <div class="mb-8">
-                <h4 class="text-lg font-semibold mb-4 text-blue-600">参与方节点状态</h4>
+                <h4 class="text-lg font-semibold mb-4 text-blue-600" data-i18n="ai.dashboard.project.participantStatus">参与方节点状态</h4>
                 <div class="overflow-x-auto bg-white rounded-lg shadow">
                     <table class="min-w-full">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('name')">
-                                    节点名称 <span id="sort-name" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.nodeName">节点名称</span> <span id="sort-name" class="ml-1">⇅</span>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('status')">
-                                    状态 <span id="sort-status" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.status">状态</span> <span id="sort-status" class="ml-1">⇅</span>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('progress')">
-                                    训练进度 <span id="sort-progress" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.progress">训练进度</span> <span id="sort-progress" class="ml-1">⇅</span>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('cpu')">
-                                    CPU <span id="sort-cpu" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.cpu">CPU</span> <span id="sort-cpu" class="ml-1">⇅</span>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('memory')">
-                                    内存 <span id="sort-memory" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.memory">内存</span> <span id="sort-memory" class="ml-1">⇅</span>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('gpu')">
-                                    GPU <span id="sort-gpu" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.gpu">GPU</span> <span id="sort-gpu" class="ml-1">⇅</span>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none" onclick="sortEdgeNodes('heartbeat')">
-                                    最后心跳 <span id="sort-heartbeat" class="ml-1">⇅</span>
+                                    <span data-i18n="ai.dashboard.project.tableCols.heartbeat">最后心跳</span> <span id="sort-heartbeat" class="ml-1">⇅</span>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="ai.dashboard.project.tableCols.actions">操作</th>
                             </tr>
                         </thead>
                         <tbody id="edgeNodesTable" class="bg-white divide-y divide-gray-200">
@@ -1322,7 +1322,7 @@
 
     <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script>
     <script src="../../shared/js/i18n-manager.js?v=1756649655"></script>
-    <script src="../../shared/js/router-unified.js?v=20250901b"></script>
+    <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     
     <script>
         // 获取项目ID
@@ -1677,7 +1677,7 @@
                 label.setAttribute('x', node.x);
                 label.setAttribute('y', node.y - 35);
                 label.setAttribute('class', 'node-label');
-                label.textContent = node.name;
+                label.textContent = getTranslatedNodeName(node.name);
                 labelsGroup.appendChild(label);
                 
                 // 状态指示器
@@ -1762,7 +1762,7 @@
                 label.setAttribute('x', node.x);
                 label.setAttribute('y', node.y + 35);
                 label.setAttribute('class', 'node-label');
-                label.textContent = node.name;
+                label.textContent = getTranslatedNodeName(node.name);
                 labelsGroup.appendChild(label);
                 
                 // 进度文字
@@ -1848,9 +1848,9 @@
             const modal = document.getElementById('nodeModal');
             
             // 填充基础信息
-            document.getElementById('modalNodeTitle').textContent = node.name;
+            document.getElementById('modalNodeTitle').textContent = getTranslatedNodeName(node.name);
             document.getElementById('modalNodeStatus').textContent = getStatusText(node.status);
-            document.getElementById('modalNodeName').textContent = node.name;
+            document.getElementById('modalNodeName').textContent = getTranslatedNodeName(node.name);
             document.getElementById('modalNodeUrl').textContent = node.url || '未配置';
             document.getElementById('modalTrainingRounds').textContent = node.trainingRounds || 0;
             document.getElementById('modalProgress').textContent = `${node.progress}%`;
@@ -2297,7 +2297,7 @@
         
         // 显示其他节点的基本信息（P2PAI特性）
         function showBasicNodeInfo(node) {
-            const title = node.status === 'online' ? `${node.name} - 在线` : `${node.name} - 离线`;
+            const title = node.status === 'online' ? `${getTranslatedNodeName(node.name)} - ${window.i18nManager?.getCurrentLanguage() === 'en' ? 'Online' : '在线'}` : `${getTranslatedNodeName(node.name)} - ${window.i18nManager?.getCurrentLanguage() === 'en' ? 'Offline' : '离线'}`;
             const statusColor = node.status === 'online' ? 'text-green-600' : 'text-gray-500';
             const statusText = node.status === 'online' ? '在线' : '离线';
             const lastSeen = node.heartbeat || '未知';
@@ -2305,7 +2305,7 @@
             const content = `
                 <div class="detail-section">
                     <div class="detail-header">
-                        <h4 class="detail-title">${node.name}</h4>
+                        <h4 class="detail-title">${getTranslatedNodeName(node.name)}</h4>
                         <span class="detail-badge ${node.status === 'online' ? 'success' : 'info'}">${statusText}</span>
                     </div>
                     
@@ -2327,7 +2327,7 @@
                     <div class="detail-grid">
                         <div class="detail-item">
                             <div class="detail-label">参与方名称</div>
-                            <div class="detail-value">${node.name}</div>
+                            <div class="detail-value">${getTranslatedNodeName(node.name)}</div>
                             <div class="detail-meta">多方计算参与节点</div>
                         </div>
                         <div class="detail-item">
@@ -2426,7 +2426,7 @@
             const nodeTitle = document.getElementById('nodeTitle');
             const nodeInfo = document.getElementById('nodeInfo');
             
-            nodeTitle.textContent = `${node.name} - 详情`;
+            nodeTitle.textContent = `${getTranslatedNodeName(node.name)} - ${window.i18nManager?.getCurrentLanguage() === 'en' ? 'Details' : '详情'}`;
             
             if (type === 'control') {
                 nodeInfo.innerHTML = `
@@ -2453,7 +2453,7 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-sm text-gray-600">连接节点</span>
-                            <span class="font-semibold">${networkData.edgeNodes.filter(n => n.status !== 'error').length}个</span>
+                            <span class="font-semibold">${networkData.edgeNodes.filter(n => n.status !== 'error').length}${window.i18nManager?.getCurrentLanguage() === 'en' ? '' : '个'}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-sm text-gray-600">运行时间</span>
@@ -2766,20 +2766,20 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                            <span class="text-sm font-medium text-gray-900">${node.name}</span>
+                            <span class="text-sm font-medium text-gray-900">${getTranslatedNodeName(node.name)}</span>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="text-sm text-gray-900">${node.type === 'master' ? '主控制器' : node.type === 'participant' ? '参与者' : '观察者'}</span>
+                        <span class="text-sm text-gray-900">${getTranslatedRoleType(node.type)}</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            在线
+                            ${getTranslatedStatus('在线')}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.user}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">${node.ip}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${networkData.edgeNodes.filter(n => n.status !== 'error').length}个</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${networkData.edgeNodes.filter(n => n.status !== 'error').length}${window.i18nManager?.getCurrentLanguage() === 'en' ? '' : '个'}</td>
                 `;
                 
                 tableBody.appendChild(row);
@@ -2813,13 +2813,13 @@
                     };
                     
                     const statusColor = statusColorMap[node.status] || 'bg-gray-100 text-gray-800';
-                    const statusText = statusTextMap[node.status] || '未知';
+                    const statusText = getTranslatedStatus(statusTextMap[node.status] || '未知');
                     
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
-                                <span class="text-sm font-medium text-gray-900">${node.name} <span class="text-xs text-red-600">(我的节点)</span></span>
+                                <span class="text-sm font-medium text-gray-900">${getTranslatedNodeName(node.name)} <span class="text-xs text-red-600">(${window.i18nManager?.getCurrentLanguage() === 'en' ? 'My Node' : '我的节点'})</span></span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -2838,22 +2838,22 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.cpu ? node.cpu.toFixed(2) + '%' : 'N/A'}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.memory || 'N/A'}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${node.gpu ? node.gpu.toFixed(2) + '%' : 'N/A'}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${node.heartbeat}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getTranslatedHeartbeat(node.heartbeat)}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="text-red-600 hover:text-red-900 px-3 py-2 rounded border border-red-300 hover:border-red-500 bg-transparent cursor-pointer transition-colors duration-200 node-details-btn" data-node-id="${node.id}">查看详情</button>
+                            <button class="text-red-600 hover:text-red-900 px-3 py-2 rounded border border-red-300 hover:border-red-500 bg-transparent cursor-pointer transition-colors duration-200 node-details-btn" data-node-id="${node.id}">${window.i18nManager?.getCurrentLanguage() === 'en' ? 'View Details' : '查看详情'}</button>
                         </td>
                     `;
                 } else {
                     // 其他参与方的节点 - 只显示基本状态
                     const statusColor = node.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
-                    const statusText = node.status === 'online' ? '在线' : '离线';
+                    const statusText = getTranslatedStatus(node.status === 'online' ? '在线' : '离线');
                     const dotColor = node.status === 'online' ? 'bg-green-500' : 'bg-gray-400';
                     
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-3 h-3 ${dotColor} rounded-full mr-3"></div>
-                                <span class="text-sm font-medium text-gray-900">${node.name}</span>
+                                <span class="text-sm font-medium text-gray-900">${getTranslatedNodeName(node.name)}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -2862,14 +2862,14 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                            <span class="italic">隐私保护</span>
+                            <span class="italic">${window.i18nManager?.getCurrentLanguage() === 'en' ? 'Privacy Protected' : '隐私保护'}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">-</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">-</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">-</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${node.heartbeat}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getTranslatedHeartbeat(node.heartbeat)}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button class="text-green-600 hover:text-green-900 px-3 py-2 rounded border border-green-300 hover:border-green-500 bg-transparent cursor-pointer transition-colors duration-200 node-details-btn" data-node-id="${node.id}">基本信息</button>
+                            <button class="text-green-600 hover:text-green-900 px-3 py-2 rounded border border-green-300 hover:border-green-500 bg-transparent cursor-pointer transition-colors duration-200 node-details-btn" data-node-id="${node.id}">${window.i18nManager?.getCurrentLanguage() === 'en' ? 'Basic Info' : '基本信息'}</button>
                         </td>
                     `;
                 }
@@ -3078,10 +3078,15 @@
                     case 'heartbeat':
                         // 解析心跳时间（简化处理）
                         const parseHeartbeat = (heartbeat) => {
-                            if (heartbeat.includes('秒前')) {
-                                return parseInt(heartbeat.replace('秒前', '')) || 0;
-                            } else if (heartbeat.includes('分钟前')) {
-                                return (parseInt(heartbeat.replace('分钟前', '')) || 0) * 60;
+                            if (heartbeat.includes('秒前') || heartbeat.includes('s ago')) {
+                                const match = heartbeat.match(/(\d+)/);
+                                return match ? parseInt(match[1]) : 0;
+                            } else if (heartbeat.includes('分钟前') || heartbeat.includes('m ago')) {
+                                const match = heartbeat.match(/(\d+)/);
+                                return match ? parseInt(match[1]) * 60 : 0;
+                            } else if (heartbeat.includes('小时前') || heartbeat.includes('h ago')) {
+                                const match = heartbeat.match(/(\d+)/);
+                                return match ? parseInt(match[1]) * 3600 : 0;
                             }
                             return 999; // 其他情况排在最后
                         };
@@ -3110,9 +3115,139 @@
         
         // 导航功能
         function goBack() {
-            window.location.href = './client-dashboard.html';
+            window.location.href = '/p2pai/pages/client-dashboard.html';
         }
         
+        // 翻译节点名称的函数
+        function getTranslatedNodeName(originalName) {
+            if (!window.i18nManager || window.i18nManager.getCurrentLanguage() === 'zh') {
+                return originalName;
+            }
+            
+            // 翻译映射
+            const nodeNameMap = {
+                '我的节点': 'My Node',
+                '主控节点1': 'Master Node 1',
+                '主控节点2': 'Master Node 2',
+                '备用控制': 'Backup Control',
+                '参与方A': 'Participant A',
+                '参与方B': 'Participant B', 
+                '参与方C': 'Participant C',
+                '参与方D': 'Participant D',
+                '参与方E': 'Participant E',
+                '参与方F': 'Participant F',
+                '参与方G': 'Participant G',
+                '参与方H': 'Participant H',
+                '参与方I': 'Participant I',
+                '参与方J': 'Participant J',
+                '参与方K': 'Participant K',
+                '参与方L': 'Participant L',
+                '参与方M': 'Participant M',
+                '参与方N': 'Participant N',
+                '参与方O': 'Participant O',
+                '参与方P': 'Participant P',
+                '参与方Q': 'Participant Q',
+                '参与方R': 'Participant R',
+                '参与方S': 'Participant S'
+            };
+            
+            return nodeNameMap[originalName] || originalName;
+        }
+
+        // 翻译角色类型的函数
+        function getTranslatedRoleType(type) {
+            if (!window.i18nManager || window.i18nManager.getCurrentLanguage() === 'zh') {
+                const roleMap = {
+                    'master': '主控制器',
+                    'participant': '参与者', 
+                    'observer': '观察者'
+                };
+                return roleMap[type] || type;
+            }
+            
+            const roleMap = {
+                'master': 'Master Controller',
+                'participant': 'Participant',
+                'observer': 'Observer'
+            };
+            return roleMap[type] || type;
+        }
+
+        // 翻译用户角色的函数
+        function getTranslatedUserRole(userRole) {
+            if (!window.i18nManager || window.i18nManager.getCurrentLanguage() === 'zh') {
+                const userRoleMap = {
+                    '管理员': '管理员',
+                    '协调员': '协调员',
+                    '观察者': '观察者'
+                };
+                return userRoleMap[userRole] || userRole;
+            }
+            
+            const userRoleMap = {
+                '管理员': 'Administrator',
+                '协调员': 'Coordinator',
+                '观察者': 'Observer'
+            };
+            return userRoleMap[userRole] || userRole;
+        }
+
+        // 翻译状态的函数
+        function getTranslatedStatus(status) {
+            if (!window.i18nManager || window.i18nManager.getCurrentLanguage() === 'zh') {
+                const statusMap = {
+                    'online': '在线',
+                    'offline': '离线',
+                    'training': '训练中',
+                    'completed': '已完成',
+                    'idle': '空闲',
+                    'error': '错误',
+                    'active': '在线'
+                };
+                return statusMap[status] || status;
+            }
+            
+            const statusMap = {
+                'online': 'Online',
+                'offline': 'Offline', 
+                'training': 'Training',
+                'completed': 'Completed',
+                'idle': 'Idle',
+                'error': 'Error',
+                'active': 'Online'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 翻译心跳时间格式的函数
+        function getTranslatedHeartbeat(heartbeat) {
+            if (!window.i18nManager || window.i18nManager.getCurrentLanguage() === 'zh') {
+                return heartbeat;
+            }
+            
+            // 转换中文时间格式为英文
+            if (heartbeat.includes('秒前')) {
+                const seconds = heartbeat.replace('秒前', '');
+                return `${seconds}s ago`;
+            } else if (heartbeat.includes('分钟前')) {
+                const minutes = heartbeat.replace('分钟前', '');
+                return `${minutes}m ago`;
+            } else if (heartbeat.includes('小时前')) {
+                const hours = heartbeat.replace('小时前', '');
+                return `${hours}h ago`;
+            }
+            
+            return heartbeat;
+        }
+
+        // 监听语言切换事件
+        window.addEventListener('languageChanged', function(event) {
+            // 重新渲染网络可视化和表格以应用新的翻译
+            renderNetworkVisualization();
+            fillControlNodesTable();
+            fillEdgeNodesTable();
+        });
+
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 确保用户登录状态（为可视化页面提供模拟登录）

@@ -6,7 +6,7 @@
     <title>分布式训练</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673000">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
     
 </head>
 <body class="module-background theme-transition">
@@ -267,14 +267,14 @@
         }
     </script>
     <!-- 暂时禁用可能导致认证问题的脚本 -->
-    <!-- <script src="../../shared/js/navigation-unified.js?v=20250827"></script> -->
+    <!-- <script src="../../shared/js/navigation-unified.js?v=20250902"></script> -->
     <!-- <script src="../../shared/js/theme-manager-unified.js?v=20250827"></script> -->
     <!-- <script src="../../shared/js/i18n-manager.js"></script> -->
     <script>
         // 基本导航函数
         window.goHome = function() {
             console.log("🏠 返回主页");
-            window.location.href = "../../homepage/index.html";
+            window.location.href = "/homepage/index.html";
         };
         
         window.goBack = function() {
@@ -304,14 +304,14 @@
         let trainingChart;
 
         function goBack() {
-            window.location.href = './federated-training-select.html';
+            window.location.href = '/p2pai/pages/federated-training-select.html';
         }
 
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('loginTime');
-            window.location.href = './login.html';
+            window.location.href = '/p2pai/pages/login.html';
         }
 
         function startTraining() {
