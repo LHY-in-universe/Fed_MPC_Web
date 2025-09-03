@@ -63,14 +63,14 @@
             <div class="mb-8">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h2 class="text-2xl font-bold text-primary">我的模型库</h2>
-                        <p class="text-secondary mt-1">管理和查看您保存的AI模型</p>
+                        <h2 class="text-2xl font-bold text-primary" data-i18n="edgeai.modelManager.myModelLibrary">我的模型库</h2>
+                        <p class="text-secondary mt-1" data-i18n="edgeai.modelManager.manageAndViewSavedModels">管理和查看您保存的AI模型</p>
                     </div>
                     <button onclick="showAddModelModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        添加模型
+                        <span data-i18n="edgeai.modelManager.addModel">添加模型</span>
                     </button>
                 </div>
             </div>
@@ -79,26 +79,26 @@
             <div class="card mb-8 fade-in-up">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label for="searchModel" class="block text-sm font-medium mb-2 text-secondary">搜索模型</label>
-                        <input type="text" id="searchModel" placeholder="输入模型名称..." 
+                        <label for="searchModel" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.searchModel">搜索模型</label>
+                        <input type="text" id="searchModel" data-i18n-placeholder="edgeai.modelManager.searchModelPlaceholder" placeholder="输入模型名称..." 
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                oninput="filterModels()">
                     </div>
                     <div>
-                        <label for="filterSize" class="block text-sm font-medium mb-2 text-secondary">按大小筛选</label>
+                        <label for="filterSize" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.sizeFilter">按大小筛选</label>
                         <select id="filterSize" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="filterModels()">
-                            <option value="">全部大小</option>
-                            <option value="small">小型 (<100MB)</option>
-                            <option value="medium">中型 (100MB-1GB)</option>
-                            <option value="large">大型 (>1GB)</option>
+                            <option value="" data-i18n="edgeai.modelManager.allSizes">全部大小</option>
+                            <option value="small" data-i18n="edgeai.modelManager.smallSize">小型 (<100MB)</option>
+                            <option value="medium" data-i18n="edgeai.modelManager.mediumSize">中型 (100MB-1GB)</option>
+                            <option value="large" data-i18n="edgeai.modelManager.largeSize">大型 (>1GB)</option>
                         </select>
                     </div>
                     <div>
-                        <label for="sortBy" class="block text-sm font-medium mb-2 text-secondary">排序方式</label>
+                        <label for="sortBy" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.sortBy">排序方式</label>
                         <select id="sortBy" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="sortModels()">
-                            <option value="name">按名称</option>
-                            <option value="size">按大小</option>
-                            <option value="created">按创建时间</option>
+                            <option value="name" data-i18n="edgeai.modelManager.byName">按名称</option>
+                            <option value="size" data-i18n="edgeai.modelManager.bySize">按大小</option>
+                            <option value="created" data-i18n="edgeai.modelManager.byDate">按创建时间</option>
                         </select>
                     </div>
                 </div>
@@ -116,10 +116,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">还没有模型</h3>
-                <p class="text-gray-600 mb-6">开始添加您的第一个AI模型到库中</p>
+                <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="edgeai.modelManager.noModelsYet">还没有模型</h3>
+                <p class="text-gray-600 mb-6" data-i18n="edgeai.modelManager.startAddingModels">开始添加您的第一个AI模型到库中</p>
                 <button onclick="showAddModelModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-                    添加第一个模型
+                    <span data-i18n="edgeai.modelManager.addFirstModel">添加第一个模型</span>
                 </button>
             </div>
             </div>
@@ -131,7 +131,7 @@
                 <div class="card max-w-4xl w-full max-h-screen overflow-y-auto">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-semibold text-primary">添加新模型</h3>
+                            <h3 class="text-xl font-semibold text-primary" data-i18n="edgeai.modelManager.addNewModel">添加新模型</h3>
                             <button onclick="hideAddModelModal()" class="text-tertiary hover:opacity-70">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -141,27 +141,27 @@
 
                         <form id="addModelForm" onsubmit="addModel(event)" class="space-y-6">
                             <div>
-                                <label for="modelName" class="block text-sm font-medium mb-2 text-secondary">模型名称 *</label>
+                                <label for="modelName" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.modelName">模型名称 *</label>
                                 <input type="text" id="modelName" required 
                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="例如：ResNet-50 图像分类模型">
+                                       data-i18n-placeholder="ResNet-50图像分类模型" placeholder="例如：ResNet-50 图像分类模型">
                             </div>
 
                             <div>
-                                <label for="modelPath" class="block text-sm font-medium mb-2 text-secondary">模型本地地址 *</label>
+                                <label for="modelPath" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.modelPath">模型本地地址 *</label>
                                 <div class="flex space-x-2">
                                     <input type="text" id="modelPath" required 
                                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                            placeholder="/Users/username/models/resnet50.h5">
                                     <button type="button" onclick="browseModelPath()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                                        浏览
+                                        <span data-i18n="edgeai.modelManager.browse">浏览</span>
                                     </button>
                                 </div>
-                                <p class="text-sm mt-1 text-tertiary">支持格式: .h5, .pb, .pth, .onnx, .pkl</p>
+                                <p class="text-sm mt-1 text-tertiary" data-i18n="edgeai.modelManager.supportedFormats">支持格式: .h5, .pb, .pth, .onnx, .pkl</p>
                             </div>
 
                             <div>
-                                <label for="modelSize" class="block text-sm font-medium mb-2 text-secondary">模型大小</label>
+                                <label for="modelSize" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.modelSize">模型大小</label>
                                 <div class="flex space-x-2">
                                     <input type="number" id="modelSizeValue" step="0.1" min="0"
                                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -175,53 +175,53 @@
                             </div>
 
                             <div>
-                                <label for="modelType" class="block text-sm font-medium mb-2 text-secondary">模型类型</label>
+                                <label for="modelType" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.modelType">模型类型</label>
                                 <select id="modelType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">请选择模型类型</option>
-                                    <option value="classification">图像分类</option>
-                                    <option value="detection">目标检测</option>
-                                    <option value="segmentation">图像分割</option>
-                                    <option value="nlp">自然语言处理</option>
-                                    <option value="regression">回归预测</option>
-                                    <option value="clustering">聚类分析</option>
-                                    <option value="other">其他</option>
+                                    <option value="" data-i18n="edgeai.modelManager.selectModelType">请选择模型类型</option>
+                                    <option value="classification" data-i18n="edgeai.modelManager.imageClassification">图像分类</option>
+                                    <option value="detection" data-i18n="edgeai.modelManager.objectDetection">目标检测</option>
+                                    <option value="segmentation" data-i18n="edgeai.modelManager.imageSegmentation">图像分割</option>
+                                    <option value="nlp" data-i18n="edgeai.modelManager.naturalLanguageProcessing">自然语言处理</option>
+                                    <option value="regression" data-i18n="edgeai.modelManager.regressionPrediction">回归预测</option>
+                                    <option value="clustering" data-i18n="edgeai.modelManager.clusteringAnalysis">聚类分析</option>
+                                    <option value="other" data-i18n="edgeai.modelManager.other">其他</option>
                                 </select>
                             </div>
 
                             <div>
-                                <label for="modelDescription" class="block text-sm font-medium mb-2 text-secondary">模型描述</label>
+                                <label for="modelDescription" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.modelDescription">模型描述</label>
                                 <textarea id="modelDescription" rows="4" 
                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                          placeholder="描述模型的功能、用途、训练数据集、性能指标等..."></textarea>
+                                          data-i18n-placeholder="edgeai.modelManager.modelDescriptionPlaceholder" placeholder="描述模型的功能、用途、训练数据集、性能指标等..."></textarea>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="modelFramework" class="block text-sm font-medium mb-2 text-secondary">框架</label>
+                                    <label for="modelFramework" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.framework">框架</label>
                                     <select id="modelFramework" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                        <option value="">请选择框架</option>
+                                        <option value="" data-i18n="edgeai.modelManager.selectFramework">请选择框架</option>
                                         <option value="tensorflow">TensorFlow</option>
                                         <option value="pytorch">PyTorch</option>
                                         <option value="keras">Keras</option>
                                         <option value="onnx">ONNX</option>
                                         <option value="scikit-learn">Scikit-learn</option>
-                                        <option value="other">其他</option>
+                                        <option value="other" data-i18n="edgeai.modelManager.other">其他</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="modelVersion" class="block text-sm font-medium mb-2 text-secondary">版本</label>
+                                    <label for="modelVersion" class="block text-sm font-medium mb-2 text-secondary" data-i18n="edgeai.modelManager.version">版本</label>
                                     <input type="text" id="modelVersion" 
                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                           placeholder="例如：v1.0.0">
+                                           data-i18n-placeholder="edgeai.modelManager.versionPlaceholder" placeholder="例如：v1.0.0">
                                 </div>
                             </div>
 
                             <div class="flex justify-end space-x-3 pt-6">
                                 <button type="button" onclick="hideAddModelModal()" class="px-6 py-2 border rounded-lg transition-colors border-primary text-secondary">
-                                    取消
+                                    <span data-i18n="common.cancel">取消</span>
                                 </button>
                                 <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                    添加模型
+                                    <span data-i18n="edgeai.modelManager.addModel">添加模型</span>
                                 </button>
                             </div>
                         </form>
@@ -244,14 +244,20 @@
             }
 
             init() {
-                this.renderModels();
-                this.updateEmptyState();
-                // 等待一点时间确保所有脚本加载完成，然后应用翻译
+                // 等待一点时间确保所有脚本加载完成
                 setTimeout(() => {
-                    if (window.i18nManager) {
-                        window.i18nManager.applyTranslations();
+                    try {
+                        this.renderModels();
+                        this.updateEmptyState();
+                        if (window.i18nManager) {
+                            window.i18nManager.applyTranslations();
+                        }
+                    } catch (error) {
+                        console.error('模型管理器初始化失败:', error);
+                        // 降级显示，使用简单的中文文本
+                        this.renderModelsSimple();
                     }
-                }, 100);
+                }, 200);
             }
 
             // 从localStorage加载模型
@@ -321,6 +327,37 @@
                 this.updateEmptyState();
             }
 
+            // 简化渲染函数（降级方案）
+            renderModelsSimple() {
+                const container = document.getElementById('modelsList');
+                
+                if (this.filteredModels.length === 0) {
+                    container.innerHTML = '';
+                    this.updateEmptyState();
+                    return;
+                }
+
+                const simpleHtml = this.filteredModels.map(model => `
+                    <div class="card" style="border: 1px solid #e5e5e5; padding: 20px; margin-bottom: 16px; border-radius: 8px;">
+                        <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">${model.name}</h3>
+                        <p><strong>路径:</strong> ${model.path}</p>
+                        <p><strong>大小:</strong> ${model.size}</p>
+                        <p><strong>类型:</strong> ${model.type || '未指定'}</p>
+                        <p><strong>框架:</strong> ${model.framework || '未指定'}</p>
+                        <p><strong>版本:</strong> ${model.version || '未指定'}</p>
+                        ${model.description ? `<p><strong>描述:</strong> ${model.description}</p>` : ''}
+                        <p><strong>创建时间:</strong> ${new Date(model.created).toLocaleString()}</p>
+                        <div style="margin-top: 12px;">
+                            <button onclick="viewModelDetails('${model.id}')" style="background: #3b82f6; color: white; padding: 6px 12px; border: none; border-radius: 4px; margin-right: 8px;">查看详情</button>
+                            <button onclick="useModel('${model.id}')" style="background: #10b981; color: white; padding: 6px 12px; border: none; border-radius: 4px;">使用模型</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = simpleHtml;
+                this.updateEmptyState();
+            }
+
             // 渲染单个模型卡片
             renderModelCard(model) {
                 const typeColors = {
@@ -333,14 +370,24 @@
                     'other': 'bg-gray-100 text-gray-800'
                 };
 
+                // 安全的i18n调用函数
+                const safeT = (key, fallback) => {
+                    try {
+                        return (window.i18nManager && window.i18nManager.t) ? window.i18nManager.t(key) : fallback;
+                    } catch (error) {
+                        console.warn(`i18n translation failed for key: ${key}`, error);
+                        return fallback;
+                    }
+                };
+
                 const typeNames = {
-                    'classification': '图像分类',
-                    'detection': '目标检测',
-                    'segmentation': '图像分割',
-                    'nlp': '自然语言处理',
-                    'regression': '回归预测',
-                    'clustering': '聚类分析',
-                    'other': '其他'
+                    'classification': safeT('edgeai.modelManager.imageClassification', '图像分类'),
+                    'detection': safeT('edgeai.modelManager.objectDetection', '目标检测'),
+                    'segmentation': safeT('edgeai.modelManager.imageSegmentation', '图像分割'),
+                    'nlp': safeT('edgeai.modelManager.naturalLanguageProcessing', '自然语言处理'),
+                    'regression': safeT('edgeai.modelManager.regressionPrediction', '回归预测'),
+                    'clustering': safeT('edgeai.modelManager.clusteringAnalysis', '聚类分析'),
+                    'other': safeT('edgeai.modelManager.other', '其他')
                 };
 
                 const frameworkNames = {
@@ -349,7 +396,7 @@
                     'keras': 'Keras',
                     'onnx': 'ONNX',
                     'scikit-learn': 'Scikit-learn',
-                    'other': '其他'
+                    'other': safeT('edgeai.modelManager.other', '其他')
                 };
 
                 return `
@@ -382,18 +429,18 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <p class="text-sm mb-1 text-tertiary">模型路径</p>
+                                <p class="text-sm mb-1 text-tertiary">${safeT('edgeai.modelManager.modelPathLabel', '模型路径')}</p>
                                 <p class="text-sm font-mono p-2 rounded break-all text-primary bg-tertiary">${model.path}</p>
                             </div>
                             <div>
-                                <p class="text-sm mb-1 text-tertiary">模型大小</p>
+                                <p class="text-sm mb-1 text-tertiary">${safeT('edgeai.modelManager.modelSizeLabel', '模型大小')}</p>
                                 <p class="text-sm font-semibold text-primary">${model.size}</p>
                             </div>
                         </div>
 
                         ${model.description ? `
                             <div class="mb-4">
-                                <p class="text-sm mb-1 text-tertiary">描述</p>
+                                <p class="text-sm mb-1 text-tertiary">${safeT('edgeai.modelManager.descriptionLabel', '描述')}</p>
                                 <p class="text-sm text-secondary">${model.description}</p>
                             </div>
                         ` : ''}
@@ -403,14 +450,14 @@
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                创建于 ${new Date(model.created).toLocaleDateString()}
+                                ${safeT('edgeai.modelManager.createdOn', '创建于')} ${new Date(model.created).toLocaleDateString()}
                             </div>
                             <div class="flex space-x-2">
                                 <button onclick="viewModelDetails('${model.id}')" class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
-                                    查看详情
+                                    ${safeT('edgeai.modelManager.viewDetails', '查看详情')}
                                 </button>
                                 <button onclick="useModel('${model.id}')" class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors">
-                                    使用模型
+                                    ${safeT('edgeai.modelManager.useModel', '使用模型')}
                                 </button>
                             </div>
                         </div>
@@ -566,7 +613,7 @@
             const modelData = {
                 name: document.getElementById('modelName').value,
                 path: document.getElementById('modelPath').value,
-                size: sizeValue > 0 ? `${sizeValue} ${sizeUnit}` : '未知',
+                size: sizeValue > 0 ? `${sizeValue} ${sizeUnit}` : (window.i18nManager ? window.i18nManager.t('edgeai.modelManager.unknownSize') : '未知'),
                 sizeBytes: sizeBytes,
                 type: document.getElementById('modelType').value,
                 framework: document.getElementById('modelFramework').value,
@@ -578,7 +625,10 @@
             hideAddModelModal();
             
             // 显示成功消息
-            alert(`模型 "${newModel.name}" 添加成功！`);
+            const successMsg = window.i18nManager ? 
+                window.i18nManager.t('edgeai.modelManager.modelAddedSuccess').replace('{name}', newModel.name) : 
+                `模型 "${newModel.name}" 添加成功！`;
+            alert(successMsg);
         }
 
         function filterModels() {
@@ -635,7 +685,7 @@
                 Object.assign(model, {
                     name: document.getElementById('modelName').value,
                     path: document.getElementById('modelPath').value,
-                    size: sizeValue > 0 ? `${sizeValue} ${sizeUnit}` : '未知',
+                    size: sizeValue > 0 ? `${sizeValue} ${sizeUnit}` : (window.i18nManager ? window.i18nManager.t('edgeai.modelManager.unknownSize') : '未知'),
                     sizeBytes: sizeBytes,
                     type: document.getElementById('modelType').value,
                     framework: document.getElementById('modelFramework').value,
@@ -650,7 +700,10 @@
                 // 恢复原始提交处理
                 form.onsubmit = addModel;
                 
-                alert(`模型 "${model.name}" 更新成功！`);
+                const updateMsg = window.i18nManager ? 
+                    window.i18nManager.t('edgeai.modelManager.modelUpdatedSuccess').replace('{name}', model.name) : 
+                    `模型 "${model.name}" 更新成功！`;
+                alert(updateMsg);
             };
             
             showAddModelModal();
@@ -660,9 +713,13 @@
             const model = modelManager.models.find(m => m.id === id);
             if (!model) return;
             
-            if (confirm(`确定要删除模型 "${model.name}" 吗？此操作不可撤销。`)) {
+            const confirmMsg = window.i18nManager ? 
+                window.i18nManager.t('edgeai.modelManager.confirmDelete').replace('{name}', model.name) : 
+                `确定要删除模型 "${model.name}" 吗？此操作不可撤销。`;
+            if (confirm(confirmMsg)) {
                 modelManager.deleteModel(id);
-                alert('模型删除成功！');
+                const deleteMsg = window.i18nManager ? window.i18nManager.t('edgeai.modelManager.modelDeletedSuccess') : '模型删除成功！';
+                alert(deleteMsg);
             }
         }
 
@@ -670,14 +727,28 @@
             const model = modelManager.models.find(m => m.id === id);
             if (!model) return;
             
-            alert(`模型详情：\n\n名称：${model.name}\n路径：${model.path}\n大小：${model.size}\n类型：${model.type || '未指定'}\n框架：${model.framework || '未指定'}\n版本：${model.version || '未指定'}\n创建时间：${new Date(model.created).toLocaleString()}\n\n描述：${model.description || '无描述'}`);
+            const detailsMsg = window.i18nManager ? 
+                window.i18nManager.t('edgeai.modelManager.modelDetailsText')
+                    .replace('{name}', model.name)
+                    .replace('{path}', model.path)
+                    .replace('{size}', model.size)
+                    .replace('{type}', model.type || window.i18nManager.t('edgeai.modelManager.unspecified'))
+                    .replace('{framework}', model.framework || window.i18nManager.t('edgeai.modelManager.unspecified'))
+                    .replace('{version}', model.version || window.i18nManager.t('edgeai.modelManager.unspecified'))
+                    .replace('{created}', new Date(model.created).toLocaleString())
+                    .replace('{description}', model.description || window.i18nManager.t('edgeai.modelManager.noDescription')) :
+                `模型详情：\n\n名称：${model.name}\n路径：${model.path}\n大小：${model.size}\n类型：${model.type || '未指定'}\n框架：${model.framework || '未指定'}\n版本：${model.version || '未指定'}\n创建时间：${new Date(model.created).toLocaleString()}\n\n描述：${model.description || '无描述'}`;
+            alert(detailsMsg);
         }
 
         function useModel(id) {
             const model = modelManager.models.find(m => m.id === id);
             if (!model) return;
             
-            alert(`使用模型 "${model.name}"\n\n功能开发中，即将支持：\n- 模型推理测试\n- 性能基准测试\n- 导出到训练项目\n- 模型部署`);
+            const useMsg = window.i18nManager ? 
+                window.i18nManager.t('edgeai.modelManager.useModelText').replace('{name}', model.name) :
+                `使用模型 "${model.name}"\n\n功能开发中，即将支持：\n- 模型推理测试\n- 性能基准测试\n- 导出到训练项目\n- 模型部署`;
+            alert(useMsg);
         }
 
         // 模态框点击外部关闭

@@ -291,8 +291,9 @@
                     business_type: 'p2pai'
                 };
                 
-                // 保存登录信息
+                // 保存登录信息（兼容性：同时保存到userData和user）
                 localStorage.setItem('userData', JSON.stringify(mockUser));
+                localStorage.setItem('user', JSON.stringify(mockUser));
                 localStorage.setItem('aiUserType', userType);
                 localStorage.setItem('userType', userType);
                 localStorage.setItem('loginTime', new Date().toISOString());

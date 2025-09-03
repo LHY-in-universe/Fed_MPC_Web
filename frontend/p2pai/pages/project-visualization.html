@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2PAI项目可视化</title>
+    <title>P2PAI项目可视化 v2.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673004">
     
     <style>
         /* 可视化容器 */
@@ -32,8 +32,6 @@
         
         /* 节点样式 */
         .control-node {
-            fill: #10b981;
-            stroke: #059669;
             stroke-width: 3;
             cursor: pointer;
             transition: fill 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease;
@@ -43,9 +41,8 @@
         }
         
         .control-node:hover {
-            fill: #059669;
-            stroke: #047857;
             stroke-width: 4;
+            filter: brightness(0.9);
         }
         
         /* P2PAI节点样式：基于节点所有权和状态 */
@@ -100,42 +97,63 @@
             stroke-width: 3;
         }
         
-        /* 连接线样式 */
+        /* 连接线样式 - 透明连接线 + 流动数据段 */
         .connection-line {
             stroke: rgba(107, 114, 128, 0.3);
             stroke-width: 2;
             fill: none;
+            stroke-opacity: 0; /* 默认透明 */
             transition: all 0.3s ease;
         }
         
-        .connection-line.active {
+        /* 数据传输线段 */
+        .data-segment {
             stroke: #10b981;
             stroke-width: 3;
-            animation: pulse-line 2s infinite;
+            fill: none;
+            stroke-linecap: round;
         }
         
-        .connection-line.inactive {
-            stroke: rgba(107, 114, 128, 0.2);
-            stroke-width: 1;
-            stroke-dasharray: 8,4;
-            opacity: 0.6;
+        /* 向下流动动画 (从控制节点到边缘节点) */
+        @keyframes data-segment-down {
+            0% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 1025;
+                stroke-opacity: 0.9;
+            }
+            50% {
+                stroke-opacity: 1;
+            }
+            100% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 0;
+                stroke-opacity: 0.9;
+            }
         }
         
-        /* 发光动画 */
-        @keyframes pulse-line {
-            0% { stroke-opacity: 0.3; }
-            50% { stroke-opacity: 1; }
-            100% { stroke-opacity: 0.3; }
+        /* 向上流动动画 (从边缘节点到控制节点) */
+        @keyframes data-segment-up {
+            0% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 0;
+                stroke-opacity: 0.9;
+            }
+            50% {
+                stroke-opacity: 1;
+            }
+            100% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 1025;
+                stroke-opacity: 0.9;
+            }
         }
         
-        @keyframes data-flow {
-            0% { stroke-dashoffset: 20; }
-            100% { stroke-dashoffset: 0; }
+        .data-segment.flow-down {
+            animation: data-segment-down 4s ease-in-out;
         }
         
-        .data-flow {
-            stroke-dasharray: 5,5;
-            animation: data-flow 1s linear infinite;
+        .data-segment.flow-up {
+            animation: data-segment-up 4s ease-in-out;
         }
         
         /* 节点标签 */
@@ -249,11 +267,7 @@
         
         [data-theme="dark"] .connection-line {
             stroke: rgba(156, 163, 175, 0.4);
-        }
-        
-        [data-theme="dark"] .connection-line.inactive {
-            stroke: rgba(156, 163, 175, 0.2);
-            opacity: 0.4;
+            stroke-opacity: 0; /* 暗色模式下也保持透明 */
         }
         
         /* 控制面板 */
@@ -1211,9 +1225,13 @@
             
             <div class="overview-card">
                 <div class="flex items-center justify-between">
-                    <div>
+                    <div class="flex-1 mr-3">
                         <p class="text-sm text-gray-600">我的训练进度</p>
                         <p class="text-2xl font-bold text-red-600" id="avgProgress">97%</p>
+                        <!-- 训练进度条 -->
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-red-500 to-red-600 h-2 rounded-full transition-all duration-500" id="myProgressBar" style="width: 97%"></div>
+                        </div>
                     </div>
                     <div class="text-3xl">📊</div>
                 </div>
@@ -1325,15 +1343,37 @@
     <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     
     <script>
+        // 生成随机控制节点颜色
+        function generateRandomNodeColor() {
+            const colors = [
+                { fill: '#3b82f6', stroke: '#2563eb' }, // 蓝色
+                { fill: '#8b5cf6', stroke: '#7c3aed' }, // 紫色
+                { fill: '#f59e0b', stroke: '#d97706' }, // 橙色
+                { fill: '#ef4444', stroke: '#dc2626' }, // 红色
+                { fill: '#10b981', stroke: '#059669' }, // 绿色
+                { fill: '#f97316', stroke: '#ea580c' }, // 深橙色
+                { fill: '#84cc16', stroke: '#65a30d' }, // 青绿色
+                { fill: '#06b6d4', stroke: '#0891b2' }, // 青色
+                { fill: '#ec4899', stroke: '#db2777' }, // 粉色
+                { fill: '#6366f1', stroke: '#4f46e5' }  // 靛蓝色
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
         // 获取项目ID
         let projectId = '1'; // 默认项目ID
         
+        // 初始化控制节点颜色
+        const color1 = generateRandomNodeColor();
+        const color2 = generateRandomNodeColor();
+        const color3 = generateRandomNodeColor();
+
         // 模拟网络数据
         const networkData = {
             controlNodes: [
-                { id: 'control-1', x: 200, y: 80, name: '主控节点1', type: 'master', status: 'active', user: '管理员', ip: '192.168.1.100' },
-                { id: 'control-2', x: 400, y: 80, name: '主控节点2', type: 'participant', status: 'active', user: '协调员', ip: '192.168.1.101' },
-                { id: 'control-3', x: 600, y: 80, name: '备用控制', type: 'observer', status: 'active', user: '观察者', ip: '192.168.1.102' }
+                { id: 'control-1', x: 200, y: 80, name: '主控节点1', type: 'master', status: 'active', user: '管理员', ip: '192.168.1.100', color: color1.fill, strokeColor: color1.stroke },
+                { id: 'control-2', x: 400, y: 80, name: '主控节点2', type: 'participant', status: 'active', user: '协调员', ip: '192.168.1.101', color: color2.fill, strokeColor: color2.stroke },
+                { id: 'control-3', x: 600, y: 80, name: '备用控制', type: 'observer', status: 'active', user: '观察者', ip: '192.168.1.102', color: color3.fill, strokeColor: color3.stroke }
             ],
             // 所有边缘节点（可以无限添加，可视化界面只显示活跃的15个）
             allEdgeNodes: [
@@ -1663,6 +1703,13 @@
                 circle.setAttribute('r', 25);
                 circle.setAttribute('class', 'control-node');
                 circle.setAttribute('data-id', node.id);
+                // 设置节点特定颜色
+                console.log(`设置控制节点 ${node.id} 颜色: fill=${node.color}, stroke=${node.strokeColor}`);
+                circle.style.setProperty('fill', node.color, 'important');
+                circle.style.setProperty('stroke', node.strokeColor, 'important');
+                // 备用方法：直接设置属性
+                circle.setAttribute('fill', node.color);
+                circle.setAttribute('stroke', node.strokeColor);
                 circle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1680,13 +1727,7 @@
                 label.textContent = getTranslatedNodeName(node.name);
                 labelsGroup.appendChild(label);
                 
-                // 状态指示器
-                const statusCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                statusCircle.setAttribute('cx', node.x + 15);
-                statusCircle.setAttribute('cy', node.y - 15);
-                statusCircle.setAttribute('r', 5);
-                statusCircle.setAttribute('fill', '#10b981');
-                nodesGroup.appendChild(statusCircle);
+                // 移除状态指示器 - 保持节点简洁
             });
             
             // 绘制边缘节点
@@ -1813,13 +1854,8 @@
                     line.setAttribute('x2', edgeNode.x);
                     line.setAttribute('y2', edgeNode.y);
                     
-                    // 根据节点状态设置连接线样式
+                    // 设置连接线样式（默认透明）
                     let lineClass = 'connection-line';
-                    if (edgeNode.status === 'training') {
-                        lineClass += ' active data-flow'; // 训练中：虚线+数据流动画
-                    } else if (edgeNode.status === 'idle' || edgeNode.status === 'error') {
-                        lineClass += ' inactive'; // 空闲或错误：普通虚线
-                    }
                     
                     line.setAttribute('class', lineClass);
                     line.setAttribute('data-from', controlNode.id);
@@ -1828,6 +1864,62 @@
                     
                     connectionsGroup.appendChild(line);
                 }
+            });
+        }
+        
+        // 触发数据传输动画
+        function triggerDataTransmissions() {
+            const connections = document.querySelectorAll('.connection-line');
+            const trainingConnections = Array.from(connections).filter(line => {
+                const edgeNodeId = line.getAttribute('data-to');
+                const edgeNode = networkData.edgeNodes.find(n => n.id === edgeNodeId);
+                return edgeNode && edgeNode.status === 'training';
+            });
+            
+            if (trainingConnections.length === 0) return;
+            
+            // 高频测试: 2-5个连接，80%概率
+            const transmissionCount = Math.min(
+                Math.floor(Math.random() * 4) + 2, // 2-5个
+                trainingConnections.length
+            );
+            
+            // 随机选择连接进行数据传输
+            const shuffled = trainingConnections.sort(() => 0.5 - Math.random());
+            const selectedConnections = shuffled.slice(0, transmissionCount);
+            
+            selectedConnections.forEach((line, index) => {
+                // 随机延迟启动，避免所有动画同时开始
+                const startDelay = Math.random() * 2000; // 0-2秒延迟
+                
+                setTimeout(() => {
+                    // 确保连接线仍然存在且对应节点仍在训练
+                    if (document.contains(line)) {
+                        const edgeNodeId = line.getAttribute('data-to');
+                        const edgeNode = networkData.edgeNodes.find(n => n.id === edgeNodeId);
+                        
+                        if (edgeNode && edgeNode.status === 'training') {
+                            // 创建流动的数据段
+                            const dataSegment = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                            dataSegment.setAttribute('x1', line.getAttribute('x1'));
+                            dataSegment.setAttribute('y1', line.getAttribute('y1'));
+                            dataSegment.setAttribute('x2', line.getAttribute('x2'));
+                            dataSegment.setAttribute('y2', line.getAttribute('y2'));
+                            dataSegment.setAttribute('class', 'data-segment flow-down');
+                            
+                            // 添加到连接组
+                            const connectionsGroup = document.getElementById('connections');
+                            connectionsGroup.appendChild(dataSegment);
+                            
+                            // 4秒后清理动画元素
+                            setTimeout(() => {
+                                if (dataSegment.parentNode) {
+                                    dataSegment.parentNode.removeChild(dataSegment);
+                                }
+                            }, 4000);
+                        }
+                    }
+                }, startDelay);
             });
         }
         
@@ -2693,6 +2785,11 @@
             // 更新概览卡片
             document.getElementById('totalNodesCount').textContent = networkData.allEdgeNodes.length + networkData.controlNodes.length;
             document.getElementById('avgProgress').textContent = `${myProgress}%`;
+            // 更新训练进度条
+            const myProgressBar = document.getElementById('myProgressBar');
+            if (myProgressBar) {
+                myProgressBar.style.width = `${myProgress}%`;
+            }
             document.getElementById('networkLatency').textContent = `${Math.floor(Math.random() * 20 + 15)}ms`;
             document.getElementById('systemHealth').textContent = '启用';
             
@@ -2959,6 +3056,11 @@
                     drawConnections();
                     updateStats();
                     fillNodeTables();
+                }
+                
+                // 触发数据传输动画（高频测试：80%概率）
+                if (Math.random() < 0.8) {
+                    triggerDataTransmissions();
                 }
                 
                 // 随机数据传输速度

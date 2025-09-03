@@ -1166,16 +1166,20 @@
             
             window.viewModelManagementDetails = function() {
                 console.log('📊 Model management details clicked');
-                showFixedModal('模型管理详情', `
+                const isEnglish = localStorage.getItem('language') === 'en';
+                const title = isEnglish ? 'Model Management Details' : '模型管理详情';
+                const totalModelsText = isEnglish ? 'Total Models' : '总模型数';
+                const activeModelsText = isEnglish ? 'Active Models' : '活跃模型';
+                showFixedModal(title, `
                     <div class="space-y-6">
                         <div class="grid grid-cols-3 gap-4">
                             <div class="p-4 rounded text-center modal-card-blue" style="background-color: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);">
                                 <div class="text-2xl font-bold modal-text-blue" style="color: #2563eb;">4</div>
-                                <div class="font-semibold modal-title-blue" style="color: #1e3a8a;">总模型数</div>
+                                <div class="font-semibold modal-title-blue" style="color: #1e3a8a;">${totalModelsText}</div>
                             </div>
                             <div class="p-4 rounded text-center modal-card-green" style="background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2);">
                                 <div class="text-2xl font-bold modal-text-green" style="color: #16a34a;">1</div>
-                                <div class="font-semibold modal-title-green" style="color: #14532d;">活跃模型</div>
+                                <div class="font-semibold modal-title-green" style="color: #14532d;">${activeModelsText}</div>
                             </div>
                             <div class="p-4 rounded text-center modal-card-amber" style="background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);">
                                 <div class="text-2xl font-bold modal-text-amber" style="color: #d97706;">2</div>

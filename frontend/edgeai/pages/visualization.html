@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EdgeAI可视化</title>
+    <title>EdgeAI可视化 v2.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673001">
+    <link rel="stylesheet" href="../../shared/css/unified-styles.css?v=1756673003">
     
     <style>
         /* 可视化容器 */
@@ -32,20 +32,11 @@
         
         /* 节点样式 */
         .control-node {
-            fill: #10b981;
-            stroke: #059669;
-            stroke-width: 3;
             cursor: pointer;
             transition: fill 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease;
             transform-origin: center;
             transform: none !important;
             position: static !important;
-        }
-        
-        .control-node:hover {
-            fill: #059669;
-            stroke: #047857;
-            stroke-width: 4;
         }
         
         .edge-node {
@@ -542,6 +533,106 @@
         [data-theme="dark"] .project-info-header p {
             color: rgba(156, 163, 175, 0.9) !important;
         }
+
+        /* 进度条光效动画 */
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        .animate-shimmer {
+            animation: shimmer 2s infinite;
+        }
+        
+        /* 进度条渐变效果增强 */
+        #overallProgressBar {
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* 阶段指示器样式增强 */
+        .stage-indicator {
+            position: relative;
+            padding: 2px 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .stage-indicator.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            font-weight: 600;
+        }
+        
+        /* 颜色呼吸效果动画 */
+        @keyframes color-breathing {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.4;
+            }
+        }
+        
+        /* 边缘节点颜色呼吸效果 */
+        .edge-node.breathing {
+            animation: color-breathing 2s ease-in-out infinite;
+        }
+        
+        /* 连接线默认透明 */
+        .connection-line {
+            stroke: #10b981;
+            stroke-width: 2;
+            stroke-opacity: 0;
+            fill: none;
+            transition: stroke-opacity 0.3s ease;
+        }
+        
+        /* 数据流动线段动画 */
+        @keyframes data-segment-down {
+            0% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 1025;
+                stroke-opacity: 0.9;
+            }
+            50% {
+                stroke-opacity: 1;
+            }
+            100% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 0;
+                stroke-opacity: 0.9;
+            }
+        }
+        
+        @keyframes data-segment-up {
+            0% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: 0;
+                stroke-opacity: 0.9;
+            }
+            50% {
+                stroke-opacity: 1;
+            }
+            100% {
+                stroke-dasharray: 25, 1000;
+                stroke-dashoffset: -1025;
+                stroke-opacity: 0.9;
+            }
+        }
+        
+        /* 数据传输时显示流动线段 */
+        .connection-line.transmitting-down {
+            animation: data-segment-down 4s ease-in-out;
+        }
+        
+        .connection-line.transmitting-up {
+            animation: data-segment-up 4s ease-in-out;
+        }
+        
     </style>
 </head>
 <body class="module-background theme-transition">
@@ -621,6 +712,29 @@
                                 <span class="text-gray-400">/</span> 
                                 <span class="text-blue-600 font-semibold" id="quickTrainingCount">8</span> 训练中
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 整体训练进度条 -->
+                    <div class="mt-4 px-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">整体训练进度</span>
+                            <span class="text-sm text-gray-500" id="progressDetails">轮次 187/250</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
+                            <!-- 背景渐变 -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-100 to-green-100 rounded-full"></div>
+                            <!-- 进度条 -->
+                            <div id="overallProgressBar" class="bg-gradient-to-r from-blue-500 via-blue-600 to-green-500 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style="width: 75%">
+                                <!-- 动态光效 -->
+                                <div class="absolute top-0 -inset-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer"></div>
+                            </div>
+                        </div>
+                        <!-- 阶段指示器 -->
+                        <div class="flex justify-between mt-2 text-xs text-gray-500">
+                            <span id="stage1" class="stage-indicator">初始化</span>
+                            <span id="stage2" class="stage-indicator active">训练中</span>
+                            <span id="stage3" class="stage-indicator">收敛完成</span>
                         </div>
                     </div>
                 </div>
@@ -1155,11 +1269,25 @@
             
             <div class="overview-card">
                 <div class="flex items-center justify-between">
-                    <div>
+                    <div class="flex-1">
                         <p class="text-sm text-gray-600" data-i18n="edgeai.visualization.avgProgress">平均进度</p>
                         <p class="text-2xl font-bold text-blue-600" id="avgProgress">67%</p>
+                        <!-- 平均进度条 -->
+                        <div class="mt-3 w-full">
+                            <div class="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
+                                <div id="avgProgressBar" class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-800 ease-out relative" style="width: 67%">
+                                    <!-- 微光效果 -->
+                                    <div class="absolute top-0 -inset-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-40 animate-shimmer"></div>
+                                </div>
+                            </div>
+                            <!-- 进度标签 -->
+                            <div class="flex justify-between mt-1 text-xs text-gray-500">
+                                <span>0%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-3xl">📊</div>
+                    <div class="text-3xl ml-2">📊</div>
                 </div>
             </div>
             
@@ -1269,16 +1397,68 @@
     <!-- <script src="../../shared/js/router-unified.js?v=20250827"></script> -->
     
     <script>
+        // 生成随机控制节点颜色
+        function generateRandomNodeColor() {
+            const colors = [
+                { fill: '#3b82f6', stroke: '#2563eb' }, // 蓝色
+                { fill: '#8b5cf6', stroke: '#7c3aed' }, // 紫色
+                { fill: '#f59e0b', stroke: '#d97706' }, // 橙色
+                { fill: '#ef4444', stroke: '#dc2626' }, // 红色
+                { fill: '#10b981', stroke: '#059669' }, // 绿色
+                { fill: '#f97316', stroke: '#ea580c' }, // 深橙色
+                { fill: '#84cc16', stroke: '#65a30d' }, // 青绿色
+                { fill: '#06b6d4', stroke: '#0891b2' }, // 青色
+                { fill: '#ec4899', stroke: '#db2777' }, // 粉色
+                { fill: '#6366f1', stroke: '#4f46e5' }  // 靛蓝色
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
         // 获取项目ID
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('project') || 1;
         
+        // 初始化控制节点颜色
+        const edgeColor1 = generateRandomNodeColor();
+        const edgeColor2 = generateRandomNodeColor();
+        const edgeColor3 = generateRandomNodeColor();
+        
         // 模拟网络数据
         const networkData = {
             controlNodes: [
-                { id: 'control-1', x: 200, y: 80, name: '主控节点1', type: 'master', status: 'active', user: '管理员', ip: '192.168.1.100' },
-                { id: 'control-2', x: 400, y: 80, name: '主控节点2', type: 'participant', status: 'active', user: '协调员', ip: '192.168.1.101' },
-                { id: 'control-3', x: 600, y: 80, name: '备用控制', type: 'observer', status: 'active', user: '观察者', ip: '192.168.1.102' }
+                { 
+                    id: 'control-1', 
+                    x: 200, 
+                    y: 80, 
+                    name: '主控节点1', 
+                    type: 'master', 
+                    status: 'active', 
+                    user: '管理员', 
+                    ip: '192.168.1.100',
+                    color: { fill: edgeColor1.fill, stroke: edgeColor1.stroke, name: 'random1' }
+                },
+                { 
+                    id: 'control-2', 
+                    x: 400, 
+                    y: 80, 
+                    name: '主控节点2', 
+                    type: 'participant', 
+                    status: 'active', 
+                    user: '协调员', 
+                    ip: '192.168.1.101',
+                    color: { fill: edgeColor2.fill, stroke: edgeColor2.stroke, name: 'random2' }
+                },
+                { 
+                    id: 'control-3', 
+                    x: 600, 
+                    y: 80, 
+                    name: '备用控制', 
+                    type: 'observer', 
+                    status: 'active', 
+                    user: '观察者', 
+                    ip: '192.168.1.102',
+                    color: { fill: edgeColor3.fill, stroke: edgeColor3.stroke, name: 'random3' }
+                }
             ],
             // 所有边缘节点（可以无限添加，可视化界面只显示活跃的15个）
             allEdgeNodes: [
@@ -1517,6 +1697,52 @@
             progressCircle.style.strokeDashoffset = offset;
             document.getElementById('overallProgress').textContent = `${project.progress}%`;
             
+            // 更新进度条
+            const progressBar = document.getElementById('overallProgressBar');
+            if (progressBar) {
+                progressBar.style.width = `${project.progress}%`;
+                
+                // 根据进度改变进度条颜色
+                if (project.progress < 30) {
+                    progressBar.className = 'bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden';
+                } else if (project.progress < 70) {
+                    progressBar.className = 'bg-gradient-to-r from-yellow-500 via-blue-500 to-blue-600 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden';
+                } else {
+                    progressBar.className = 'bg-gradient-to-r from-blue-500 via-blue-600 to-green-500 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden';
+                }
+                
+                // 重新添加光效元素
+                progressBar.innerHTML = '<div class="absolute top-0 -inset-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer"></div>';
+            }
+            
+            // 更新训练轮次信息
+            const progressDetails = document.getElementById('progressDetails');
+            if (progressDetails) {
+                const currentRounds = Math.floor((project.progress / 100) * 250);
+                progressDetails.textContent = `轮次 ${currentRounds}/250`;
+            }
+            
+            // 更新阶段指示器
+            const stage1 = document.getElementById('stage1');
+            const stage2 = document.getElementById('stage2');
+            const stage3 = document.getElementById('stage3');
+            
+            if (stage1 && stage2 && stage3) {
+                // 重置所有阶段
+                [stage1, stage2, stage3].forEach(stage => {
+                    stage.classList.remove('active');
+                });
+                
+                // 根据进度激活对应阶段
+                if (project.progress < 5) {
+                    stage1.classList.add('active');
+                } else if (project.progress < 95) {
+                    stage2.classList.add('active');
+                } else {
+                    stage3.classList.add('active');
+                }
+            }
+            
             // 更新快速统计
             const totalNodes = networkData.controlNodes.length + networkData.edgeNodes.length;
             const onlineNodes = networkData.edgeNodes.filter(n => n.status !== 'error').length + networkData.controlNodes.length;
@@ -1604,11 +1830,33 @@
                 circle.setAttribute('r', 25);
                 circle.setAttribute('class', 'control-node');
                 circle.setAttribute('data-id', node.id);
+                
+                // 设置每个节点的独特颜色
+                console.log(`EdgeAI设置控制节点 ${node.id} 颜色: fill=${node.color.fill}, stroke=${node.color.stroke}`);
+                circle.style.setProperty('fill', node.color.fill, 'important');
+                circle.style.setProperty('stroke', node.color.stroke, 'important');
+                circle.style.setProperty('stroke-width', '3px', 'important');
+                circle.style.transition = 'all 0.3s ease';
+                
                 circle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     showNodeDetails(node, 'control');
                 });
+                
+                // 鼠标悬停效果
+                circle.addEventListener('mouseenter', () => {
+                    circle.style.setProperty('stroke-width', '4px', 'important');
+                    circle.style.transform = 'scale(1.1)';
+                    circle.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))';
+                });
+                
+                circle.addEventListener('mouseleave', () => {
+                    circle.style.setProperty('stroke-width', '3px', 'important');
+                    circle.style.transform = 'scale(1)';
+                    circle.style.filter = 'none';
+                });
+                
                 circle.style.pointerEvents = 'auto';
                 circle.style.cursor = 'pointer';
                 nodesGroup.appendChild(circle);
@@ -1621,13 +1869,7 @@
                 label.textContent = node.name;
                 labelsGroup.appendChild(label);
                 
-                // 状态指示器
-                const statusCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                statusCircle.setAttribute('cx', node.x + 15);
-                statusCircle.setAttribute('cy', node.y - 15);
-                statusCircle.setAttribute('r', 5);
-                statusCircle.setAttribute('fill', '#10b981');
-                nodesGroup.appendChild(statusCircle);
+                // 移除状态指示器小圆点 - 保持节点简洁
             });
             
             // 绘制边缘节点
@@ -1639,6 +1881,11 @@
                 circle.setAttribute('r', 18);
                 
                 let nodeClass = `edge-node ${node.status}`;
+                
+                // 为训练中的节点添加颜色呼吸效果
+                if (node.status === 'training') {
+                    nodeClass += ' breathing';
+                }
                 
                 // 添加动画效果
                 if (node.fadeIn) {
@@ -1736,13 +1983,8 @@
                     line.setAttribute('x2', edgeNode.x);
                     line.setAttribute('y2', edgeNode.y);
                     
-                    // 根据节点状态设置连接线样式
+                    // 连接线默认透明，等待数据传输触发
                     let lineClass = 'connection-line';
-                    if (edgeNode.status === 'training') {
-                        lineClass += ' active data-flow'; // 训练中：虚线+数据流动画
-                    } else if (edgeNode.status === 'idle' || edgeNode.status === 'error') {
-                        lineClass += ' inactive'; // 空闲或错误：普通虚线
-                    }
                     
                     line.setAttribute('class', lineClass);
                     line.setAttribute('data-from', controlNode.id);
@@ -2477,6 +2719,26 @@
             document.getElementById('totalNodesCount').textContent = networkData.edgeNodes.length + networkData.controlNodes.length;
             document.getElementById('avgProgress').textContent = `${avgProgress}%`;
             
+            // 更新平均进度条
+            const avgProgressBar = document.getElementById('avgProgressBar');
+            if (avgProgressBar) {
+                avgProgressBar.style.width = `${avgProgress}%`;
+                
+                // 根据进度改变颜色
+                if (avgProgress < 25) {
+                    avgProgressBar.className = 'bg-gradient-to-r from-red-500 to-red-600 h-2 rounded-full transition-all duration-800 ease-out relative';
+                } else if (avgProgress < 50) {
+                    avgProgressBar.className = 'bg-gradient-to-r from-orange-500 to-yellow-500 h-2 rounded-full transition-all duration-800 ease-out relative';
+                } else if (avgProgress < 75) {
+                    avgProgressBar.className = 'bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-800 ease-out relative';
+                } else {
+                    avgProgressBar.className = 'bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-800 ease-out relative';
+                }
+                
+                // 重新添加光效
+                avgProgressBar.innerHTML = '<div class="absolute top-0 -inset-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-40 animate-shimmer"></div>';
+            }
+            
             // 更新节点计数
             document.getElementById('controlNodeCount').textContent = networkData.controlNodes.length;
             document.getElementById('edgeNodeCount').textContent = networkData.edgeNodes.length;
@@ -2548,7 +2810,7 @@
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                            <div class="w-3 h-3 rounded-full mr-3" style="background-color: ${node.color.fill}"></div>
                             <span class="text-sm font-medium text-gray-900">${node.name}</span>
                         </div>
                     </td>
@@ -2629,6 +2891,47 @@
             });
         }
         
+
+        // 触发随机数据传输动画
+        function triggerDataTransmissions() {
+            const connections = document.querySelectorAll('.connection-line');
+            const trainingConnections = Array.from(connections).filter(line => {
+                const edgeNodeId = line.getAttribute('data-to');
+                const edgeNode = networkData.edgeNodes.find(n => n.id === edgeNodeId);
+                return edgeNode && edgeNode.status === 'training';
+            });
+            
+            // 随机选择2-5条训练连接线进行数据传输（测试模式 - 更多连接线）
+            const transmissionCount = Math.min(
+                Math.floor(Math.random() * 4) + 2, 
+                trainingConnections.length
+            );
+            
+            if (transmissionCount > 0) {
+                // 随机选择连接线
+                const shuffled = [...trainingConnections].sort(() => 0.5 - Math.random());
+                const selectedConnections = shuffled.slice(0, transmissionCount);
+                
+                selectedConnections.forEach(line => {
+                    // 清除之前的传输动画
+                    line.classList.remove('transmitting-down', 'transmitting-up');
+                    
+                    // 随机选择传输方向
+                    const direction = Math.random() > 0.5 ? 'transmitting-down' : 'transmitting-up';
+                    
+                    // 稍微延迟以确保类被清除
+                    setTimeout(() => {
+                        line.classList.add(direction);
+                        
+                        // 动画结束后移除类
+                        setTimeout(() => {
+                            line.classList.remove(direction);
+                        }, 4000);
+                    }, 50);
+                });
+            }
+        }
+
         // 启动实时更新
         function startRealTimeUpdates() {
             setInterval(() => {
@@ -2715,6 +3018,11 @@
                 // 随机数据传输速度
                 const speeds = ['0.8MB/s', '1.2MB/s', '2.1MB/s', '1.5MB/s', '0.9MB/s'];
                 document.getElementById('dataTransfer').textContent = speeds[Math.floor(Math.random() * speeds.length)];
+                
+                // 随机触发数据传输动画（80%概率 - 高频测试模式）
+                if (Math.random() < 0.8) {
+                    triggerDataTransmissions();
+                }
                 
                 // 随机网络延迟（如果元素存在）
                 const networkLatencyElement = document.getElementById('networkLatency');
